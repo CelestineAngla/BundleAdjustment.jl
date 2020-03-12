@@ -8,14 +8,10 @@ Creates the 3D rotation matrix associated to the 3D Rodrigues vector r
 R = cos(θ)I₃ + sin(θ)K + (1 - cos(θ))kkᵀ
 with θ = ||r|| and k = r/θ and K the "cross product matrix" of k
 """
-function get_rotation_matrix(rodrigues_vect)
-    angle = sqrt(sum(rodrigues_vect[k]^2 for k = 1:3))
-    # angle = LinearAlgebra.norm(rodrigues_vect)
-    kx, ky, kz = rodrigues_vect/angle
-    Id = [[1 0 0]; [0 1 0]; [0 0 1]]
-    K = [[0 -kz ky]; [kz 0 -kx]; [-ky kx 0]]
-    kkT = [[kx*kx kx*ky kx*kz]; [ky*kx ky*ky ky*kz]; [kz*kx kz*ky kz*kz]]
-    return Id*cos(angle) + sin(angle)*K + (1 - cos(angle))*kkT
+function Rodrigues_rotation(r, x)
+    angle = LinearAlgebra.norm(r)
+    k = r/angle
+    return cos(angle)*x + sin(angle)*cross(k,x) + (1-cos(angle))*dot(k,x)*k
 end
 
 
@@ -36,10 +32,8 @@ P₂ = -(P₁.x P₁.y)/P₁.z
 P = f ⨯ r(P₂) ⨯ P₂
 """
 function projection(x, y, z, rx, ry, rz, tx, ty, tz, f, k1, k2)
-    X = [x; y; z]
-    R = get_rotation_matrix([rx, ry, rz])
-    P1 = R*X + [tx, ty, tz]
-    P2 = -[P1[1,1] P1[2,1]]/P1[3,1]
+    P1 = Rodrigues_rotation([rx, ry, rz], [x; y; z]) + [tx, ty, tz]
+    P2 = - [P1[1,1] P1[2,1]]/P1[3,1]
     return f*scaling_factor(P2, k1, k2)*P2
 end
 
@@ -119,8 +113,11 @@ function residual_model(obs::Array{Float64,2}, cameras_init::Array{Float64,2}, p
 end
 
 # cos(angle)*x + sin(angle)*cross(k,x) + (1-cos(angle))*dot(k,x)*k
-
-# k = [1, 1, 1]
+#
+# r = [1, 1, 1]
 # x = [2.5, -6.1, 0.0]
-# print(dot(k,x))
-# print(cross(k,x))
+# R = [[0.22629564095020646 -0.18300791965761704 0.9567122787074109]; [0.9567122787074109 0.22629564095020646 -0.18300791965761704]; [-0.18300791965761704 0.9567122787074109 0.22629564095020646]]
+# angle = LinearAlgebra.norm(r)
+# k = r/angle
+# print()
+# print(R*x)
