@@ -117,3 +117,10 @@ function residual_model(obs::Array{Float64,2}, cameras_init::Array{Float64,2}, p
     @show objective_value.(model);
     return value.(cameras), value.(points)
 end
+
+# cos(angle)*x + sin(angle)*cross(k,x) + (1-cos(angle))*dot(k,x)*k
+
+k = [1, 1, 1]
+x = [2.5, -6.1, 0.0]
+print(dot(k,x))
+print(cross(k,x))
