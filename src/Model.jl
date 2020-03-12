@@ -120,7 +120,7 @@ end
 
 # cos(angle)*x + sin(angle)*cross(k,x) + (1-cos(angle))*dot(k,x)*k
 
-k = [1, 1, 1]
-x = [2.5, -6.1, 0.0]
-print(dot(k,x))
-print(cross(k,x))
+# k = [1, 1, 1]
+# x = [2.5, -6.1, 0.0]
+# print(dot(k,x))
+# print(cross(k,x))
