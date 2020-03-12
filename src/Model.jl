@@ -111,3 +111,5 @@ function residual_model(obs::Array{Float64,2}, cameras_init::Array{Float64,2}, p
     @show objective_value.(model);
     return value.(cameras), value.(points)
 end
+
+print(projection(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
