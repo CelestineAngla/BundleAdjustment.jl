@@ -111,13 +111,3 @@ function residual_model(obs::Array{Float64,2}, cameras_init::Array{Float64,2}, p
     @show objective_value.(model);
     return value.(cameras), value.(points)
 end
-
-# cos(angle)*x + sin(angle)*cross(k,x) + (1-cos(angle))*dot(k,x)*k
-#
-# r = [1, 1, 1]
-# x = [2.5, -6.1, 0.0]
-# R = [[0.22629564095020646 -0.18300791965761704 0.9567122787074109]; [0.9567122787074109 0.22629564095020646 -0.18300791965761704]; [-0.18300791965761704 0.9567122787074109 0.22629564095020646]]
-# angle = LinearAlgebra.norm(r)
-# k = r/angle
-# print()
-# print(R*x)
