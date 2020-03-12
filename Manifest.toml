@@ -233,15 +233,15 @@ version = "0.2.7"
 
 [[NLPModels]]
 deps = ["FastClosures", "ForwardDiff", "LinearAlgebra", "LinearOperators", "Printf", "SparseArrays", "Test"]
-git-tree-sha1 = "4820a4aa6c7d97936aee5d2bfc33333a83842383"
+git-tree-sha1 = "09cec07e38c71c68aeb72490af58681ffed36637"
 uuid = "a4795742-8479-5a88-8948-cc11e1c8c1a6"
-version = "0.12.0"
+version = "0.11.1"
 
 [[NLPModelsIpopt]]
-deps = ["Ipopt", "NLPModels", "SolverTools", "Test"]
-git-tree-sha1 = "5fa915409bcad2ca679d2579955493040b315750"
+deps = ["Ipopt", "NLPModels", "SolverTools"]
+git-tree-sha1 = "d8298c601f729ae2c9cebd90337cc15fb49b3c5c"
 uuid = "f4238b75-b362-5c4c-b852-0801c9a21d71"
-version = "0.1.0"
+version = "0.3.1"
 
 [[NaNMath]]
 git-tree-sha1 = "928b8ca9b2791081dc71a51c55347c27c618760f"
@@ -309,9 +309,9 @@ uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 
 [[SolverTools]]
 deps = ["DataFrames", "LinearAlgebra", "LinearOperators", "Logging", "NLPModels", "Printf"]
-git-tree-sha1 = "3c047da6c1673a5b1b41df5999b33b011d15cb32"
+git-tree-sha1 = "525aaa5c381434f264d72b625f8dd6a846787a15"
 uuid = "b5612192-2639-5dc1-abfe-fbedd65fab29"
-version = "0.1.4"
+version = "0.1.10"
 
 [[SortingAlgorithms]]
 deps = ["DataStructures", "Random", "Test"]
