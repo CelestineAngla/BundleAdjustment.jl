@@ -368,9 +368,9 @@ uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 
 [[SolverTools]]
 deps = ["DataFrames", "LinearAlgebra", "LinearOperators", "Logging", "NLPModels", "Printf"]
-git-tree-sha1 = "525aaa5c381434f264d72b625f8dd6a846787a15"
+git-tree-sha1 = "9dc8c584452bf001fc41297f936ffe7ea7d95606"
 uuid = "b5612192-2639-5dc1-abfe-fbedd65fab29"
-version = "0.1.10"
+version = "0.1.11"
 
 [[SortingAlgorithms]]
 deps = ["DataStructures", "Random", "Test"]
