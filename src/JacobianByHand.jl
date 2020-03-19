@@ -2,31 +2,6 @@ using LinearAlgebra
 using SparseArrays
 
 
-
-function BAJacobian(cam_indices, pnt_indices, pt2d, cam_params, pt3d)
-    """
-    Computes the sparse Jacobian of the residuals of a BA problem
-    """
-    nobs = size(pt2d)[1]
-    ncam = size(cam_params)[1]
-    npnts = size(pt3d)[1]
-    J = spzeros(nobs*2, 3*npnts + 9*ncam)
-    for i = 1 : nobs
-        idx_cam = cam_indices[i]
-        idx_pnt = pnt_indices[i]
-        C = cam_params[idx_cam, :]  # camera parameters
-        X = pt3d[idx_pnt, :] # 3D point coordinates
-        r = C[1:3]  # Rodrigues vector for the rotation
-        t = C[4:6]  # translation vector
-        f, k1, k2 = C[7:9]  # focal length and radial distortion factors
-        denseJ = JP3(P2(P1(r, t, X)), f, k1, k2)*JP2(P1(r, t, X))*JP1(r, X)
-        J[2*i-1 : 2*i, 3*idx_pnt-2 : 3*idx_pnt] = denseJ[:,1:3]
-        J[2*i-1 : 2*i, 3*npnts + 9*idx_cam-8 : 3*npnts + 9*idx_cam] = denseJ[:,4:12]
-    end
-    return J
-end
-
-
 function P1(r, t, X)
     """
     First step in camera projection
