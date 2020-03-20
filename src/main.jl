@@ -16,15 +16,27 @@ include("ModelNLP.jl")
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 
-rows = Vector{Int}(undef, BA49.meta.nnzj)
-cols = Vector{Int}(undef, BA49.meta.nnzj)
-jac_structure!(BA49, rows, cols)
+# using UnicodePlots
+# spy(J)
 
-vals = Vector{Float64}(undef, BA49.meta.nnzj)
-vals = jac_coord!(BA49, BA49.meta.x0, vals)
+# rows = Vector{Int}(undef, BA49.meta.nnzj)
+# cols = Vector{Int}(undef, BA49.meta.nnzj)
+# jac_structure!(BA49, rows, cols)
+#
+# vals = Vector{Float64}(undef, BA49.meta.nnzj)
+# vals = jac_coord!(BA49, BA49.meta.x0, vals)
+#
+# using SparseArrays
+# J = sparse(rows, cols, vals)
+#
+# for j = 1 : 23769
+#     if J[1,j] != 0
+#         print("\n", j, " ", J[1,j])
+#         print("\n", j, " ", J[2,j])
+#     end
+# end
 
-using SparseArrays
-J = sparse(rows, cols, vals)
-print(J)
 
-# err = jacobian_check(BA49, x=BA49.meta.x0)
+# J = jac(BA49, BA49.meta.x0)
+err = jacobian_check(BA49, x=BA49.meta.x0)
+print(err)

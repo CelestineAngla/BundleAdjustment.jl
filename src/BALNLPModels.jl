@@ -24,7 +24,7 @@ end
 projection!(x, c, r2) = projection!(x, c[1:3], c[4:6], c[7], c[8], c[9], r2)
 
 
-function residuals!(cam_indices, pnt_indices, xs, r)
+function residuals!(cam_indices, pnt_indices, xs, r, npts)
   nobs = length(cam_indices)
   for k = 1 : nobs
     cam_index = cam_indices[k]
@@ -77,27 +77,27 @@ function BALNLPModel(filename::AbstractString)
     x0[3*npnts + (cam_index - 1) * 9 + 1 : 3*npnts + (cam_index - 1) * 9 + 9] = cam_params[cam_index, :]
   end
 
-  meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, nnzj=2*nobs*12, name="filename")
+  meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,nvar), ucon=fill(0.0,nvar), nnzj=2*nobs*12, name="filename")
 
   @info "BALNLPModel $filename" nvar ncon
   return BALNLPModel(meta, Counters(), cams_indices, pnts_indices, pt2d, cam_params, pt3d)
 end
 
 
-obj(model::BALNLPModel, x) = 0.0
+NLPModels.obj(model::BALNLPModel, x) = 0.0
 
 
-grad!(model::BALNLPModel, x, g) = fill!(g, 0)
+NLPModels.grad!(model::BALNLPModel, x, g) = fill!(g, 0)
 
 
-function cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: AbstractVector)
+function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: AbstractVector)
   increment!(nlp, :neval_cons)
-  residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx)
+  residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx, size(nlp.pt3d)[1])
   cx .-= nlp.pt2d'[:] # flatten pt2d so it has size 2 * nobs
   return cx
 end
 
-function jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector, cols :: AbstractVector)
+function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:Integer}, cols :: AbstractVector{<:Integer})
   increment!(nlp, :neval_jac)
   nobs = size(nlp.pt2d)[1]
   npnts = size(nlp.pt3d)[1]
@@ -120,8 +120,15 @@ function jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector, cols :: Abst
   end
 end
 
+function NLPModels.jac_structure(nlp :: BALNLPModel)
+  rows = Vector{Int}(undef, nlp.meta.nnzj)
+  cols = Vector{Int}(undef, nlp.meta.nnzj)
+  jac_structure!(nlp, rows, cols)
+  return rows, cols
+end
 
-function jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: AbstractVector)
+
+function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: AbstractVector)
   increment!(nlp, :neval_jac)
   nobs = size(nlp.pt2d)[1]
   npnts = size(nlp.pt3d)[1]
@@ -142,4 +149,9 @@ function jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: AbstractVec
     vals[(k-1)*24 + 16 : (k-1)*24 + 24] = denseJ[2, 4:12]
   end
   return vals
+end
+
+function NLPModels.jac_coord(nlp :: BALNLPModel, x :: AbstractVector)
+  vals = Vector{eltype(x)}(undef, nlp.meta.nnzj)
+  return jac_coord!(nlp, x, vals)
 end
