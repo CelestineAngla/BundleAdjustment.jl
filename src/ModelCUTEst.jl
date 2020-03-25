@@ -5,6 +5,7 @@ using NLPModels
 # fetch_sif_problems()
 # model = CUTEstModel("BA-L1LS")
 
+# finalize(BA49)
 BA49 = CUTEstModel("BA-L49")
 
 # using NLPModelsIpopt
@@ -18,8 +19,5 @@ for j = 1 : 23769
         print("\n", j, " ", J[2,j])
     end
 end
-
-# using UnicodePlots
-# spy(J)
 
 finalize(BA49)

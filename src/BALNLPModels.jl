@@ -29,10 +29,9 @@ function residuals!(cam_indices, pnt_indices, xs, r, npts)
   for k = 1 : nobs
     cam_index = cam_indices[k]
     pnt_index = pnt_indices[k]
-    # x = xs[(pnt_index - 1) * 12 + 1 : pnt_index * 12]
     x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
     c = xs[3*npts + (cam_index - 1) * 9 + 1 : 3*npts + (cam_index - 1) * 9 + 9]
-    projection!(x, c, r[2 * k - 1 : 2 * k])
+    r[2 * k - 1 : 2 * k] = projection!(x, c, r[2 * k - 1 : 2 * k])
   end
   return r
 end
@@ -70,14 +69,14 @@ function BALNLPModel(filename::AbstractString)
   ncon = 2 * nobs
 
   x0 = Vector{Float64}(undef, nvar)
-  for k = 1 : nobs
-    cam_index = cams_indices[k]
-    pnt_index = pnts_indices[k]
-    x0[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3] = pt3d[pnt_index, :]
-    x0[3*npnts + (cam_index - 1) * 9 + 1 : 3*npnts + (cam_index - 1) * 9 + 9] = cam_params[cam_index, :]
+  for k = 1 : npnts
+    x0[(k - 1)*3 + 1 : (k - 1)*3 + 3] = pt3d[k, :]
+  end
+  for k = 1 : ncams
+    x0[3*npnts + (k - 1)*9 + 1 : 3*npnts + (k - 1)*9 + 9] = cam_params[k, :]
   end
 
-  meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,nvar), ucon=fill(0.0,nvar), nnzj=2*nobs*12, name="filename")
+  meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=filename)
 
   @info "BALNLPModel $filename" nvar ncon
   return BALNLPModel(meta, Counters(), cams_indices, pnts_indices, pt2d, cam_params, pt3d)
