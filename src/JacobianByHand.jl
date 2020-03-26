@@ -96,14 +96,14 @@ function JP3(X, f, k1, k2)
 
     JP3[1,1] = f*r + f*(2*k1*x + k2*(4*x^3 + 4*x*y^2))*x
     JP3[1,2] = f*(2*k1*y + k2*(4*y^3 + 4*y*x^2))*x
-    JP3[1,3] = r*x
-    JP3[1,4] = f*norm2*x
-    JP3[1,5] = f*norm4*x
+    JP3[1,3] = f*norm2*x
+    JP3[1,4] = f*norm4*x
+    JP3[1,5] = r*x
 
     JP3[2,1] = f*(2*k1*x + k2*(4*x^3 + 4*x*y^2))*y
     JP3[2,2] = f*r + f*(2*k1*y + k2*(4*y^3 + 4*y*x^2))*y
-    JP3[2,3] = r*y
-    JP3[2,4] = f*norm2*y
-    JP3[2,5] = f*norm4*y
+    JP3[2,3] = f*norm2*y
+    JP3[2,4] = f*norm4*y
+    JP3[2,5] = r*y
     return JP3
 end

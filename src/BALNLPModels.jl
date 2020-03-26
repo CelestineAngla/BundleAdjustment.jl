@@ -11,7 +11,7 @@ function scaling_factor(point, k1, k2)
 end
 
 
-function projection!(p3, r, t, f, k1, k2, r2)
+function projection!(p3, r, t, k1, k2, f, r2)
   θ = norm(r)
   k = r / θ
   P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
@@ -73,8 +73,13 @@ function BALNLPModel(filename::AbstractString)
     x0[(k - 1)*3 + 1 : (k - 1)*3 + 3] = pt3d[k, :]
   end
   for k = 1 : ncams
-    x0[3*npnts + (k - 1)*9 + 1 : 3*npnts + (k - 1)*9 + 9] = cam_params[k, :]
+    # C = (rx, ry, rz, tx, ty, tz, k1, k2, f)
+    x0[3*npnts + (k - 1)*9 + 1 : 3*npnts + (k - 1)*9 + 6] = cam_params[k, 1:6]
+    x0[3*npnts + (k - 1)*9 + 7 : 3*npnts + (k - 1)*9 + 8] = cam_params[k, 8:9]
+    x0[3*npnts + (k - 1)*9 + 9] = cam_params[k, 7]
   end
+
+  # print(x0[3*npnts + (k - 1)*9 + 7 : 3*npnts + (k - 1)*9 + 9], "\n", cam_params[1, 7:9], "\n")
 
   meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=filename)
 
@@ -138,7 +143,7 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
     C = x[3*npnts + (idx_cam - 1) * 9 + 1 : 3*npnts + (idx_cam - 1) * 9 + 9] # camera parameters
     r = C[1:3]  # Rodrigues vector for the rotation
     t = C[4:6]  # translation vector
-    f, k1, k2 = C[7:9]  # focal length and radial distortion factors
+    k1, k2, f = C[7:9]  # focal length and radial distortion factors
     denseJ = JP3(P2(P1(r, t, X)), f, k1, k2)*JP2(P1(r, t, X))*JP1(r, X)
 
     # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
