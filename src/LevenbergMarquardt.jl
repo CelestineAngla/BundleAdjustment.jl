@@ -33,6 +33,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
       lambda \= 3
       J = jac_residual(model, x)
       r = r_suiv
+      stop = norm(transpose(J)*r)
     end
     ite += 1
   end
