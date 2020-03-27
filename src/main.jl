@@ -14,18 +14,18 @@ using SparseArrays
 
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
-# fr_BA49 = FeasibilityResidual(BA49)
-# x_opt = Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 0.01)
+fr_BA49 = FeasibilityResidual(BA49)
+x_opt = @time Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 10^(-6), 10^(-6))
 
 
-J = jac(BA49, BA49.meta.x0)
-
-for j = 1 : 23769
-    if J[1,j] != 0
-        print("\n", j, " ", J[1,j])
-        print("\n", j, " ", J[2,j])
-    end
-end
+# J = jac(BA49, BA49.meta.x0)
+#
+# for j = 1 : 23769
+#     if J[1,j] != 0
+#         print("\n", j, " ", J[1,j])
+#         print("\n", j, " ", J[2,j])
+#     end
+# end
 
 
 # err = jacobian_check(BA49, x=BA49.meta.x0)
@@ -50,24 +50,34 @@ end
 # print("\n", norm(nz[1]-nzc[1]))
 # print("\n", norm(nz[2]-nzc[2]))
 
+# Compare my resiudals with the one from python
 
-
+# filepath = joinpath(@__DIR__, "..", "residuals_python_BA49.txt")
+# f = open(filepath)
+# python_res = Vector(undef, BA49.meta.ncon)
+# for i = 1 : BA49.meta.ncon
+#     python_res[i] = parse(Float64, readline(f))
+# end
 
 # Compare my vector of resiudals with and the one from CUTEst
 # cx = Vector{Float64}(undef, BA49.meta.ncon)
 # cx = cons!(BA49, BA49.meta.x0, cx)
 # cx_sort = sort(cx)
-# print(cx[1:100])
+
+# print(norm(cx-python_res))
 
 # function increase_x(x, p)
 #     return x + p*x
 # end
-#
+
 # function mean_relative_error(x, y)
 #     nobs = length(x)/2
 #     error_x = 0.0
 #     error_y = 0.0
 #     for k = 1 : Integer(nobs)
+#         if abs(x[2*k] - y[2*k])/abs(x[2*k]) > 10^(-3)
+#             print(2*k)
+#         end
 #         error_x += abs(x[2*k - 1] - y[2*k - 1])/abs(x[2*k - 1])
 #         error_y += abs(x[2*k] - y[2*k])/abs(x[2*k])
 #     end
@@ -76,9 +86,8 @@ end
 #     error = (error_x + error_y)/2
 #     return error, error_x, error_y
 # end
-#
+
 # using CUTEst
-# finalize(BA49_cutest)
 # BA49_cutest = CUTEstModel("BA-L49")
 #
 # err = Vector{Float64}(undef, 11)
@@ -94,6 +103,25 @@ end
 #     cx_cutest = cons(BA49_cutest, x)
 #     err[k], err_x[k], err_y[k] = mean_relative_error(cx, cx_cutest)
 # end
+
+
+
+# using CUTEst
+# BA49_cutest = CUTEstModel("BA-L49")
 #
+# x = BA49.meta.x0
+#
+# cx = Vector{Float64}(undef, BA49.meta.ncon)
+# cx = cons!(BA49, x, cx)
+# cx_cutest = Vector{Float64}(undef, BA49.meta.ncon)
+# cx_cutest = cons(BA49_cutest, x)
+#
+# for k = 1 : length(cx)
+#     if abs(cx[k] - cx_cutest[k])/abs(cx[k]) > 10^(1)
+#         print("\n", k, " ", cx[k], " ", cx_cutest[k])
+#     end
+# end
+
+# print(mean_relative_error(cx, cx_cutest))
 #
 # finalize(BA49_cutest)
