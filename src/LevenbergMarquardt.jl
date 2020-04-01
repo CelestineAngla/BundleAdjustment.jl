@@ -14,7 +14,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
   r = @time residual(model, x0)
   r_suiv = copy(r)
   # Initialize b = [r; 0]
-  b = @time [r; zeros(model.meta.nvar)]
+  b = [r; zeros(model.meta.nvar)]
 
   print("\n J")
   # Initialize J in the format J[rows[k], cols[k]] = vals[k]
@@ -24,7 +24,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
   vals = @time jac_coord_residual(model, x)
   print("\n A")
   # Initialize A = [J; √λI] as a sparse matrix
-  A = @time sparse(rows, cols, vals, model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+  A = sparse(rows, cols, vals, model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
   A = @time fill_sparse!(A, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar), collect(1 : model.meta.nvar), fill(sqrt(lambda), model.meta.nvar))
 
   # The stopping criteria is: stop = norm(Jᵀr) > stop_inf = atol + rtol*stop(0)
@@ -44,7 +44,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
     if norm(r_suiv) > norm(r)
       print("\n/!\\ step not accepted /!\\ \n")
       # Update λ and A
-      lambda *= 3
+      lambda *= 2
       A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] *= sqrt(3)
       # Cancel the change on x
       x += delta
@@ -52,7 +52,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
     #Step accepted
     else
       # Update λ, A, b and stop
-      lambda /= 3
+      lambda /= 5
       print("\njac ")
       vals = @time jac_coord_residual!(model, x, vals)
       print("\nfill ")
@@ -60,7 +60,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
       A[1 : model.nls_meta.nequ, :] = @time fill_sparse!(A[1 : model.nls_meta.nequ, :], rows, cols, vals)
       A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] /= sqrt(3)
       old_cost = 0.5*norm(r)^2
-      r = @time copy(r_suiv)
+      r = copy(r_suiv)
       b[1 : model.nls_meta.nequ] .= r
       stop = norm(transpose(A[1 : model.nls_meta.nequ, :] )*r)
     end

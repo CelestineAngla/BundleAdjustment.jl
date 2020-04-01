@@ -30,7 +30,7 @@ function JP1(r, X)
     x, y, z = X
     kx, ky, kz = k
     d = dot(k, X)
-    JP1 = spzeros(6,12)
+    JP1 = zeros(6,12)
 
 
     JP1[1, 1] = c + (1 - c)*kx^2
@@ -69,12 +69,12 @@ function JP2(X)
     Jacobian of the second step of the projection
     """
     x, y, z = X
-    JP2 = spzeros(5,6)
+    JP2 = zeros(5,6)
 
     JP2[1, 1] = - 1 / z
     JP2[1, 3] = x / z^2
 
-    JP2[2, 2] = - 1 / z
+    JP2[2, 2] = JP2[1, 1]
     JP2[2, 3] = y / z^2
 
     JP2[3, 4] = 1
@@ -89,7 +89,7 @@ function JP3(X, f, k1, k2)
     Jacobian of the third step of the projection
     """
     x, y = X
-    JP3 = spzeros(2, 5)
+    JP3 = zeros(2, 5)
     norm2 = dot(X, X)
     norm4 = norm2^2
     r = 1 + k1*norm2 + k2*norm4

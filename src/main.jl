@@ -15,7 +15,7 @@ using ProfileView
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 fr_BA49 = FeasibilityResidual(BA49)
-x_opt = Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 10^(-6), 10^(-2), 100000)
+x_opt = @time Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 10^(-6), 10^(-2), 100000)
 # @profview
 
 # J = jac(BA49, BA49.meta.x0)
@@ -23,7 +23,7 @@ x_opt = Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 10^(-6), 10^(-2), 100000)
 # for j = 1 : 23769
 #     if J[1,j] != 0
 #         print("\n", j, " ", J[1,j])
-#         print("\n", j, " ", J[2,j])
+#         print("\n", j, " ", J[2,j]) 3*npnts + 9*(idx_cam - 1) + 1 : 3*npnts + 9*(idx_cam - 1) + 9
 #     end
 # end
 

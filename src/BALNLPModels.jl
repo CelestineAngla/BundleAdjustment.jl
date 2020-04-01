@@ -103,26 +103,29 @@ end
 
 function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:Integer}, cols :: AbstractVector{<:Integer})
   increment!(nlp, :neval_jac)
-  nobs = size(nlp.pt2d)[1]
-  npnts = size(nlp.pt3d)[1]
+  nobs = size(nlp.pt2d, 1)
+  npnts = size(nlp.pt3d, 1)
+
   for k = 1 : nobs
     idx_cam = nlp.cams_indices[k]
     idx_pnt = nlp.pnts_indices[k]
 
     # Only the two rows corresponding to the observation k are not empty
     # And there are 12 per row
-    rows[(k-1)*24 + 1 : (k-1)*24 + 12] .= fill(2*k - 1, 12)
-    rows[(k-1)*24 + 13 : (k-1)*24 + 24] .= fill(2*k, 12)
+    rows[(k-1)*24 + 1 : (k-1)*24 + 12] = fill!(rows[(k-1)*24 + 1 : (k-1)*24 + 12], 2*k - 1)
+    rows[(k-1)*24 + 13 : (k-1)*24 + 24] = fill!(rows[(k-1)*24 + 13 : (k-1)*24 + 24], 2*k)
 
     # 3 columns for the 3D point observed
-    cols[(k-1)*24 + 1 : (k-1)*24 + 3] .= 3*(idx_pnt - 1) + 1: 3*(idx_pnt - 1) + 3
-    cols[(k-1)*24 + 13 : (k-1)*24 + 15] .= 3*(idx_pnt - 1) + 1: 3*(idx_pnt - 1) + 3
+    cols[(k-1)*24 + 1 : (k-1)*24 + 3] = 3*(idx_pnt - 1) + 1: 3*(idx_pnt - 1) + 3
+    cols[(k-1)*24 + 13 : (k-1)*24 + 15] = cols[(k-1)*24 + 1 : (k-1)*24 + 3]
 
     # 9 columns for the camera
-    cols[(k-1)*24 + 4 : (k-1)*24 + 12] .= 3*npnts + 9*(idx_cam - 1) + 1 : 3*npnts + 9*(idx_cam - 1) + 9
-    cols[(k-1)*24 + 16 : (k-1)*24 + 24] .= 3*npnts + 9*(idx_cam - 1) + 1 : 3*npnts + 9*(idx_cam - 1) + 9
+    cols[(k-1)*24 + 4 : (k-1)*24 + 12] = 3*npnts + 9*(idx_cam - 1) + 1 : 3*npnts + 9*(idx_cam - 1) + 9
+    cols[(k-1)*24 + 16 : (k-1)*24 + 24] = cols[(k-1)*24 + 4 : (k-1)*24 + 12]
   end
 end
+
+
 
 function NLPModels.jac_structure(nlp :: BALNLPModel)
   rows = Vector{Int}(undef, nlp.meta.nnzj)
@@ -147,10 +150,10 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
     denseJ = JP3(P2(P1(r, t, X)), f, k1, k2)*JP2(P1(r, t, X))*JP1(r, X)
 
     # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
-    vals[(k-1)*24 + 1 : (k-1)*24 + 3] .= denseJ[1, 1:3]
-    vals[(k-1)*24 + 13 : (k-1)*24 + 15] .= denseJ[2, 1:3]
-    vals[(k-1)*24 + 4 : (k-1)*24 + 12] .= denseJ[1, 4:12]
-    vals[(k-1)*24 + 16 : (k-1)*24 + 24] .= denseJ[2, 4:12]
+    vals[(k-1)*24 + 1 : (k-1)*24 + 3] = denseJ[1, 1:3]
+    vals[(k-1)*24 + 13 : (k-1)*24 + 15] = denseJ[2, 1:3]
+    vals[(k-1)*24 + 4 : (k-1)*24 + 12] = denseJ[1, 4:12]
+    vals[(k-1)*24 + 16 : (k-1)*24 + 24] = denseJ[2, 4:12]
   end
   return vals
 end
