@@ -2,8 +2,6 @@ include("ReadFiles.jl")
 include("ModelJuMP.jl")
 include("BALNLPModels.jl")
 include("LevenbergMarquardt.jl")
-using SparseArrays
-using ProfileView
 
 # # Get cameras indices, point indices, points 2D, cameras and points 3D matrices for datasets
 # cam_indices, pnt_indices, pt2d, cam_params, pt3d = readfile("LadyBug/problem-49-7776-pre.txt.bz2")
@@ -15,8 +13,8 @@ using ProfileView
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 fr_BA49 = FeasibilityResidual(BA49)
-x_opt = @time Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 10^(-6), 10^(-2), 100000)
-# @profview
+x_opt = @time Levenberg_Marquardt(fr_BA49, fr_BA49.meta.x0, 1e-5, 1e-2, 100000)
+
 
 # J = jac(BA49, BA49.meta.x0)
 #
