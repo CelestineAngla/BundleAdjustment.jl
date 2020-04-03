@@ -104,18 +104,17 @@ end
 function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:Integer}, cols :: AbstractVector{<:Integer})
   increment!(nlp, :neval_jac)
   nobs = size(nlp.pt2d, 1)
-  npnts = size(nlp.pt3d, 1)
+  npnts_3 = 3 * size(nlp.pt3d, 1)
 
   for k = 1 : nobs
-
     idx_obs = (k - 1) * 24
-    idx_cam = 3 * npnts + 9* (nlp.cams_indices[k] - 1)
+    idx_cam = npnts_3 + 9* (nlp.cams_indices[k] - 1)
     idx_pnt = 3 * (nlp.pnts_indices[k] - 1)
 
     # Only the two rows corresponding to the observation k are not empty
-    # And there are 12 per row
-    @views fill!(rows[idx_obs + 1 : idx_obs + 12], 2*k - 1)
-    @views fill!(rows[idx_obs + 13 : idx_obs + 24], 2*k)
+    p = 2 * k
+    @views fill!(rows[idx_obs + 1 : idx_obs + 12], p - 1)
+    @views fill!(rows[idx_obs + 13 : idx_obs + 24], p)
 
     # 3 columns for the 3D point observed
     cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
@@ -128,7 +127,6 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
 
   end
 end
-
 
 
 function NLPModels.jac_structure(nlp :: BALNLPModel)
@@ -160,6 +158,7 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   end
   return vals
 end
+
 
 function NLPModels.jac_coord(nlp :: BALNLPModel, x :: AbstractVector)
   vals = Vector{eltype(x)}(undef, nlp.meta.nnzj)
