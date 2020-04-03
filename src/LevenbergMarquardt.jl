@@ -10,24 +10,25 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
   x_suiv = Vector{Float64}(undef, length(x))
   ite = 0
 
-  print("\n r")
   # Initialize residuals
+  print("\n r")
   r = @time residual(model, x0)
   sq_norm_r = norm(r)^2
   r_suiv = copy(r)
   # Initialize b = [r; 0]
   b = [r; zeros(model.meta.nvar)]
 
-  print("\n J")
   # Initialize J in the format J[rows[k], cols[k]] = vals[k]
+  print("\n J")
   rows = Vector{Int}(undef, model.nls_meta.nnzj)
   cols = Vector{Int}(undef, model.nls_meta.nnzj)
   @time jac_structure_residual!(model, rows, cols)
   @time vals = jac_coord_residual(model, x)
-  print("\n A")
+
   # Initialize A = [J; √λI] as a sparse matrix
-  A = sparse(rows, cols, vals, model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
-  @time A = fill_sparse!(A, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar), collect(1 : model.meta.nvar), fill(sqrt(lambda), model.meta.nvar))
+  print("\n A")
+  @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(lambda), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+  # print("\n", A.nzval[1:24], "\n", A.nzval[764220:764240])
 
   # The stopping criteria is: stop = norm(Jᵀr) > stop_inf = atol + rtol*stop(0)
   Jtr = transpose(A[1 : model.nls_meta.nequ, :])*r
@@ -47,25 +48,31 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
       print("\n/!\\ step not accepted /!\\ \n")
       # Update λ and A
       lambda *= 2
-      A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] .*= sqrt(3)
+      A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] *= sqrt(3)
 
     #Step accepted
     else
-      # Update λ, x, A, b and stop
+      # Update λ and x
       lambda /= 5
       @time x .= x_suiv
+      # Update A
       print("\njac ")
-      @time vals = jac_coord_residual!(model, x, vals)
+      @time jac_coord_residual!(model, x, vals)
       print("\nfill ")
-      # jac_coord_residual!(model, x, A[1 : model.nls_meta.nequ, :].nzval)
+      # print("\n", A.nzval[1:24], "\n", A.nzval[764220:764240])
+      # jac_coord_residual!(model, x, A.nzval)
+      # print("\n", A.nzval[1:24], "\n", A.nzval[764220:764240])
       @time A[1 : model.nls_meta.nequ, :] = fill_sparse!(A[1 : model.nls_meta.nequ, :], rows, cols, vals)
       @time A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] /= sqrt(3)
+      # Update r
       @time r .= r_suiv
       @time sq_norm_r = norm(r)^2
       @time b[1 : model.nls_meta.nequ] .= r
+      # Update stop
       mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, :] ), r)
       stop = norm(Jtr)
     end
+
     ite += 1
   end
   print("\nNumber of iterations: ", ite, "\n")

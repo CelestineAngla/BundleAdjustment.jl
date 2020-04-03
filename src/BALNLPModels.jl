@@ -107,21 +107,25 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
   npnts = size(nlp.pt3d, 1)
 
   for k = 1 : nobs
-    idx_cam = nlp.cams_indices[k]
-    idx_pnt = nlp.pnts_indices[k]
+
+    idx_obs = (k - 1) * 24
+    idx_cam = 3 * npnts + 9* (nlp.cams_indices[k] - 1)
+    idx_pnt = 3 * (nlp.pnts_indices[k] - 1)
 
     # Only the two rows corresponding to the observation k are not empty
     # And there are 12 per row
-    rows[(k-1)*24 + 1 : (k-1)*24 + 12] = fill!(rows[(k-1)*24 + 1 : (k-1)*24 + 12], 2*k - 1)
-    rows[(k-1)*24 + 13 : (k-1)*24 + 24] = fill!(rows[(k-1)*24 + 13 : (k-1)*24 + 24], 2*k)
+    @views fill!(rows[idx_obs + 1 : idx_obs + 12], 2*k - 1)
+    @views fill!(rows[idx_obs + 13 : idx_obs + 24], 2*k)
 
     # 3 columns for the 3D point observed
-    cols[(k-1)*24 + 1 : (k-1)*24 + 3] = 3*(idx_pnt - 1) + 1: 3*(idx_pnt - 1) + 3
-    cols[(k-1)*24 + 13 : (k-1)*24 + 15] = cols[(k-1)*24 + 1 : (k-1)*24 + 3]
-
+    cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
-    cols[(k-1)*24 + 4 : (k-1)*24 + 12] = 3*npnts + 9*(idx_cam - 1) + 1 : 3*npnts + 9*(idx_cam - 1) + 9
-    cols[(k-1)*24 + 16 : (k-1)*24 + 24] = cols[(k-1)*24 + 4 : (k-1)*24 + 12]
+    cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
+    # 3 columns for the 3D point observed
+    cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
+    # 9 columns for the camera
+    cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
+
   end
 end
 
@@ -147,13 +151,12 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
     r = C[1:3]  # Rodrigues vector for the rotation
     t = C[4:6]  # translation vector
     k1, k2, f = C[7:9]  # focal length and radial distortion factors
-    denseJ = JP3(P2(P1(r, t, X)), f, k1, k2)*JP2(P1(r, t, X))*JP1(r, X)
 
-    # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
-    vals[(k-1)*24 + 1 : (k-1)*24 + 3] = denseJ[1, 1:3]
-    vals[(k-1)*24 + 13 : (k-1)*24 + 15] = denseJ[2, 1:3]
-    vals[(k-1)*24 + 4 : (k-1)*24 + 12] = denseJ[1, 4:12]
-    vals[(k-1)*24 + 16 : (k-1)*24 + 24] = denseJ[2, 4:12]
+    # denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
+    denseJ = JP3(P2(P1(r, t, X)), f, k1, k2)*JP2(P1(r, t, X))*JP1(r, X)
+    # Feel vals with the values of denseJ
+    vals[(k-1)*24 + 1 : (k-1)*24 + 24] .= denseJ'[:]
+
   end
   return vals
 end
