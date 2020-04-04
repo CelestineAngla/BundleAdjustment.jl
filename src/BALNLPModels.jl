@@ -16,7 +16,7 @@ function projection!(p3, r, t, k1, k2, f, r2)
   k = r / θ
   P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
   P2 = -P1[1:2] / P1[3]
-  r2[:] = f * scaling_factor(P2, k1, k2) * P2
+  r2 .= f * scaling_factor(P2, k1, k2) * P2
   return r2
 end
 
@@ -29,9 +29,9 @@ function residuals!(cam_indices, pnt_indices, xs, r, npts)
   for k = 1 : nobs
     cam_index = cam_indices[k]
     pnt_index = pnt_indices[k]
-    x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
-    c = xs[3*npts + (cam_index - 1) * 9 + 1 : 3*npts + (cam_index - 1) * 9 + 9]
-    r[2 * k - 1 : 2 * k] = projection!(x, c, r[2 * k - 1 : 2 * k])
+    @views x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
+    @views c = xs[3*npts + (cam_index - 1) * 9 + 1 : 3*npts + (cam_index - 1) * 9 + 9]
+    @views projection!(x, c, r[2 * k - 1 : 2 * k])
   end
   return r
 end
@@ -88,10 +88,10 @@ function BALNLPModel(filename::AbstractString)
 end
 
 
-NLPModels.obj(model::BALNLPModel, x) = 0.0
+NLPModels.obj(model::BALNLPModel, x::AbstractVector) = 0.0
 
 
-NLPModels.grad!(model::BALNLPModel, x, g) = fill!(g, 0)
+NLPModels.grad!(model::BALNLPModel, x::AbstractVector, g::AbstractVector) = fill!(g, 0)
 
 
 function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: AbstractVector)
