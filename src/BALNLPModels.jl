@@ -16,7 +16,7 @@ function projection!(p3, r, t, k1, k2, f, r2)
   k = r / θ
   P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
   P2 = -P1[1:2] / P1[3]
-  r2[:] = f * scaling_factor(P2, k1, k2) * P2
+  r2 .= f * scaling_factor(P2, k1, k2) * P2
   return r2
 end
 
@@ -29,9 +29,9 @@ function residuals!(cam_indices, pnt_indices, xs, r, npts)
   for k = 1 : nobs
     cam_index = cam_indices[k]
     pnt_index = pnt_indices[k]
-    x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
-    c = xs[3*npts + (cam_index - 1) * 9 + 1 : 3*npts + (cam_index - 1) * 9 + 9]
-    r[2 * k - 1 : 2 * k] = projection!(x, c, r[2 * k - 1 : 2 * k])
+    @views x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
+    @views c = xs[3*npts + (cam_index - 1) * 9 + 1 : 3*npts + (cam_index - 1) * 9 + 9]
+    @views projection!(x, c, r[2 * k - 1 : 2 * k])
   end
   return r
 end
@@ -79,8 +79,6 @@ function BALNLPModel(filename::AbstractString)
     x0[3*npnts + (k - 1)*9 + 9] = cam_params[k, 7]
   end
 
-  # print(x0[3*npnts + (k - 1)*9 + 7 : 3*npnts + (k - 1)*9 + 9], "\n", cam_params[1, 7:9], "\n")
-
   meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=filename)
 
   @info "BALNLPModel $filename" nvar ncon
@@ -88,10 +86,10 @@ function BALNLPModel(filename::AbstractString)
 end
 
 
-NLPModels.obj(model::BALNLPModel, x) = 0.0
+NLPModels.obj(model::BALNLPModel, x::AbstractVector) = 0.0
 
 
-NLPModels.grad!(model::BALNLPModel, x, g) = fill!(g, 0)
+NLPModels.grad!(model::BALNLPModel, x::AbstractVector, g::AbstractVector) = fill!(g, 0)
 
 
 function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: AbstractVector)
@@ -100,6 +98,7 @@ function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: Abstract
   cx .-= nlp.pt2d'[:] # flatten pt2d so it has size 2 * nobs
   return cx
 end
+
 
 function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:Integer}, cols :: AbstractVector{<:Integer})
   increment!(nlp, :neval_jac)
@@ -124,15 +123,7 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
     cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
     cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
-
   end
-end
-
-
-function NLPModels.jac_structure(nlp :: BALNLPModel)
-  rows = Vector{Int}(undef, nlp.meta.nnzj)
-  cols = Vector{Int}(undef, nlp.meta.nnzj)
-  jac_structure!(nlp, rows, cols)
   return rows, cols
 end
 
@@ -157,10 +148,4 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
 
   end
   return vals
-end
-
-
-function NLPModels.jac_coord(nlp :: BALNLPModel, x :: AbstractVector)
-  vals = Vector{eltype(x)}(undef, nlp.meta.nnzj)
-  return jac_coord!(nlp, x, vals)
 end
