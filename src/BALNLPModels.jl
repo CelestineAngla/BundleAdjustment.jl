@@ -132,18 +132,29 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   increment!(nlp, :neval_jac)
   nobs = size(nlp.pt2d)[1]
   npnts = size(nlp.pt3d)[1]
+  denseJ = Matrix{Float64}(undef, 2, 12)
+  JP1_mat = zeros(6, 12)
+  JP1_mat[1, 7], JP1_mat[2, 8], JP1_mat[3, 9], JP1_mat[4, 10], JP1_mat[5, 11], JP1_mat[6, 12] = 1, 1, 1, 1, 1, 1
+  JP2_mat = zeros(5, 6)
+  JP2_mat[3, 4], JP2_mat[4, 5], JP2_mat[5, 6] = 1, 1, 1
+  JP3_mat = Matrix{Float64}(undef, 2, 5)
   for k = 1 : nobs
     idx_cam = nlp.cams_indices[k]
     idx_pnt = nlp.pnts_indices[k]
-    X = x[(idx_pnt - 1) * 3 + 1 : (idx_pnt - 1) * 3 + 3] # 3D point coordinates
-    C = x[3*npnts + (idx_cam - 1) * 9 + 1 : 3*npnts + (idx_cam - 1) * 9 + 9] # camera parameters
+    @views X = x[(idx_pnt - 1) * 3 + 1 : (idx_pnt - 1) * 3 + 3] # 3D point coordinates
+    @views C = x[3*npnts + (idx_cam - 1) * 9 + 1 : 3*npnts + (idx_cam - 1) * 9 + 9] # camera parameters
     r = C[1:3]  # Rodrigues vector for the rotation
     t = C[4:6]  # translation vector
     k1, k2, f = C[7:9]  # focal length and radial distortion factors
 
-    # denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
-    denseJ = JP3(P2(P1(r, t, X)), f, k1, k2)*JP2(P1(r, t, X))*JP1(r, X)
-    # Feel vals with the values of denseJ
+    # denseJ = JP3∘P2∘P1 x JP2∘P1 x JP1
+    p1 = P1(r, t, X)
+    JP1!(JP1_mat, r, X)
+    JP2!(JP2_mat, p1)
+    JP3!(JP3_mat, P2(p1), f, k1, k2)
+    mul!(denseJ, JP3_mat*JP2_mat, JP1_mat)
+
+    # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
     vals[(k-1)*24 + 1 : (k-1)*24 + 24] .= denseJ'[:]
 
   end
