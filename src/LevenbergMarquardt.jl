@@ -1,4 +1,6 @@
 using LinearAlgebra
+using SparseArrays
+
 
 
 """
@@ -17,7 +19,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
   r_suiv = copy(r)
   # Initialize b = [r; 0]
   b = [r; zeros(model.meta.nvar)]
-	# xr = similar(b)
+  xr = similar(b)
 
   # Initialize J in the format J[rows[k], cols[k]] = vals[k]
   print("\n J")
@@ -39,14 +41,15 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
 
     # Solve min ||[J √λI] δ + [r 0]||² with QR factorization
     print("\ndelta ")
-		# @time QR = qr(A)
-		# @time δ = solve_qr!(xr, QR, b)
-    @time δ = A \ b
+	@time begin
+	δ, δr = solve_qr!(xr, A, b)
+	end
+    # @time δ = A \ b
     x_suiv .=  x - δ
     @time residual!(model, x_suiv, r_suiv)
 
     # Step not accepted
-    if norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(A[1 : model.nls_meta.nequ, :]*δ + r)^2 - sq_norm_r)
+    if norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
       print("\n/!\\ step not accepted /!\\ \n")
       # Update λ and A
       lambda *= 3
@@ -92,7 +95,8 @@ end
 """
 Solves A x = b using the QR factorization of A
 """
-function solve_qr!(xr, QR, b)
+function solve_qr!(xr, A, b)
+  QR = qr(A)
   m = size(QR.Q, 1)
   n = size(QR.R, 2)
   m ≥ n || error("currently, this function only supports overdetermined problems")
@@ -110,7 +114,7 @@ function solve_qr!(xr, QR, b)
   mul!(xr, QR.Q', b[QR.prow])  # xr ← Q'(P₁b)  NB: using @views here results in tons of allocations?!
   @views x = xr[1:n]
   ldiv!(LinearAlgebra.UpperTriangular(QR.R), x)  # x ← R⁻¹ x
-  @views x .= x[QR.pcol]
+  @views x[QR.pcol] .= x
   @views r = xr[n+1:m]  # = Q₂'b
   return x, r
 end
