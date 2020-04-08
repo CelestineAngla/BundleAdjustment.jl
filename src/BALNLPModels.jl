@@ -25,7 +25,7 @@ projection!(x, c, r2) = projection!(x, c[1:3], c[4:6], c[7], c[8], c[9], r2)
 
 
 function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
-  @inbounds @simd for k = 1 : nobs
+  for k = 1 : nobs
     cam_index = cam_indices[k]
     pnt_index = pnt_indices[k]
     @views x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
@@ -80,7 +80,7 @@ NLPModels.grad!(model::BALNLPModel, x::AbstractVector, g::AbstractVector) = fill
 function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: AbstractVector)
   increment!(nlp, :neval_cons)
   residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx, nlp.nobs, nlp.npnts)
-  cx .-= nlp.pt2d'[:] # flatten pt2d so it has size 2 * nobs
+  cx .-= nlp.pt2d
   return cx
 end
 
@@ -90,7 +90,7 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
   nobs = nlp.nobs
   npnts_3 = 3 * nlp.npnts
 
-  @inbounds @simd for k = 1 : nobs
+  for k = 1 : nobs
     idx_obs = (k - 1) * 24
     idx_cam = npnts_3 + 9* (nlp.cams_indices[k] - 1)
     idx_pnt = 3 * (nlp.pnts_indices[k] - 1)
@@ -108,6 +108,7 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
     cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
     cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
+
   end
   return rows, cols
 end
@@ -123,7 +124,7 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   JP2_mat = zeros(5, 6)
   JP2_mat[3, 4], JP2_mat[4, 5], JP2_mat[5, 6] = 1, 1, 1
   JP3_mat = Matrix{Float64}(undef, 2, 5)
-  @inbounds @simd for k = 1 : nobs
+  for k = 1 : nobs
     idx_cam = nlp.cams_indices[k]
     idx_pnt = nlp.pnts_indices[k]
     @views X = x[(idx_pnt - 1) * 3 + 1 : (idx_pnt - 1) * 3 + 3] # 3D point coordinates

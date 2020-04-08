@@ -11,7 +11,7 @@ Compare execution time between CUTEst residuals and jacobian and mine
 
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
-
+finalize(BA49_cutest)
 BA49_cutest = CUTEstModel("BA-L49")
 
 @btime cons(BA49, BA49.meta.x0)
@@ -30,7 +30,7 @@ cols = Vector{Int}(undef, BA49_cutest.meta.nnzj)
 vals = zeros(length(rows))
 @btime jac_coord!(BA49_cutest, BA49_cutest.meta.x0, vals)
 
-finalize(BA49_cutest)
+
 #
 # function f1(k, npnts_3, nlp)
 #     idx_obs = (k - 1) * 24

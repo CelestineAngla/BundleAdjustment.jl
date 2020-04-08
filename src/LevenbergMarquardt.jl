@@ -6,7 +6,7 @@ using SparseArrays
 """
 Implementation of Levenberg Marquardt algorithm for NLSModels
 """
-function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol::Float64, rtol::Float64, νd::Float64, νm::Float64, λ::Float64, ite_max::Int)
+function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, stol::Float64, otol::Float64, atol::Float64, rtol::Float64, νd::Float64, νm::Float64, λ::Float64, ite_max::Int)
   x = x0
   x_suiv = Vector{Float64}(undef, length(x))
   ite = 0
@@ -31,12 +31,17 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
   print("\n A")
   @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
 
-  # The stopping criteria is: stop = norm(Jᵀr) > stop_inf = atol + rtol*stop(0)
+  # The stopping criteria are :
+  # stop = norm(Jᵀr) > stop_inf = atol + rtol*stop(0)
+  # old_obj - new_obj < otol * old_obj
   Jtr = transpose(A[1 : model.nls_meta.nequ, :])*r
   stop = norm(Jtr)
   stop_inf = atol + rtol*stop
-  while  stop > stop_inf && ite < ite_max
-    print("\nIteration: ", ite, ", Objective: ", 0.5*sq_norm_r,  ", Stopping criteria: ", stop_inf, " ", stop, "\n")
+  old_obj = sq_norm_r
+  δ = stol + 1
+  cv = [0]
+  while not_converge!(stol, δ, old_obj, sq_norm_r, otol, stop, stop_inf, ite, ite_max, cv)
+    print("\nIteration: ", ite, ", Objective: ", 0.5*sq_norm_r, "\n")
 
     # Solve min ||[J √λI] δ + [r 0]||² with QR factorization
     print("\ndelta ")
@@ -64,6 +69,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
       print("\nfill ")
       @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
       # Update r
+	  old_obj = 0.5*sq_norm_r
       r .= r_suiv
       sq_norm_r = norm(r)^2
       b[1 : model.nls_meta.nequ] .= r
@@ -74,19 +80,39 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
 
     ite += 1
   end
-  print("\nNumber of iterations: ", ite, ", Final objective : ",  0.5*sq_norm_r, " , Stopping criteria : ", stop_inf, " ", stop, "\n")
+  print("\nNumber of iterations: ", ite, ", Final objective : ",  0.5*sq_norm_r, "\n")
+  if cv[1] == 1
+	  print("\nAlgo stopped because of stepsize criteria.\n")
+  elseif cv[1] == 2
+	  print("\nAlgo stopped because of objective criteria.\n")
+  elseif cv[1] == 3
+	  print("\nAlgo stopped because of gradient of the objective criteria.\n")
+  elseif cv[1] == 4
+	  print("\nAlgo stopped because of it reached the maximum number of iterations.\n")
+  end
   return x
 end
 
 
 """
-Update the values of a sparse matrix
+Check convergence of LMA
 """
-function fill_sparse!(A, rows, cols, vals)
-  for k = 1 : length(rows)
-    A[rows[k], cols[k]] = vals[k]
-  end
-  return A
+function not_converge!(stol, δ, old_obj, sq_norm_r, otol, stop, stop_inf, ite, ite_max, cv)
+	if norm(δ) < stol
+		cv[1] = 1
+		return false
+	elseif old_obj - 0.5 * sq_norm_r < otol * old_obj
+		cv[1] = 2
+		return false
+	elseif stop < stop_inf
+		cv[1] = 3
+		return false
+	elseif ite > ite_max
+		cv[1] = 4
+		return false
+	else
+		return true
+	end
 end
 
 

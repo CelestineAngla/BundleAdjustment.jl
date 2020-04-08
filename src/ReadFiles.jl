@@ -15,15 +15,15 @@ function readfile(filename::String)
 
     cam_indices = Vector{Int}(undef, nobs)
     pnt_indices = Vector{Int}(undef, nobs)
-    pt2d = Matrix(undef, nobs, 2)
+    pt2d = Vector{Float64}(undef, 2 * nobs)
     # read nobs lines of the form
     # cam_index point_index xcoord ycoord
     for i = 1 : nobs
       cam, pnt, x, y = split(readline(f))
       cam_indices[i] = parse(Int, cam) + 1  # make indices start at 1
       pnt_indices[i] = parse(Int, pnt) + 1
-      pt2d[i, 1] = parse(Float64, x)
-      pt2d[i, 2] = parse(Float64, y)
+      pt2d[2 * i - 1] = parse(Float64, x)
+      pt2d[2* i] = parse(Float64, y)
     end
 
     # x0 = [X₁, X₂, ..., Xnpnts, C₁, C₂, ..., Cncam]
