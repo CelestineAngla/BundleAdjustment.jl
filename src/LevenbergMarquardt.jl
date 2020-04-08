@@ -6,8 +6,7 @@ using SparseArrays
 """
 Implementation of Levenberg Marquardt algorithm for NLSModels
 """
-function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol::Float64, rtol::Float64, ite_max::Int)
-  lambda = 1.5 # regularization coefficient
+function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol::Float64, rtol::Float64, νd::Float64, νm::Float64, λ::Float64, ite_max::Int)
   x = x0
   x_suiv = Vector{Float64}(undef, length(x))
   ite = 0
@@ -30,7 +29,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
 
   # Initialize A = [J; √λI] as a sparse matrix
   print("\n A")
-  @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(lambda), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+  @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
 
   # The stopping criteria is: stop = norm(Jᵀr) > stop_inf = atol + rtol*stop(0)
   Jtr = transpose(A[1 : model.nls_meta.nequ, :])*r
@@ -44,7 +43,6 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
 	@time begin
 	δ, δr = solve_qr!(xr, A, b)
 	end
-    # @time δ = A \ b
     x_suiv .=  x - δ
     @time residual!(model, x_suiv, r_suiv)
 
@@ -52,19 +50,19 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
     if norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
       print("\n/!\\ step not accepted /!\\ \n")
       # Update λ and A
-      lambda *= 3
-      A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] *= sqrt(3)
+      λ *= νm
+      A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] *= sqrt(νm)
 
     #Step accepted
     else
       # Update λ and x
-      lambda /= 3
+      λ /= νd
       x .= x_suiv
       # Update A
       print("\njac ")
       @time jac_coord_residual!(model, x, vals)
       print("\nfill ")
-      @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(lambda), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+      @time A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
       # Update r
       r .= r_suiv
       sq_norm_r = norm(r)^2
@@ -76,7 +74,7 @@ function Levenberg_Marquardt(model::AbstractNLSModel, x0::Array{Float64,1}, atol
 
     ite += 1
   end
-  print("\nNumber of iterations: ", ite, "\n")
+  print("\nNumber of iterations: ", ite, ", Final objective : ",  0.5*sq_norm_r, " , Stopping criteria : ", stop_inf, " ", stop, "\n")
   return x
 end
 

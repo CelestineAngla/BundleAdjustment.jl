@@ -16,7 +16,6 @@ function readfile(filename::String)
     cam_indices = Vector{Int}(undef, nobs)
     pnt_indices = Vector{Int}(undef, nobs)
     pt2d = Matrix(undef, nobs, 2)
-
     # read nobs lines of the form
     # cam_index point_index xcoord ycoord
     for i = 1 : nobs
@@ -27,22 +26,28 @@ function readfile(filename::String)
       pt2d[i, 2] = parse(Float64, y)
     end
 
+    # x0 = [X₁, X₂, ..., Xnpnts, C₁, C₂, ..., Cncam]
+    x0 = Vector{Float64}(undef, 3 * npnts + 9 * ncams)
     # read 9 camera parameters, one per line, for each camera
-    cam_params = Matrix(undef, ncams, 9)
     for i = 1 : ncams
-      for j = 1 : 9
-        cam_params[i, j] = parse(Float64, readline(f))
+      for j = 1 : 7
+        if j == 7
+          # Cam_param = (rx, ry, rz, tx, ty, tz, k1, k2, f)
+          x0[3 * npnts + 9 * (i - 1) + 9] = parse(Float64, readline(f))
+          x0[3 * npnts + 9 * (i - 1) + 7] = parse(Float64, readline(f))
+          x0[3 * npnts + 9 * (i - 1) + 8] = parse(Float64, readline(f))
+        else
+          x0[3 * npnts + 9 * (i - 1) + j] = parse(Float64, readline(f))
+        end
       end
+    end
+    # read npts 3d points, one coordinate per line
+    for k = 1 : 3 * npnts
+      x0[k] = parse(Float64, readline(f))
     end
 
-    # read npts 3d points, one coordinate per line
-    pt3d = Matrix(undef, npnts, 3)
-    for i = 1 : npnts
-      for j = 1 : 3
-        pt3d[i, j] = parse(Float64, readline(f))
-      end
-    end
+
     close(f)
 
-    return cam_indices, pnt_indices, pt2d, cam_params, pt3d
+    return cam_indices, pnt_indices, pt2d, x0, ncams, npnts, nobs
 end
