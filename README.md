@@ -18,8 +18,14 @@ where:
 - P(Xᵢ, Cⱼ) is the projection of point Xᵢ on camera Cⱼ (as defined in https://grail.cs.washington.edu/projects/bal/),
 - xᵢⱼ is the vector of the 2D coordinates of the observation of point i on camera j. 
 
-The data I use can be found here: https://grail.cs.washington.edu/projects/bal/. They are seperated into 5 datasets: Ladybug (https://grail.cs.washington.edu/projects/bal/ladybug.html),
-Trafalgar Square (https://grail.cs.washington.edu/projects/bal/trafalgar.html), Dubrovnik (https://grail.cs.washington.edu/projects/bal/dubrovnik.html), Venice (https://grail.cs.washington.edu/projects/bal/venice.html) and Final (https://grail.cs.washington.edu/projects/bal/final.html). Thus to run my code, you need to create a Data/ folder at the project root and to create five subfolders (LadyBug, Trafalgar, Dubrovnik, Venice and Final) and to download the .bz2 files in the corresponding subfolders).
+The data I use can be found here: https://grail.cs.washington.edu/projects/bal/. They are seperated into 5 datasets: 
+- Ladybug (https://grail.cs.washington.edu/projects/bal/ladybug.html),
+- Trafalgar Square (https://grail.cs.washington.edu/projects/bal/trafalgar.html), 
+- Dubrovnik (https://grail.cs.washington.edu/projects/bal/dubrovnik.html), 
+- Venice (https://grail.cs.washington.edu/projects/bal/venice.html),
+- Final (https://grail.cs.washington.edu/projects/bal/final.html). 
+
+Thus to run my code, you need to create a Data/ folder at the project root and to create five subfolders (LadyBug, Trafalgar, Dubrovnik, Venice and Final) and to download the .bz2 files in the corresponding subfolders).
 
 
 Python script (to have a some results to compare mine with) that export the vector of resiuals as .txt and solves bundle adjustment problems using the least_square function from scipy.optimize (code from https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html):
