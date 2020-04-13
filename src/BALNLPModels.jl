@@ -1,5 +1,6 @@
 using NLPModels
 using LinearAlgebra
+using .Threads
 import NLPModels: increment!
 include("ReadFiles.jl")
 include("JacobianByHand.jl")
@@ -24,8 +25,7 @@ end
 projection!(x, c, r2) = projection!(x, c[1:3], c[4:6], c[7], c[8], c[9], r2)
 
 
-function residuals!(cam_indices, pnt_indices, xs, r, npts)
-  nobs = length(cam_indices)
+function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
   for k = 1 : nobs
     cam_index = cam_indices[k]
     pnt_index = pnt_indices[k]
@@ -51,38 +51,24 @@ mutable struct BALNLPModel <: AbstractNLPModel
   cams_indices
   pnts_indices
   pt2d
-  cam_params
-  pt3d
+  nobs
+  npnts
+  ncams
 end
 
 
 function BALNLPModel(filename::AbstractString)
-  cams_indices, pnts_indices, pt2d, cam_params, pt3d = readfile(filename)
+  cams_indices, pnts_indices, pt2d, x0, ncams, npnts, nobs = readfile(filename)
 
   # variables: 9 parameters per camera + 3 coords per 3d point
-  ncams = size(cam_params, 1)
-  npnts = size(pt3d, 1)
   nvar = 9 * ncams + 3 * npnts
-
   # number of residuals: two residuals per 2d point
-  nobs = size(pt2d, 1)
   ncon = 2 * nobs
-
-  x0 = Vector{Float64}(undef, nvar)
-  for k = 1 : npnts
-    x0[(k - 1)*3 + 1 : (k - 1)*3 + 3] = pt3d[k, :]
-  end
-  for k = 1 : ncams
-    # C = (rx, ry, rz, tx, ty, tz, k1, k2, f)
-    x0[3*npnts + (k - 1)*9 + 1 : 3*npnts + (k - 1)*9 + 6] = cam_params[k, 1:6]
-    x0[3*npnts + (k - 1)*9 + 7 : 3*npnts + (k - 1)*9 + 8] = cam_params[k, 8:9]
-    x0[3*npnts + (k - 1)*9 + 9] = cam_params[k, 7]
-  end
 
   meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=filename)
 
   @info "BALNLPModel $filename" nvar ncon
-  return BALNLPModel(meta, Counters(), cams_indices, pnts_indices, pt2d, cam_params, pt3d)
+  return BALNLPModel(meta, Counters(), cams_indices, pnts_indices, pt2d, nobs, npnts, ncams)
 end
 
 
@@ -94,16 +80,16 @@ NLPModels.grad!(model::BALNLPModel, x::AbstractVector, g::AbstractVector) = fill
 
 function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: AbstractVector)
   increment!(nlp, :neval_cons)
-  residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx, size(nlp.pt3d)[1])
-  cx .-= nlp.pt2d'[:] # flatten pt2d so it has size 2 * nobs
+  residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx, nlp.nobs, nlp.npnts)
+  cx .-= nlp.pt2d
   return cx
 end
 
 
 function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:Integer}, cols :: AbstractVector{<:Integer})
   increment!(nlp, :neval_jac)
-  nobs = size(nlp.pt2d, 1)
-  npnts_3 = 3 * size(nlp.pt3d, 1)
+  nobs = nlp.nobs
+  npnts_3 = 3 * nlp.npnts
 
   for k = 1 : nobs
     idx_obs = (k - 1) * 24
@@ -116,22 +102,23 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
     @views fill!(rows[idx_obs + 13 : idx_obs + 24], p)
 
     # 3 columns for the 3D point observed
-    cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
+    @inbounds cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
-    cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
+    @inbounds cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
     # 3 columns for the 3D point observed
-    cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
+    @inbounds cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
-    cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
+    @inbounds cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
   end
+
   return rows, cols
 end
 
 
 function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: AbstractVector)
   increment!(nlp, :neval_jac)
-  nobs = size(nlp.pt2d)[1]
-  npnts = size(nlp.pt3d)[1]
+  nobs = nlp.nobs
+  npnts = nlp.npnts
   denseJ = Matrix{Float64}(undef, 2, 12)
   JP1_mat = zeros(6, 12)
   JP1_mat[1, 7], JP1_mat[2, 8], JP1_mat[3, 9], JP1_mat[4, 10], JP1_mat[5, 11], JP1_mat[6, 12] = 1, 1, 1, 1, 1, 1

@@ -11,6 +11,7 @@ Compare execution time between CUTEst residuals and jacobian and mine
 
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+
 finalize(BA49_cutest)
 BA49_cutest = CUTEstModel("BA-L49")
 
@@ -32,6 +33,75 @@ vals = zeros(length(rows))
 
 
 
+#
+# function f1(k, npnts_3, nlp)
+#     idx_obs = (k - 1) * 24
+#     idx_cam = npnts_3 + 9* (nlp.cams_indices[k] - 1)
+#     idx_pnt = 3 * (nlp.pnts_indices[k] - 1)
+# end
+#
+# function f2(k, rows, idx_obs)
+#     p = 2 * k
+#     @views fill!(rows[idx_obs + 1 : idx_obs + 12], p - 1)
+#     @views fill!(rows[idx_obs + 13 : idx_obs + 24], p)
+# end
+#
+#
+# function f3(cols, idx_obs, idx_cam, idx_pnt)
+#     # 3 columns for the 3D point observed
+#     cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
+#     # 9 columns for the camera
+#     cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
+#     # 3 columns for the 3D point observed
+#     cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
+#     # 9 columns for the camera
+#     cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
+# end
+#
+# function f(nlp, rows, cols)
+#     nobs = nlp.nobs
+#     npnts_3 = 3 * nlp.npnts
+#     for k = 1 : nobs
+#         idx_obs = (k - 1) * 24
+#         idx_cam = npnts_3 + 9* (nlp.cams_indices[k] - 1)
+#         idx_pnt = 3 * (nlp.pnts_indices[k] - 1)
+#
+#         # Only the two rows corresponding to the observation k are not empty
+#         p = 2 * k
+#         @views fill!(rows[idx_obs + 1 : idx_obs + 12], p - 1)
+#         @views fill!(rows[idx_obs + 13 : idx_obs + 24], p)
+#
+#         # 3 columns for the 3D point observed
+#         cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
+#         # 9 columns for the camera
+#         cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
+#         # 3 columns for the 3D point observed
+#         cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
+#         # 9 columns for the camera
+#         cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
+#     end
+#   end
+#
+# k = 1
+# nobs = 31843
+# npnts_3 = 3*7776
+# rows = Vector{Int}(undef, BA49.meta.nnzj)
+# cols = Vector{Int}(undef, BA49.meta.nnzj)
+# cams_indices = BA49.cams_indices
+# pnts_indices = BA49.pnts_indices
+#
+# @btime f(nobs, npnts_3, BA49, rows, cols)
+
+
+# for k = 1 : nobs
+#     print("\n", k)
+#     @btime f1(k, npnts_3, BA49)
+#     idx_obs = (k-1)*24
+#     @btime f2(k, rows, idx_obs)
+#     idx_cam = npnts_3 + 9* (cams_indices[k] - 1)
+#     idx_pnt = 3 * (pnts_indices[k] - 1)
+#     @btime f3(cols, idx_obs, idx_cam, idx_pnt)
+# end
 
 
 # rows = Vector{Int}(undef, BA49.meta.nnzj)
