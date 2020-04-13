@@ -1,5 +1,11 @@
 # This file is machine-generated - editing it directly is not advised
 
+[[AMD]]
+deps = ["Libdl", "LinearAlgebra", "SparseArrays", "Test"]
+git-tree-sha1 = "7b8e22e91af4ccbfbcae87c36d141441defe6f0f"
+uuid = "14f7f29c-3bd6-536c-9a0b-7339e30b5a3e"
+version = "0.3.1"
+
 [[ATK_jll]]
 deps = ["Glib_jll", "Libdl", "Pkg"]
 git-tree-sha1 = "7129d58ed99d42032cefe21bcd14171a878143d2"
@@ -474,6 +480,12 @@ deps = ["Libdl", "Pkg"]
 git-tree-sha1 = "a46bff84977753fdba8db3c50db1435bb1eb4288"
 uuid = "c1c5ebd0-6772-5130-a774-d5fcae4a789d"
 version = "3.100.0+0"
+
+[[LDLFactorizations]]
+deps = ["AMD", "LinearAlgebra", "SparseArrays", "Test"]
+git-tree-sha1 = "b72dc29a6c614fcdc56797874d353979076a1f3e"
+uuid = "40e66cde-538c-5869-a4ad-c39174c6795b"
+version = "0.4.0"
 
 [[LZO_jll]]
 deps = ["Libdl", "Pkg"]
