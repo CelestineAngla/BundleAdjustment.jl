@@ -7,7 +7,7 @@ Given a set of images depicting a number of 3D points from different viewpoints,
 Mathematically, it amounts to solving the following non-linear least square problem:
 
 ```julia
-  min     0.5 ∑ᵢ ∑ⱼ  vᵢⱼ (P(Xᵢ, Cⱼ) - xᵢⱼ)²
+  min    ∑ᵢ ∑ⱼ  vᵢⱼ (P(Xᵢ, Cⱼ) - xᵢⱼ)²
 Xᵢ, Cⱼ
 ```
 
