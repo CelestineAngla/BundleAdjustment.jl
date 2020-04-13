@@ -1,3 +1,66 @@
+"""
+Solves A x = b using the QR factorization of A
+"""
+function solve_qr!(xr, A, b)
+  QR = qr(A)
+  m = size(QR.Q, 1)
+  n = size(QR.R, 2)
+  m ≥ n || error("currently, this function only supports overdetermined problems")
+  @assert length(b) == m
+  @assert length(xr) == m
+
+  # SuiteSparseQR decomposes P₁ * A * P₂ = Q * R, where
+  # * P₁ is a permutation stored in QR.prow;
+  # * P₂ is a permutation stored in QR.pcol;
+  # * Q  is orthogonal and stored in QR.Q;
+  # * R  is upper trapezoidal and stored in QR.R.
+  #
+  # The solution of min ‖Ax - b‖ is thus given by
+  # x = P₂ R⁻¹ Q' P₁ b.
+  mul!(xr, QR.Q', b[QR.prow])  # xr ← Q'(P₁b)  NB: using @views here results in tons of allocations?!
+  @views x = xr[1:n]
+  ldiv!(LinearAlgebra.UpperTriangular(QR.R), x)  # x ← R⁻¹ x
+  @views x[QR.pcol] .= x
+  @views r = xr[n+1:m]  # = Q₂'b
+  return x, r
+end
+
+
+# function solve_qr_reg!(mat, ncon, nvar)
+# 	n = nvar
+# 	m = ncon
+# 	Qλ = Matrix{Float64}(I, m + n, m + n)
+# 	Rλ = copy(mat)
+# 	print("\n\n", Rλ)
+# 	for k = 1 : n
+# 		print("\n\n", k)
+# 		l = n - k + 1
+# 		G, r = givens(mat, l, m + l, l)
+# 		Qλ = G * Qλ
+# 		Rλ = G * mat
+# 		print("\n\n", Rλ)
+# 		for i = 1 : k - 1
+# 			G, r = givens(mat, n - i + 1, m + n - k + 1, n - i + 1)
+# 			Qλ = G * Qλ
+# 			Rλ = G * mat
+# 			print("\n\n", Rλ)
+# 		end
+# 	end
+# 	return Qλ', Rλ
+# end
+#
+# m = 7
+# n = 5
+# λ = 1.5
+# A = rand([-5.0, 5.0], m, n)
+# QR_A = qr(A)
+# print("\n\n", QR_A.R)
+# mat = [QR_A.R; zeros(m - n, n); sqrt(λ) * Matrix{Float64}(I, n, n)]
+# Qλ, Rλ = solve_qr_reg!(mat, m, n)
+#
+# print("\n\n", Qλ*Rλ, "\n\n", mat)
+
+
 
 """
 Broyden's formula to update Jacobian

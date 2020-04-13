@@ -1,5 +1,6 @@
 using NLPModels
 using LinearAlgebra
+using .Threads
 import NLPModels: increment!
 include("ReadFiles.jl")
 include("JacobianByHand.jl")
@@ -101,15 +102,15 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
     @views fill!(rows[idx_obs + 13 : idx_obs + 24], p)
 
     # 3 columns for the 3D point observed
-    cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
+    @inbounds cols[idx_obs + 1 : idx_obs + 3] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
-    cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
+    @inbounds cols[idx_obs + 4 : idx_obs + 12] = idx_cam + 1 : idx_cam + 9
     # 3 columns for the 3D point observed
-    cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
+    @inbounds cols[idx_obs + 13 : idx_obs + 15] = idx_pnt + 1 : idx_pnt + 3
     # 9 columns for the camera
-    cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
-
+    @inbounds cols[idx_obs + 16 : idx_obs + 24] = idx_cam + 1 : idx_cam + 9
   end
+
   return rows, cols
 end
 
