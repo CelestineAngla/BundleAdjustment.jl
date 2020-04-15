@@ -1,6 +1,6 @@
 using CUTEst
 using BenchmarkTools
-using ProfileView
+# using ProfileView
 include("BALNLPModels.jl")
 
 # fetch_sif_problems()
@@ -11,7 +11,6 @@ Compare execution time between CUTEst residuals and jacobian and mine
 
 
 BA49 = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
-
 finalize(BA49_cutest)
 BA49_cutest = CUTEstModel("BA-L49")
 

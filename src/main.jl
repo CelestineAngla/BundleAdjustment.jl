@@ -12,7 +12,7 @@ fr_BA49 = FeasibilityResidual(BA49)
 # stats = Levenberg_Marquardt(fr_BA49, :QR, fr_BA49.meta.x0, 1e-3, 1e-3, 1e-3, 1e-4, 1e-5, 1e-2, 3.0, 3.0, 1.5, 100)
 # print("\n ------------ \nStats : \n", stats)
 
-stats = Levenberg_Marquardt(fr_BA49, :LDL, fr_BA49.meta.x0, 1e-3, 1e-3, 1e-3, 1e-4, 1e-5, 1e-5, 3.0, 3.0, 1.5, 100)
+stats = Levenberg_Marquardt(fr_BA49, :LDL, fr_BA49.meta.x0, 1e-3, 1e-3, 1e-3, 1e-4, 1e-5, 1e-2, 3.0, 3.0, 1.5, 100)
 print("\n ------------ \nStats : \n", stats)
 
 # BA138 = BALNLPModel("LadyBug/problem-138-19878-pre.txt.bz2")

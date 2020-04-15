@@ -1,3 +1,49 @@
+using LDLFactorizations
+using LinearAlgebra
+
+"""
+Solves A x = b using the LDL factorization of A (A is symetric)
+"""
+function ldl_solve(n, b, Lp, Li, Lx, D, P)
+  y = b[P]
+  ldl_lsolve!(n, y, Lp, Li, Lx)
+  ldl_dsolve!(n, y, D)
+  ldl_ltsolve!(n, y, Lp, Li, Lx)
+  x = similar(b)
+  x[P] = y
+  return x
+end
+
+function ldl_lsolve!(n, x, Lp, Li, Lx)
+  @inbounds for j = 1:n
+    xj = x[j]
+    @inbounds for p = Lp[j] : (Lp[j+1] - 1)
+      x[Li[p]] -= Lx[p] * xj
+    end
+  end
+  return x
+end
+
+function ldl_dsolve!(n, x, D)
+  @inbounds for j = 1:n
+    x[j] /= D[j]
+  end
+  return x
+end
+
+function ldl_ltsolve!(n, x, Lp, Li, Lx)
+  @inbounds for j = n:-1:1
+    xj = x[j]
+    @inbounds for p = Lp[j] : (Lp[j+1] - 1)
+      xj -= Lx[p] * x[Li[p]]
+    end
+    x[j] = xj
+  end
+  return x
+end
+
+
+
 """
 Solves A x = b using the QR factorization of A
 """
@@ -26,39 +72,54 @@ function solve_qr!(xr, A, b)
 end
 
 
-# function solve_qr_reg!(mat, ncon, nvar)
-# 	n = nvar
-# 	m = ncon
-# 	Qλ = Matrix{Float64}(I, m + n, m + n)
-# 	Rλ = copy(mat)
-# 	print("\n\n", Rλ)
-# 	for k = 1 : n
-# 		print("\n\n", k)
-# 		l = n - k + 1
-# 		G, r = givens(mat, l, m + l, l)
-# 		Qλ = G * Qλ
-# 		Rλ = G * mat
-# 		print("\n\n", Rλ)
-# 		for i = 1 : k - 1
-# 			G, r = givens(mat, n - i + 1, m + n - k + 1, n - i + 1)
-# 			Qλ = G * Qλ
-# 			Rλ = G * mat
-# 			print("\n\n", Rλ)
-# 		end
-# 	end
-# 	return Qλ', Rλ
-# end
-#
+"""
+Computes the QR factorization matrices Qλ and Rλ of [A; √λI]
+given the QR factorization of A by performing Givens rotations
+"""
+function fullQR_Givens!(Q, R, λ, ncon, nvar)
+	n = nvar
+	m = ncon
+
+	# Rλ = [R; 0; √λI]
+	Rλ	= [R; zeros(m - n, n); sqrt(λ) * Matrix{Float64}(I, n, n)]
+	# Qλ = [ [Q  0]; [0  I] ]
+	Qλ = Matrix{Float64}(undef, m + n, m + n)
+	Qλ[m + 1 : m + n, m + 1 : m + n] = Matrix{Float64}(I, n, n)
+	Qλ[1 : m, 1 : m] = Q
+
+	print("\n\n", Rλ)
+	for k = 1 : n
+		l = n - k + 1
+		G, r = givens(Rλ, l, m + l, l)
+		Qλ = Qλ * G'
+		Rλ = G * Rλ
+		print("\n\n", Rλ)
+
+		for i = 1 : k - 1
+			G, r = givens(Rλ, n - k + i + 1, m + n - k + 1, n - k + i + 1)
+			Qλ = Qλ * G'
+			Rλ = G * Rλ
+			print("\n\n", Rλ)
+		end
+	end
+	return Qλ, Rλ
+end
+
+# Uncomment to test fullQR_Givens
+
 # m = 7
 # n = 5
 # λ = 1.5
 # A = rand([-5.0, 5.0], m, n)
+# @time begin
 # QR_A = qr(A)
-# print("\n\n", QR_A.R)
-# mat = [QR_A.R; zeros(m - n, n); sqrt(λ) * Matrix{Float64}(I, n, n)]
-# Qλ, Rλ = solve_qr_reg!(mat, m, n)
+# Qλ, Rλ = fullQR_Givens!(QR_A.Q, QR_A.R, λ, m, n)
+# end
 #
-# print("\n\n", Qλ*Rλ, "\n\n", mat)
+# AI = [A; sqrt(λ) * Matrix{Float64}(I, n, n)]
+# QR_AI = qr(AI)
+#
+# print("\n\n", norm(Rλ[6:12, :]), "\n\n", norm(QR_AI.Q - Qλ), "\n\n", norm(QR_AI.R - Rλ[1:n,:]))
 
 
 
