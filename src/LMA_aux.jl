@@ -4,15 +4,53 @@ using LinearAlgebra
 """
 Solves A x = b using the LDL factorization of A (A is symetric)
 """
-function ldl_solve(n, b, Lp, Li, Lx, D, P)
-  y = b[P]
+function ldl_solve1!(n, b, Lp, Li, Lx, D, P)
+  @views y = b[P]
   ldl_lsolve!(n, y, Lp, Li, Lx)
   ldl_dsolve!(n, y, D)
   ldl_ltsolve!(n, y, Lp, Li, Lx)
-  x = similar(b)
-  x[P] = y
-  return x
+	@views b[P] = y
+  return y
 end
+
+function ldl_solve2!(n, y, Lp, Li, Lx, D, P)
+  permutation!(y, P, n)
+  ldl_lsolve!(n, y, Lp, Li, Lx)
+  ldl_dsolve!(n, y, D)
+  ldl_ltsolve!(n, y, Lp, Li, Lx)
+  permutation_inv!(y, P, n)
+  return y
+end
+
+"""
+x = x[P]
+"""
+function permutation!(x, P, n)
+	for i = 1 : n
+		p = P[i]
+		if p > i
+			x[i], x[p] = x[p], x[i]
+		end
+	end
+end
+
+"""
+x[P] = x
+"""
+function permutation_inv!(x, P, n)
+	k = 1
+	i = 1
+	p = P[i]
+	tmp = x[p]
+	x[p] = x[i]
+	while k != n
+		i = P[i]
+		p = P[i]
+		tmp, x[p] = x[p], tmp
+		k += 1
+	end
+end
+
 
 function ldl_lsolve!(n, x, Lp, Li, Lx)
   @inbounds for j = 1:n
@@ -42,15 +80,30 @@ function ldl_ltsolve!(n, x, Lp, Li, Lx)
   return x
 end
 
+# Uncomment to compare ldl_solve1 and ldl_solve2
+
+# using BenchmarkTools
+# A = sparse([1, 1, 1, 2, 2, 3], [1, 2, 3, 2, 3, 3], [1.0, 4.0, -3.0, 1.0, -2.0, 2.0])
+# b = [1.0, -4.0, 0.0]
+# LDLT = ldl(A, upper=true)
+# @btime begin
+# X .= b
+# ldl_solve1!(3, X, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, LDLT.P)
+# end
+# print(X)
+# print(b, "\n")
+# @btime begin
+# X .= b
+# ldl_solve2!(3, X, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, LDLT.P)
+# end
+# print(X)
+# print(b)
 
 
 """
-Solves A x = b using the QR factorization of A
+Solves A x = b using the QR factorization of A and store the results in xr
 """
-function solve_qr!(xr, A, b)
-  QR = qr(A)
-  m = size(QR.Q, 1)
-  n = size(QR.R, 2)
+function solve_qr!(m, n, xr, b, Q, R, Prow, Pcol)
   m ≥ n || error("currently, this function only supports overdetermined problems")
   @assert length(b) == m
   @assert length(xr) == m
@@ -63,10 +116,10 @@ function solve_qr!(xr, A, b)
   #
   # The solution of min ‖Ax - b‖ is thus given by
   # x = P₂ R⁻¹ Q' P₁ b.
-  mul!(xr, QR.Q', b[QR.prow])  # xr ← Q'(P₁b)  NB: using @views here results in tons of allocations?!
+  mul!(xr, Q', b[Prow])  # xr ← Q'(P₁b)  NB: using @views here results in tons of allocations?!
   @views x = xr[1:n]
-  ldiv!(LinearAlgebra.UpperTriangular(QR.R), x)  # x ← R⁻¹ x
-  @views x[QR.pcol] .= x
+  ldiv!(LinearAlgebra.UpperTriangular(R), x)  # x ← R⁻¹ x
+  @views x[Pcol] .= x
   @views r = xr[n+1:m]  # = Q₂'b
   return x, r
 end
@@ -87,19 +140,19 @@ function fullQR_Givens!(Q, R, λ, ncon, nvar)
 	Qλ[m + 1 : m + n, m + 1 : m + n] = Matrix{Float64}(I, n, n)
 	Qλ[1 : m, 1 : m] = Q
 
-	print("\n\n", Rλ)
+	# print("\n\n", Rλ)
 	for k = 1 : n
 		l = n - k + 1
 		G, r = givens(Rλ, l, m + l, l)
 		Qλ = Qλ * G'
 		Rλ = G * Rλ
-		print("\n\n", Rλ)
+		# print("\n\n", Rλ)
 
 		for i = 1 : k - 1
 			G, r = givens(Rλ, n - k + i + 1, m + n - k + 1, n - k + i + 1)
 			Qλ = Qλ * G'
 			Rλ = G * Rλ
-			print("\n\n", Rλ)
+			# print("\n\n", Rλ)
 		end
 	end
 	return Qλ, Rλ

@@ -2,6 +2,7 @@ using LinearAlgebra
 using SparseArrays
 using SolverTools
 using NLPModels
+using AMD
 include("LMA_aux.jl")
 
 
@@ -46,6 +47,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  vals = jac_coord_residual(model, x)
 	  # Initialize A = [J; √λI] as a sparse matrix
 	  A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+	  # QR_J = qr(A[1 : model.nls_meta.nequ, :])
 
 	  # Variables used in the stopping criteria
 	  Jtr = transpose(A[1 : model.nls_meta.nequ, :])*r
@@ -68,7 +70,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		@info log_row([iter, 0.5 * sq_norm_r, old_obj - 0.5 * sq_norm_r, norm(δ), step_accepted])
 
 	    # Solve min ||[J √λI] δ + [r 0]||² with QR factorization
-		δ, δr = solve_qr!(xr, A, b)
+		# Q, R = fullQR_Givens!(QR_J.Q, QR_J.R, λ, model.nls_meta.nequ, model.meta.nvar)
+		# δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, Q, R, QR_J.prow, QR_J.pcol)
+		QR = qr(A)
+		δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
 	    x_suiv .=  x - δ
 	    residual!(model, x_suiv, r_suiv)
 		iter += 1
@@ -92,6 +97,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	      # Update J and A
 	      jac_coord_residual!(model, x, vals)
 	      A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+		  # QR_J = qr(A[1 : model.nls_meta.nequ, :])
 
 		  # Update r and b
 		  old_obj = 0.5*sq_norm_r
@@ -120,6 +126,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  r_suiv = copy(r)
 	  # Initialize b = [r; 0]
 	  b = [-r; zeros(model.meta.nvar)]
+	  X = similar(b)
 
 
 	  # Initialize J in the format J[rows[k], cols[k]] = vals[k]
@@ -130,6 +137,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  # Initialize A = [[I J]; [Jᵀ - λI]] as sparse upper-triangular matrix
 	  cols .+= model.nls_meta.nequ
 	  A = sparse(vcat(collect(1 : model.nls_meta.nequ), rows, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(collect(1 : model.nls_meta.nequ), cols, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar)))
+	  P = amd(A)
 
 	  # Variables used in the stopping criteria
 	  Jtr = transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar])*r
@@ -152,10 +160,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		@info log_row([iter, 0.5 * sq_norm_r, old_obj - 0.5 * sq_norm_r, norm(δ), step_accepted])
 
 	    # Solve [[I J]; [Jᵀ - λI]] X = [r; 0] with LDL factorization
-		# @time begin
-		LDLT = ldl(A, upper=true)
-		X = ldl_solve(model.nls_meta.nequ + model.meta.nvar, b, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, LDLT.P)
-		# end
+		LDLT = ldl(A, P, upper=true)
+		X .= b
+		ldl_solve1!(model.nls_meta.nequ + model.meta.nvar, X, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, LDLT.P)
 		δr = X[1 : model.nls_meta.nequ]
 		δ = X[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]
 	    x_suiv .=  x + δ
