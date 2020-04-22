@@ -9,11 +9,29 @@ function ldl_solve1!(n, b, Lp, Li, Lx, D, P)
   ldl_lsolve!(n, y, Lp, Li, Lx)
   ldl_dsolve!(n, y, D)
   ldl_ltsolve!(n, y, Lp, Li, Lx)
-	@views b[P] = y
-  return y
+  @views b[P] = y
+  return b
 end
 
 function ldl_solve2!(n, y, Lp, Li, Lx, D, P)
+	permute!(y, P)
+  ldl_lsolve!(n, y, Lp, Li, Lx)
+  ldl_dsolve!(n, y, D)
+  ldl_ltsolve!(n, y, Lp, Li, Lx)
+	invpermute!(y, P)
+  return y
+end
+
+function ldl_solve3!(n, b, Lp, Li, Lx, D, P)
+  y = b[P]
+  ldl_lsolve!(n, y, Lp, Li, Lx)
+  ldl_dsolve!(n, y, D)
+  ldl_ltsolve!(n, y, Lp, Li, Lx)
+  b[P] = y
+  return b
+end
+
+function ldl_solve4!(n, y, Lp, Li, Lx, D, P)
   permutation!(y, P, n)
   ldl_lsolve!(n, y, Lp, Li, Lx)
   ldl_dsolve!(n, y, D)
@@ -26,13 +44,25 @@ end
 x = x[P]
 """
 function permutation!(x, P, n)
-	for i = 1 : n
-		p = P[i]
-		if p > i
-			x[i], x[p] = x[p], x[i]
+	i = 1
+	while i < n
+		current = i
+		suiv_i = i + 1
+		print("\n\ni: ", i, " curr: ", current, " suiv_i: ", suiv_i, " P[curr]: ", P[current])
+		while i != P[current]
+			next = P[current]
+			if next == suiv_i
+				suiv_i += 1
+			end
+			x[current], x[next] = x[next], x[current]
+			current = next
+			print("\nnext: ", next, " suiv_i: ", suiv_i, " current: ", current, " P[curr]: ", P[current], " x: ", x)
 		end
+		i = suiv_i
 	end
 end
+
+
 
 """
 x[P] = x
@@ -85,6 +115,7 @@ end
 # using BenchmarkTools
 # A = sparse([1, 1, 1, 2, 2, 3], [1, 2, 3, 2, 3, 3], [1.0, 4.0, -3.0, 1.0, -2.0, 2.0])
 # b = [1.0, -4.0, 0.0]
+# X = similar(b)
 # LDLT = ldl(A, upper=true)
 # @btime begin
 # X .= b
@@ -99,6 +130,38 @@ end
 # print(X)
 # print(b)
 
+
+using SparseArrays: SparseMatrixCSC
+import SuiteSparse.SPQR: CHOLMOD, _default_tol, _qr!, QRSparse
+import SuiteSparse.CHOLMOD: Sparse
+using SuiteSparse
+
+function myqr(A::SparseMatrixCSC{Tv}; tol = _default_tol(A), ordering=SuiteSparse.SPQR.ORDERING_DEFAULT) where {Tv <: CHOLMOD.VTypes}
+    R     = Ref{Ptr{CHOLMOD.C_Sparse{Tv}}}()
+    E     = Ref{Ptr{CHOLMOD.SuiteSparse_long}}()
+    H     = Ref{Ptr{CHOLMOD.C_Sparse{Tv}}}()
+    HPinv = Ref{Ptr{CHOLMOD.SuiteSparse_long}}()
+    HTau  = Ref{Ptr{CHOLMOD.C_Dense{Tv}}}(C_NULL)
+
+    # SPQR doesn't accept symmetric matrices so we explicitly set the stype
+    r, p, hpinv = _qr!(ordering, tol, 0, 0, Sparse(A, 0),
+        C_NULL, C_NULL, C_NULL, C_NULL,
+        R, E, H, HPinv, HTau)
+
+    R_ = SparseMatrixCSC(Sparse(R[]))
+    return QRSparse(SparseMatrixCSC(Sparse(H[])),
+                    vec(Array(CHOLMOD.Dense(HTau[]))),
+                    SparseMatrixCSC(min(size(A)...), R_.n, R_.colptr, R_.rowval, R_.nzval),
+                    p, hpinv)
+end
+
+# using SparseArrays
+# rows = rand(1:4, 5)
+# cols = rand(1:4, 5)
+# vals = rand(-3.5:3.5, 5)
+# A = sparse(rows, cols, vals, 4, 4)
+# print(A)
+# QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
 
 """
 Solves A x = b using the QR factorization of A and store the results in xr
@@ -128,35 +191,72 @@ end
 """
 Computes the QR factorization matrices Qλ and Rλ of [A; √λI]
 given the QR factorization of A by performing Givens rotations
+If A = QR, we transform [R; 0; √λI] into [Rλ; 0; 0] by performing Givens
+rotations that we store in G_list and then Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 """
-function fullQR_Givens!(Q, R, λ, ncon, nvar)
+function fullQR_Givens!(Q, R, sqrtλ, ncon, nvar)
 	n = nvar
 	m = ncon
+	G_list = Vector{Givens{Float64}}(undef, n*(n + 1)/2)
+	counter = 1
 
-	# Rλ = [R; 0; √λI]
-	Rλ	= [R; zeros(m - n, n); sqrt(λ) * Matrix{Float64}(I, n, n)]
-	# Qλ = [ [Q  0]; [0  I] ]
-	Qλ = Matrix{Float64}(undef, m + n, m + n)
-	Qλ[m + 1 : m + n, m + 1 : m + n] = Matrix{Float64}(I, n, n)
-	Qλ[1 : m, 1 : m] = Q
-
-	# print("\n\n", Rλ)
 	for k = 1 : n
 		l = n - k + 1
-		G, r = givens(Rλ, l, m + l, l)
-		Qλ = Qλ * G'
-		Rλ = G * Rλ
+		G, _ = givens(Rλ, l, m + l, l)
+		G_list[counter] = G
+		counter += 1
+		new = apply_givens!(R, sqrtλ, G, new)
 		# print("\n\n", Rλ)
 
 		for i = 1 : k - 1
-			G, r = givens(Rλ, n - k + i + 1, m + n - k + 1, n - k + i + 1)
-			Qλ = Qλ * G'
-			Rλ = G * Rλ
+			G, _ = givens(Rλ, n - k + i + 1, m + n - k + 1, n - k + i + 1)
+			G_list[counter] = G
+			counter += 1
+			new = apply_givens!(R, sqrtλ, G, new)
 			# print("\n\n", Rλ)
 		end
 	end
 	return Qλ, Rλ
 end
+
+
+"""
+Performs the Givens rotation G on [R; 0; √λI] knowing the news
+elements in the √λI part and returns the new elements created
+"""
+function apply_givens!(R, sqrtλ, G, new)
+	# new list of line i in √λI
+	# if i,i (ie remove √λ) new = ...
+	# if i,j (j > i, remove new) new[j] = 0 update other new
+	# consider only nnz elements
+	return new
+end
+
+"""
+Computes X = GX where G is a Givens rotation
+"""
+function mul_givens!(G, X)
+	for k = 1 : size(X, 2)
+		X[G.i1, k], X[G.i2, k] = G.c * X[G.i1, k] + G.s * X[G.i2, k], -G.s * X[G.i1, k] + G.c * X[G.i2, k]
+	end
+	return X
+end
+
+
+"""
+Computes Qλᵀ * x where Qλ = [ [Q  0]; [0  I] ] * Gᵀ
+Qλᵀ * x = G * [Qᵀx₁; x₂]
+"""
+function Qλt_mul!(xr, Q, G_list, x, n, m)
+	mul!(xr[1:n], Q', x[1:n])
+	xr[n + 1 : n + m] = @views x[n + 1 : n + m]
+	for k = 1 : size(G_list, 1)
+		G = G_list[k]
+		xr[G.i1], xr[G.i2] = G.c * xr[G.i1] - G.s * xr[G.i2], G.s * xr[G.i1] + G.c * xr[G.i2]
+	end
+	return xr
+end
+
 
 # Uncomment to test fullQR_Givens
 
@@ -203,7 +303,6 @@ function Cholesky(A::Array{Float64,2})::Array{Float64,2}
   end
   return L
 end
-
 
 
 """
