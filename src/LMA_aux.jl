@@ -4,81 +4,13 @@ using LinearAlgebra
 """
 Solves A x = b using the LDL factorization of A (A is symetric)
 """
-function ldl_solve1!(n, b, Lp, Li, Lx, D, P)
+function ldl_solve!(n, b, Lp, Li, Lx, D, P)
   @views y = b[P]
   ldl_lsolve!(n, y, Lp, Li, Lx)
   ldl_dsolve!(n, y, D)
   ldl_ltsolve!(n, y, Lp, Li, Lx)
   @views b[P] = y
   return b
-end
-
-function ldl_solve2!(n, y, Lp, Li, Lx, D, P)
-	permute!(y, P)
-  ldl_lsolve!(n, y, Lp, Li, Lx)
-  ldl_dsolve!(n, y, D)
-  ldl_ltsolve!(n, y, Lp, Li, Lx)
-	invpermute!(y, P)
-  return y
-end
-
-function ldl_solve3!(n, b, Lp, Li, Lx, D, P)
-  y = b[P]
-  ldl_lsolve!(n, y, Lp, Li, Lx)
-  ldl_dsolve!(n, y, D)
-  ldl_ltsolve!(n, y, Lp, Li, Lx)
-  b[P] = y
-  return b
-end
-
-function ldl_solve4!(n, y, Lp, Li, Lx, D, P)
-  permutation!(y, P, n)
-  ldl_lsolve!(n, y, Lp, Li, Lx)
-  ldl_dsolve!(n, y, D)
-  ldl_ltsolve!(n, y, Lp, Li, Lx)
-  permutation_inv!(y, P, n)
-  return y
-end
-
-"""
-x = x[P]
-"""
-function permutation!(x, P, n)
-	i = 1
-	while i < n
-		current = i
-		suiv_i = i + 1
-		print("\n\ni: ", i, " curr: ", current, " suiv_i: ", suiv_i, " P[curr]: ", P[current])
-		while i != P[current]
-			next = P[current]
-			if next == suiv_i
-				suiv_i += 1
-			end
-			x[current], x[next] = x[next], x[current]
-			current = next
-			print("\nnext: ", next, " suiv_i: ", suiv_i, " current: ", current, " P[curr]: ", P[current], " x: ", x)
-		end
-		i = suiv_i
-	end
-end
-
-
-
-"""
-x[P] = x
-"""
-function permutation_inv!(x, P, n)
-	k = 1
-	i = 1
-	p = P[i]
-	tmp = x[p]
-	x[p] = x[i]
-	while k != n
-		i = P[i]
-		p = P[i]
-		tmp, x[p] = x[p], tmp
-		k += 1
-	end
 end
 
 
@@ -92,12 +24,14 @@ function ldl_lsolve!(n, x, Lp, Li, Lx)
   return x
 end
 
+
 function ldl_dsolve!(n, x, D)
   @inbounds for j = 1:n
     x[j] /= D[j]
   end
   return x
 end
+
 
 function ldl_ltsolve!(n, x, Lp, Li, Lx)
   @inbounds for j = n:-1:1
@@ -110,25 +44,6 @@ function ldl_ltsolve!(n, x, Lp, Li, Lx)
   return x
 end
 
-# Uncomment to compare ldl_solve1 and ldl_solve2
-
-# using BenchmarkTools
-# A = sparse([1, 1, 1, 2, 2, 3], [1, 2, 3, 2, 3, 3], [1.0, 4.0, -3.0, 1.0, -2.0, 2.0])
-# b = [1.0, -4.0, 0.0]
-# X = similar(b)
-# LDLT = ldl(A, upper=true)
-# @btime begin
-# X .= b
-# ldl_solve1!(3, X, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, LDLT.P)
-# end
-# print(X)
-# print(b, "\n")
-# @btime begin
-# X .= b
-# ldl_solve2!(3, X, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, LDLT.P)
-# end
-# print(X)
-# print(b)
 
 
 using SparseArrays: SparseMatrixCSC
@@ -155,13 +70,6 @@ function myqr(A::SparseMatrixCSC{Tv}; tol = _default_tol(A), ordering=SuiteSpars
                     p, hpinv)
 end
 
-# using SparseArrays
-# rows = rand(1:4, 5)
-# cols = rand(1:4, 5)
-# vals = rand(-3.5:3.5, 5)
-# A = sparse(rows, cols, vals, 4, 4)
-# print(A)
-# QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
 
 """
 Solves A x = b using the QR factorization of A and store the results in xr
@@ -194,29 +102,28 @@ given the QR factorization of A by performing Givens rotations
 If A = QR, we transform [R; 0; √λI] into [Rλ; 0; 0] by performing Givens
 rotations that we store in G_list and then Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 """
-function fullQR_Givens!(Q, R, sqrtλ, ncon, nvar)
+function fullQR_givens!(R, G_list, news, sqrtλ, nvar, ncon)
 	n = nvar
 	m = ncon
-	G_list = Vector{Givens{Float64}}(undef, n*(n + 1)/2)
 	counter = 1
 
-	for k = 1 : n
-		l = n - k + 1
-		G, _ = givens(Rλ, l, m + l, l)
+	for k = n : -1 : 1
+		# We rotate row k of R with row k of √λI to eliminate [k, k]
+		G, r = givens(R[k, k], sqrtλ, k, m + k)
+		apply_givens!(R, G, r, news, n)
 		G_list[counter] = G
 		counter += 1
-		new = apply_givens!(R, sqrtλ, G, new)
-		# print("\n\n", Rλ)
+		# print("\n\n", R)
 
-		for i = 1 : k - 1
-			G, _ = givens(Rλ, n - k + i + 1, m + n - k + 1, n - k + i + 1)
+		for l = 1 : n - k
+			# We rotate row k + l of R with row k of √λI to eliminate [k, k + l]
+			G, r = givens(R[k + l, k + l], news[k + l], k + l, m + k)
+			apply_givens!(R, G, r, news, n)
 			G_list[counter] = G
 			counter += 1
-			new = apply_givens!(R, sqrtλ, G, new)
-			# print("\n\n", Rλ)
+			# print("\n\n", R)
 		end
 	end
-	return Qλ, Rλ
 end
 
 
@@ -224,22 +131,19 @@ end
 Performs the Givens rotation G on [R; 0; √λI] knowing the news
 elements in the √λI part and returns the new elements created
 """
-function apply_givens!(R, sqrtλ, G, new)
-	# new list of line i in √λI
-	# if i,i (ie remove √λ) new = ...
-	# if i,j (j > i, remove new) new[j] = 0 update other new
-	# consider only nnz elements
-	return new
-end
-
-"""
-Computes X = GX where G is a Givens rotation
-"""
-function mul_givens!(G, X)
-	for k = 1 : size(X, 2)
-		X[G.i1, k], X[G.i2, k] = G.c * X[G.i1, k] + G.s * X[G.i2, k], -G.s * X[G.i1, k] + G.c * X[G.i2, k]
+function apply_givens!(R, G, r, news, n)
+	if G.i1 == n
+		R[G.i1, G.i1] = r
+		for j = G.i1 + 1 : n
+			R[G.i1, j], news[j] = G.c * R[G.i1, j], G.s * R[G.i1, j] # as √λI[G.i2, j] = 0
+		end
+	else
+		R[G.i1, G.i1] = r
+		news[G.i1] = 0
+		for j = G.i1 + 1 : n
+			R[G.i1, j], news[j] = G.c * R[G.i1, j] - G.s * news[j], G.s * R[G.i1, j] + G.c * news[j]
+		end
 	end
-	return X
 end
 
 
@@ -258,21 +162,22 @@ function Qλt_mul!(xr, Q, G_list, x, n, m)
 end
 
 
-# Uncomment to test fullQR_Givens
+# Uncomment to test fullQR_givens
 
 # m = 7
 # n = 5
 # λ = 1.5
 # A = rand([-5.0, 5.0], m, n)
-# @time begin
 # QR_A = qr(A)
-# Qλ, Rλ = fullQR_Givens!(QR_A.Q, QR_A.R, λ, m, n)
-# end
+# G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
+# news = Vector{Float64}(undef, n)
+# fullQR_givens!(QR_A.R, G_list, news, sqrt(λ), n, m)
+#
 #
 # AI = [A; sqrt(λ) * Matrix{Float64}(I, n, n)]
 # QR_AI = qr(AI)
 #
-# print("\n\n", norm(Rλ[6:12, :]), "\n\n", norm(QR_AI.Q - Qλ), "\n\n", norm(QR_AI.R - Rλ[1:n,:]))
+# print("\n\n", norm(QR_AI.R - QR_A.R[1:n,:]))
 
 
 
