@@ -1,5 +1,6 @@
 using LDLFactorizations
 using LinearAlgebra
+using SparseArrays
 
 """
 Solves A x = b using the LDL factorization of A (A is symetric)
@@ -106,22 +107,29 @@ function fullQR_givens!(R, G_list, news, sqrtλ, nvar, ncon)
 	n = nvar
 	m = ncon
 	counter = 1
+	print("\n\n", R)
 
 	for k = n : -1 : 1
+		print("\n k : ", k)
 		# We rotate row k of R with row k of √λI to eliminate [k, k]
 		G, r = givens(R[k, k], sqrtλ, k, m + k)
-		apply_givens!(R, G, r, news, n)
+		R[G.i1, G.i1] = r
+		apply_givens!(R, G, news, n, true)
+		print("\n news \n", news)
 		G_list[counter] = G
 		counter += 1
-		# print("\n\n", R)
+		print("\n\n", R)
 
 		for l = 1 : n - k
+			print("\n", l)
 			# We rotate row k + l of R with row k of √λI to eliminate [k, k + l]
-			G, r = givens(R[k + l, k + l], news[k + l], k + l, m + k)
-			apply_givens!(R, G, r, news, n)
+			G, r = givens(R[k, k + l], news[k + l], k, k + l)
+			R[G.i1, G.i2] = r
+			apply_givens!(R, G, news, n, false)
+			print("\n news \n", news)
 			G_list[counter] = G
 			counter += 1
-			# print("\n\n", R)
+			print("\n\n", R)
 		end
 	end
 end
@@ -131,17 +139,19 @@ end
 Performs the Givens rotation G on [R; 0; √λI] knowing the news
 elements in the √λI part and returns the new elements created
 """
-function apply_givens!(R, G, r, news, n)
-	if G.i1 == n
-		R[G.i1, G.i1] = r
+function apply_givens!(R, G, news, n, diag)
+	print("\n i1 : ", G.i1, " i2 : ", G.i2, " c : ", G.c, " s : ", G.s)
+	# If we want to eliminate the diagonal element (ie: √λ),
+	# we know that news is empty so far
+	if diag
 		for j = G.i1 + 1 : n
-			R[G.i1, j], news[j] = G.c * R[G.i1, j], G.s * R[G.i1, j] # as √λI[G.i2, j] = 0
+			R[G.i1, j], news[j] = G.c * R[G.i1, j], - G.s * R[G.i1, j]
 		end
+	# Otherwise we eliminate the first non-zero element of news
 	else
-		R[G.i1, G.i1] = r
-		news[G.i1] = 0
-		for j = G.i1 + 1 : n
-			R[G.i1, j], news[j] = G.c * R[G.i1, j] - G.s * news[j], G.s * R[G.i1, j] + G.c * news[j]
+		news[G.i2] = 0
+		for j = G.i2 + 1 : n
+			R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
 		end
 	end
 end
@@ -167,15 +177,18 @@ end
 # m = 7
 # n = 5
 # λ = 1.5
-# A = rand([-5.0, 5.0], m, n)
-# QR_A = qr(A)
+# rows = rand(1:m, 5)
+# cols = rand(1:n, 5)
+# vals = rand(-4.5:4.5, 5)
+# A = sparse(rows, cols, vals)
+# QR_A = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_NATURAL)
 # G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
 # news = Vector{Float64}(undef, n)
 # fullQR_givens!(QR_A.R, G_list, news, sqrt(λ), n, m)
 #
 #
 # AI = [A; sqrt(λ) * Matrix{Float64}(I, n, n)]
-# QR_AI = qr(AI)
+# QR_AI = myqr(AI, ordering=SuiteSparse.SPQR.ORDERING_NATURAL)
 #
 # print("\n\n", norm(QR_AI.R - QR_A.R[1:n,:]))
 
