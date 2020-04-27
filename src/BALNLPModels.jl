@@ -133,6 +133,7 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   increment!(nlp, :neval_jac)
   nobs = nlp.nobs
   npnts = nlp.npnts
+  T = eltype(x)
 
   q, re = divrem(nobs, nthreads())
   if re != 0
@@ -140,12 +141,12 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   end
   @threads for t = 1 : nthreads()
 
-    denseJ = Matrix{Float64}(undef, 2, 12)
+    denseJ = Matrix{T}(undef, 2, 12)
     JP1_mat = zeros(6, 12)
     JP1_mat[1, 7], JP1_mat[2, 8], JP1_mat[3, 9], JP1_mat[4, 10], JP1_mat[5, 11], JP1_mat[6, 12] = 1, 1, 1, 1, 1, 1
     JP2_mat = zeros(5, 6)
     JP2_mat[3, 4], JP2_mat[4, 5], JP2_mat[5, 6] = 1, 1, 1
-    JP3_mat = Matrix{Float64}(undef, 2, 5)
+    JP3_mat = Matrix{T}(undef, 2, 5)
 
     for k = 1 + (t - 1) * q : min(t * q, nobs)
       idx_cam = nlp.cams_indices[k]

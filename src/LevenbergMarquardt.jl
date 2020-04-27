@@ -15,11 +15,11 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 							 facto :: Symbol,
 							 perm :: Symbol,
 							 x :: AbstractVector=copy(model.meta.x0),
-							 restol :: Float64=1e-5,
-							 satol :: Float64=1e-5, srtol :: Float64=1e-5,
-							 otol :: Float64=1e-4,
-							 atol :: Float64=1e-5, rtol :: Float64=1e-5,
-							 νd :: Float64=3.0, νm :: Float64=3.0, λ :: Float64=1.5,
+							 restol=eps()^(1/4),
+							 satol=eps()^(1/4), srtol=eps()^(1/4),
+							 otol=eps()^(1/4),
+							 atol=eps()^(1/4), rtol=eps()^(1/4),
+							 νd :: Real=3.0, νm :: Real=3.0, λ :: Real=1.5,
 							 ite_max :: Int=100)
 
   start_time = time()
@@ -45,7 +45,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   if facto == :QR
 
 	  # Initialize b = [r; 0]
-	  b = [r; zeros(model.meta.nvar)]
+	  b = [r; zeros(T, model.meta.nvar)]
 	  xr = similar(b)
 
 	  # Initialize A = [J; √λI] as a sparse matrix
@@ -57,7 +57,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   elseif facto == :LDL
 
 	  # Initialize b = [-r; 0]
-	  b = [-r; zeros(model.meta.nvar)]
+	  b = [-r; zeros(T, model.meta.nvar)]
 	  xr = similar(b)
 
 	  # Initialize A = [[I J]; [Jᵀ - λI]] as sparse upper-triangular matrix
@@ -74,7 +74,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   end
 
   ϵ_first_order = atol + rtol * norm(Jtr)
-  old_obj = 0.5 * sq_norm_r
+  old_obj = sq_norm_r / 2
 
   # Stopping criteria
   small_step = false
@@ -89,7 +89,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
   while !(small_step || first_order || small_residual || small_obj_change || tired)
 
-	@info log_row([iter, 0.5 * sq_norm_r, old_obj - 0.5 * sq_norm_r, norm(δ), step_accepted])
+	@info log_row([iter, sq_norm_r / 2, old_obj - sq_norm_r / 2, norm(δ), step_accepted])
 
 	if facto == :QR
 	    # Solve min ||[J √λI] δ + [r 0]||² with QR factorization
@@ -140,7 +140,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
 	  # Update J and r
 	  jac_coord_residual!(model, x, vals)
-	  old_obj = 0.5*sq_norm_r
+	  old_obj = sq_norm_r / 2
       r .= r_suiv
       sq_norm_r = norm(r)^2
 
@@ -161,12 +161,12 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  small_step = norm(δ) < satol + srtol * norm(x)
       first_order = norm(Jtr) < ϵ_first_order
       small_residual = norm(r) < restol
-      small_obj_change =  old_obj - 0.5 * sq_norm_r < otol * old_obj
+      small_obj_change =  old_obj - sq_norm_r / 2 < otol * old_obj
       tired = iter > ite_max
     end
   end
 
-  @info log_row(Any[iter, 0.5 * sq_norm_r, old_obj - 0.5 * sq_norm_r, norm(δ), step_accepted])
+  @info log_row(Any[iter, sq_norm_r / 2, old_obj - sq_norm_r / 2, norm(δ), step_accepted])
 
   if small_step
 	  status = :small_step
@@ -182,5 +182,5 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
   elapsed_time = time() - start_time
 
-  return GenericExecutionStats(status, model, solution=x, objective=0.5*sq_norm_r, iter=iter, elapsed_time=elapsed_time, primal_feas=norm(Jtr))
+  return GenericExecutionStats(status, model, solution=x, objective=sq_norm_r/2, iter=iter, elapsed_time=elapsed_time, primal_feas=norm(Jtr))
 end
