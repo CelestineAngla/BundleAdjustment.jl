@@ -32,7 +32,7 @@ function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
   end
 
   @threads for t = 1 : nthreads()
-    for k = 1 + (t - 1) * q : min(t * q, nobs)
+    @simd for k = 1 + (t - 1) * q : min(t * q, nobs)
       cam_index = cam_indices[k]
       pnt_index = pnt_indices[k]
       @views x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
@@ -41,6 +41,19 @@ function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
     end
   end
   return r
+end
+
+
+function name(filename::AbstractString)
+  k = 1
+  while filename[k] != '/'
+    k += 1
+  end
+  l = k + 8
+  while filename[l] != 'p'
+    l += 1
+  end
+  return filename[1 : k-1] * filename[k + 8 : l - 2]
 end
 
 
@@ -64,15 +77,15 @@ mutable struct BALNLPModel <: AbstractNLPModel
 end
 
 
-function BALNLPModel(filename::AbstractString)
-  cams_indices, pnts_indices, pt2d, x0, ncams, npnts, nobs = readfile(filename)
+function BALNLPModel(filename::AbstractString, T::Type=Float64)
+  cams_indices, pnts_indices, pt2d, x0, ncams, npnts, nobs = readfile(filename, T)
 
   # variables: 9 parameters per camera + 3 coords per 3d point
   nvar = 9 * ncams + 3 * npnts
   # number of residuals: two residuals per 2d point
   ncon = 2 * nobs
 
-  meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=filename)
+  meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=name(filename))
 
   @info "BALNLPModel $filename" nvar ncon
   return BALNLPModel(meta, Counters(), cams_indices, pnts_indices, pt2d, nobs, npnts, ncams)
@@ -104,7 +117,7 @@ function NLPModels.jac_structure!(nlp :: BALNLPModel, rows :: AbstractVector{<:I
   end
   @threads for t = 1 : nthreads()
 
-    for k = 1 + (t - 1) * q : min(t * q, nobs)
+    @simd for k = 1 + (t - 1) * q : min(t * q, nobs)
       idx_obs = (k - 1) * 24
       idx_cam = npnts_3 + 9* (nlp.cams_indices[k] - 1)
       idx_pnt = 3 * (nlp.pnts_indices[k] - 1)
@@ -148,7 +161,7 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
     JP2_mat[3, 4], JP2_mat[4, 5], JP2_mat[5, 6] = 1, 1, 1
     JP3_mat = Matrix{T}(undef, 2, 5)
 
-    for k = 1 + (t - 1) * q : min(t * q, nobs)
+    @simd for k = 1 + (t - 1) * q : min(t * q, nobs)
       idx_cam = nlp.cams_indices[k]
       idx_pnt = nlp.pnts_indices[k]
       @views X = x[(idx_pnt - 1) * 3 + 1 : (idx_pnt - 1) * 3 + 3] # 3D point coordinates
