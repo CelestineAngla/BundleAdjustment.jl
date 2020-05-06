@@ -27,6 +27,7 @@ function myqr(A::SparseMatrixCSC{Tv}; tol = _default_tol(A), ordering=SuiteSpars
 end
 
 
+
 """
 Solves A x = b using the QR factorization of A and store the results in xr
 """
@@ -51,19 +52,26 @@ function solve_qr!(m, n, xr, b, Q, R, Prow, Pcol)
   return x, r
 end
 
+
+
 function solve_qr2!(m, n, xr, b, Q, R, Prow, Pcol, counter, G_list)
   m ≥ n || error("currently, this function only supports overdetermined problems")
   @assert length(b) == m
   @assert length(xr) == m
 
   Qλt_mul!(xr, Q, G_list, b[Prow], n, m-n, counter)
-	@views x = xr[1:n]
-  print("\n", size(R), " ", size(x))
+  @views x = xr[1:n]
+  for i = 1 : n
+	  if abs(R[i,i]) < 0.1
+		  print("\n", i, " ", R[i,i])
+	  end
+  end
   ldiv!(LinearAlgebra.UpperTriangular(R), x)  # x ← R⁻¹ x
   @views x[Pcol] .= x
   @views r = xr[n+1:m]  # = Q₂'b
   return x, r
 end
+
 
 
 """
@@ -72,51 +80,56 @@ given the QR factorization of A by performing Givens rotations
 If A = QR, we transform [R; 0; √λI] into [Rλ; 0; 0] by performing Givens
 rotations that we store in G_list and then Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 """
-function fullQR_givens!(R, G_list, news, sqrtλ, nvar, ncon)
+function fullQR_givens!(R, G_list, news, sqrtλ, col_norms, nvar, ncon)
 	n = nvar
 	m = ncon
 	counter = 1
 	# print("\n\n", R)
+	for i = 1 : n
+  	  if abs(R[i,i]) < 0.1
+  		  print("\n Givens ", i, " ", R[i,i])
+  	  end
+    end
 
 	for k = n : -1 : 1
 		# print("\n k : ", k)
 
-    # We find the first non-zero element of column k
-    i = k
-    while R[i, k] == 0
-      i -= 1
-    end
-    # print("\n i : ", i)
+    	# We find the first non-zero element of column k
+    	i = k
+    	while R[i, k] == 0
+      		i -= 1
+    	end
+    	# print("\n i : ", i)
 
-    # We rotate row i of R with row k of √λI to eliminate [k, k]
-    G, r = givens(R[i, k], sqrtλ, i, n + k)
-    apply_givens!(R, G, r, news, n, true)
+	    # We rotate row i of R with row k of √λI to eliminate [k, k]
+	    G, r = givens(R[i, k], sqrtλ/col_norms[k], i, n + k)
+	    apply_givens!(R, G, r, news, n, true)
 		# print("\n news \n", news)
 		G_list[counter] = G
 		counter += 1
 		# print("\n\n", R)
 
-    for l = i : n
-      # print("\n l : ", l)
-      if news[l] != 0
+	    for l = i : n
+	      # print("\n l : ", l)
+	      if news[l] != 0
 
-        # We find the first non-zero element of column l
-        j = l
-        while R[j, l] == 0
-          j -= 1
-        end
-        # print("\n j : ", j)
+	        # We find the first non-zero element of column l
+	        j = l
+	        while R[j, l] == 0
+	          j -= 1
+	        end
+	        # print("\n j : ", j)
 
-        # We rotate row j of R with row k of √λI to eliminate [k, l]
-  			G, r = givens(R[j, l], news[l], j, n + l)
-        apply_givens!(R, G, r, news, n, false)
-  			# print("\n news \n", news)
-  			G_list[counter] = G
-  			counter += 1
-  			# print("\n\n", R)
+	        # We rotate row j of R with row k of √λI to eliminate [k, l]
+	  		G, r = givens(R[j, l], news[l], j, n + l)
+	        apply_givens!(R, G, r, news, n, false)
+	  		# print("\n news \n", news)
+	  		G_list[counter] = G
+	  		counter += 1
+	  		# print("\n\n", R)
 
-      end
-    end
+	      end
+	    end
 
 	end
   return counter - 1

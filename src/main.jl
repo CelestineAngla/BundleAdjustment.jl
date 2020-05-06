@@ -5,25 +5,8 @@ using DataFrames
 include("BALNLPModels.jl")
 include("LevenbergMarquardt.jl")
 
-# solvers = Dict(
-#   :lmqramd => model -> Levenberg_Marquardt(model, :QR, :AMD),
-#   :lmqrmetis => model -> Levenberg_Marquardt(model, :QR, :Metis),
-#   :lmldlamd => model -> Levenberg_Marquardt(model,:LDL, :AMD),
-#   :lmldlmetis => model -> Levenberg_Marquardt(model,:LDL, :Metis)
-# )
-#
-# prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
-#               "LadyBug/problem-73-11032-pre.txt.bz2"
-#               )
-# problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)  # remarque les parenthèses
-#
-# stats = bmark_solvers(solvers, problems)
-# print(markdown_table(stdout, stats[:lmqramd], cols=[:name, :f, :t]))
-# df = join(stats, [:name, :nvar, :nequ, :status, :objective, :elapsed_time, :iter, :dual_feas])
-# latex_table(stdout, stats[:lmqramd])
 
-
-# # Create a BALNLPModel from a dataset
+# Create a BALNLPModel from a dataset
 BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # Wrap it into a NLS model
 fr_BA = FeasibilityResidual(BA)
@@ -31,10 +14,10 @@ fr_BA = FeasibilityResidual(BA)
 stats = Levenberg_Marquardt(fr_BA, :QR, :Metis)
 print("\n ------------ \nStats : \n", stats)
 
-BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
-fr_BA = FeasibilityResidual(BA)
-stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis)
-print("\n ------------ \nStats : \n", stats)
+# BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+# fr_BA = FeasibilityResidual(BA)
+# stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis)
+# print("\n ------------ \nStats : \n", stats)
 
 
 # # Test in other precisions
