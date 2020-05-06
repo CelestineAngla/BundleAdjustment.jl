@@ -17,12 +17,12 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 							 facto :: Symbol,
 							 perm :: Symbol;
 							 x :: AbstractVector=copy(model.meta.x0),
-							 restol=sqrt(eps(eltype(x))),
+							 restol=100*sqrt(eps(eltype(x))),
 							 satol=sqrt(eps(eltype(x))), srtol=sqrt(eps(eltype(x))),
-							 otol=sqrt(eps(eltype(x))),
-							 atol=sqrt(eps(eltype(x))), rtol=sqrt(eps(eltype(x))),
+							 otol=100*sqrt(eps(eltype(x))),
+							 atol=100*sqrt(eps(eltype(x))), rtol=100*sqrt(eps(eltype(x))),
 							 νd :: Real=3.0, νm :: Real=3.0, λ :: Real=1.5,
-							 ite_max :: Int=100)
+							 ite_max :: Int=500)
 
   start_time = time()
   elapsed_time = 0.0
@@ -122,8 +122,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		# news = Vector{Float64}(undef, model.meta.nvar)
 		# counter = fullQR_givens!(QR_J.R, G_list, news, sqrt(λ), col_norms, model.meta.nvar, model.nls_meta.nequ)
 		# Prow = vcat(QR_J.prow, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
-		# Pcol = vcat(QR_J.pcol, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
-		# δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, QR_J.R, Prow, Pcol, counter, G_list)
+		# δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, QR_J.R, Prow, QR_J.pcol, counter, G_list)
 
 		normalize_cols!(A, col_norms, model.meta.nvar)
 		if perm == :AMD
@@ -131,7 +130,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		elseif perm == :Metis
 			QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
 		end
-
 		δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
 		denormalize!(δ, col_norms, model.meta.nvar)
 		denormalize!(δr, col_norms, model.meta.nvar)

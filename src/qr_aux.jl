@@ -61,17 +61,31 @@ function solve_qr2!(m, n, xr, b, Q, R, Prow, Pcol, counter, G_list)
 
   Qλt_mul!(xr, Q, G_list, b[Prow], n, m-n, counter)
   @views x = xr[1:n]
-  for i = 1 : n
-	  if abs(R[i,i]) < 0.1
-		  print("\n", i, " ", R[i,i])
-	  end
-  end
   ldiv!(LinearAlgebra.UpperTriangular(R), x)  # x ← R⁻¹ x
   @views x[Pcol] .= x
   @views r = xr[n+1:m]  # = Q₂'b
   return x, r
 end
 
+
+"""
+Computes Q and R in the Householder QR factorization of A
+"""
+function QR_Householder(A)
+    m, n = size(A)
+    Q = Matrix{Float64}(I, m, m)
+    R = A
+    for i = 1:n
+        x = R[i:m, i]
+        e = zeros(length(x))
+        e[1] = 1
+        u = sign(x[1])*norm(x)*e + x
+        v = u/norm(u)
+        R[i:m, 1:n] -= 2*v*transpose(v)*R[i:m, 1:n]
+        Q[1:m, i:m] -= Q[1:m, i:m]*2*v*transpose(v)
+    end
+    return Q,R
+end
 
 
 """
@@ -80,54 +94,31 @@ given the QR factorization of A by performing Givens rotations
 If A = QR, we transform [R; 0; √λI] into [Rλ; 0; 0] by performing Givens
 rotations that we store in G_list and then Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 """
-function fullQR_givens!(R, G_list, news, sqrtλ, col_norms, nvar, ncon)
-	n = nvar
-	m = ncon
+function fullQR_givens!(R, G_list, news, sqrtλ, col_norms, n, m)
 	counter = 1
 	# print("\n\n", R)
-	for i = 1 : n
-  	  if abs(R[i,i]) < 0.1
-  		  print("\n Givens ", i, " ", R[i,i])
-  	  end
-    end
 
 	for k = n : -1 : 1
 		# print("\n k : ", k)
-
-    	# We find the first non-zero element of column k
-    	i = k
-    	while R[i, k] == 0
-      		i -= 1
-    	end
-    	# print("\n i : ", i)
-
-	    # We rotate row i of R with row k of √λI to eliminate [k, k]
-	    G, r = givens(R[i, k], sqrtλ/col_norms[k], i, n + k)
-	    apply_givens!(R, G, r, news, n, true)
+	    # We rotate row k of R with row k of √λI to eliminate [k, k]
+	    G, r = givens(R[k, k], sqrtλ/col_norms[k], k, m + k)
+		# print("\n G :", G)
+	    apply_givens!(R, G, r, news, n, m, true)
 		# print("\n news \n", news)
 		G_list[counter] = G
 		counter += 1
 		# print("\n\n", R)
 
-	    for l = i : n
+	    for l = k + 1 : n
 	      # print("\n l : ", l)
 	      if news[l] != 0
-
-	        # We find the first non-zero element of column l
-	        j = l
-	        while R[j, l] == 0
-	          j -= 1
-	        end
-	        # print("\n j : ", j)
-
-	        # We rotate row j of R with row k of √λI to eliminate [k, l]
-	  		G, r = givens(R[j, l], news[l], j, n + l)
-	        apply_givens!(R, G, r, news, n, false)
+	        # We rotate row l of R with row k of √λI to eliminate [k, l]
+	  		G, r = givens(R[l, l], news[l], l, m + l)
+	        apply_givens!(R, G, r, news, n, m, false)
 	  		# print("\n news \n", news)
 	  		G_list[counter] = G
 	  		counter += 1
 	  		# print("\n\n", R)
-
 	      end
 	    end
 
@@ -140,29 +131,28 @@ end
 Performs the Givens rotation G on [R; 0; √λI] knowing the news
 elements in the √λI part and returns the new elements created
 """
-function apply_givens!(R, G, r, news, n, diag)
-	# print("\n i1 : ", G.i1, " i2 : ", G.i2, " c : ", G.c, " s : ", G.s)
+function apply_givens!(R, G, r, news, n, m, diag)
 	# If we want to eliminate the diagonal element (ie: √λ),
 	# we know that news is empty so far
 	if diag
-    for j = G.i1 : n
-      if j == G.i2 - n
-        R[G.i1, G.i2 - n] = r
-      else
-        R[G.i1, j], news[j] = G.c * R[G.i1, j], - G.s * R[G.i1, j]
-      end
-    end
+    	for j = G.i1 : n
+      		if j == G.i2 - m
+        		R[G.i1, G.i2 - m] = r
+      		else
+        		R[G.i1, j], news[j] = G.c * R[G.i1, j], - G.s * R[G.i1, j]
+      		end
+    	end
 
 	# Otherwise we eliminate the first non-zero element of news
 	else
-    for j = G.i1 : n
-      if j == G.i2 - n
-        R[G.i1, G.i2 - n] = r
-        news[G.i2 - n] = 0
-      else
-			  R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
-      end
-    end
+    	for j = G.i1 : n
+      		if j == G.i2 - m
+        		R[G.i1, G.i2 - m] = r
+        		news[G.i2 - m] = 0
+      		else
+				R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
+      		end
+    	end
 	end
 end
 
@@ -172,12 +162,17 @@ Computes Qλᵀ * x where Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 Qλᵀ * x = G * [Qᵀx₁; x₂]
 """
 function Qλt_mul!(xr, Q, G_list, x, n, m, counter)
-	mul!(xr[1:m], Q', x[1:m])
+	# print("\n Qmul")
+	# print("\n", Q', "\n", x[1:m])
+	@views mul!(xr[1:m], Q', x[1:m])
+	# print("\n", x[m + 1 : m + n])
 	xr[m + 1 : m + n] = @views x[m + 1 : m + n]
+	# print("\n", xr)
 	for k = 1 : counter
 		G = G_list[k]
-		xr[G.i1], xr[G.i2] = G.c * xr[G.i1] - G.s * xr[G.i2], G.s * xr[G.i1] + G.c * xr[G.i2]
+		xr[G.i1], xr[G.i2] = G.c * xr[G.i1] + G.s * xr[G.i2], - G.s * xr[G.i1] + G.c * xr[G.i2]
 	end
+	# print("\n", xr)
 	return xr
 end
 
@@ -199,17 +194,21 @@ end
 # end
 # b = rand(-4.5:4.5, m+n)
 # QR_A = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_NATURAL)
+# print("\n P \n", QR_A.pcol, "\n", QR_A.prow)
 # G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
 # news = Vector{Float64}(undef, n)
-# counter = fullQR_givens!(QR_A.R, G_list, news, sqrt(λ), n, m)
+# col_norms = ones(n)
+# counter = fullQR_givens!(QR_A.R, G_list, news, sqrt(λ), col_norms, n, m)
 #
 #
 # AI = [A; sqrt(λ) * Matrix{Float64}(I, n, n)]
 # QR_AI = myqr(AI, ordering=SuiteSparse.SPQR.ORDERING_NATURAL)
+# print("\n P \n", QR_AI.pcol, "\n", QR_AI.prow)
 # xr = similar(b)
 # Qλt_mul!(xr, QR_A.Q, G_list, b, n, m, counter)
 #
-# print("\n\n", QR_A.R, "\n\n", QR_AI.R)
+# print("\n\n R : \n", QR_A.R, "\n\n", QR_AI.R)
+# print("\n\n", norm(QR_AI.R - QR_A.R))
 #
 # inv_A_R = inv(Matrix(QR_A.R))
 # inv_AI_R = inv(Matrix(QR_AI.R))
@@ -217,6 +216,6 @@ end
 # inv_A_R = hcat(inv_A_R, zeros(n, m))
 # inv_AI_R = hcat(inv_AI_R, zeros(n, m))
 #
-# print("\n", size(inv_A_R), " ", size(inv_AI_R), " ", size(QR_AI.Q'))
+# print("\n\n", inv_A_R * xr, "\n\n", inv_AI_R * QR_AI.Q' * b)
 #
 # print("\n\n", norm(QR_AI.R - QR_A.R), "\n", norm(inv_A_R * xr - inv_AI_R * QR_AI.Q' * b))

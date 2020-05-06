@@ -159,25 +159,6 @@ function Cholesky(A::Array{Float64,2})::Array{Float64,2}
 end
 
 
-"""
-Computes Q and R in the Householder QR factorization of A
-"""
-function QR_Householder(A)
-    m, n = size(A)
-    Q = Matrix{Float64}(I, m, m)
-    R = A
-    for i = 1:n
-        x = R[i:m, i]
-        e = zeros(length(x))
-        e[1] = 1
-        u = sign(x[1])*norm(x)*e + x
-        v = u/norm(u)
-        R[i:m, 1:n] -= 2*v*transpose(v)*R[i:m, 1:n]
-        Q[1:m, i:m] -= Q[1:m, i:m]*2*v*transpose(v)
-    end
-    return Q,R
-end
-
 
 """
 Solves triangular system Rx = b (where R is upper triangular)
