@@ -45,7 +45,7 @@ function solve_qr!(m, n, xr, b, Q, R, Prow, Pcol)
   # The solution of min ‖Ax - b‖ is thus given by
   # x = P₂ R⁻¹ Q' P₁ b.
   mul!(xr, Q', b[Prow])  # xr ← Q'(P₁b)  NB: using @views here results in tons of allocations?!
-	@views x = xr[1:n]
+  @views x = xr[1:n]
   ldiv!(LinearAlgebra.UpperTriangular(R), x)  # x ← R⁻¹ x
   @views x[Pcol] .= x
   @views r = xr[n+1:m]  # = Q₂'b
@@ -96,29 +96,27 @@ rotations that we store in G_list and then Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 """
 function fullQR_givens!(R, G_list, news, sqrtλ, col_norms, n, m)
 	counter = 1
-	# print("\n\n", R)
-
+	print("\nbegin\n\n", R)
 	for k = n : -1 : 1
-		# print("\n k : ", k)
+			print("\n k ", k)
 	    # We rotate row k of R with row k of √λI to eliminate [k, k]
 	    G, r = givens(R[k, k], sqrtλ/col_norms[k], k, m + k)
-		# print("\n G :", G)
 	    apply_givens!(R, G, r, news, n, m, true)
-		# print("\n news \n", news)
-		G_list[counter] = G
-		counter += 1
-		# print("\n\n", R)
+			print("\n\n", news)
+		  G_list[counter] = G
+		  counter += 1
+			print("\n\n", R)
 
 	    for l = k + 1 : n
-	      # print("\n l : ", l)
 	      if news[l] != 0
+					print("\n l ", l)
 	        # We rotate row l of R with row k of √λI to eliminate [k, l]
-	  		G, r = givens(R[l, l], news[l], l, m + l)
+	  			G, r = givens(R[l, l], news[l], l, m + k)
 	        apply_givens!(R, G, r, news, n, m, false)
-	  		# print("\n news \n", news)
-	  		G_list[counter] = G
-	  		counter += 1
-	  		# print("\n\n", R)
+					print("\n\n", news)
+	  	  	G_list[counter] = G
+	  		  counter += 1
+					print("\n\n", R)
 	      end
 	    end
 
@@ -150,7 +148,7 @@ function apply_givens!(R, G, r, news, n, m, diag)
         		R[G.i1, G.i2 - m] = r
         		news[G.i2 - m] = 0
       		else
-				R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
+						R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
       		end
     	end
 	end
@@ -162,18 +160,26 @@ Computes Qλᵀ * x where Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 Qλᵀ * x = G * [Qᵀx₁; x₂]
 """
 function Qλt_mul!(xr, Q, G_list, x, n, m, counter)
-	# print("\n Qmul")
-	# print("\n", Q', "\n", x[1:m])
 	@views mul!(xr[1:m], Q', x[1:m])
-	# print("\n", x[m + 1 : m + n])
 	xr[m + 1 : m + n] = @views x[m + 1 : m + n]
-	# print("\n", xr)
 	for k = 1 : counter
 		G = G_list[k]
 		xr[G.i1], xr[G.i2] = G.c * xr[G.i1] + G.s * xr[G.i2], - G.s * xr[G.i1] + G.c * xr[G.i2]
 	end
-	# print("\n", xr)
 	return xr
+end
+
+function Qλt_mul_verif!(xr, Q, G_list, x, n, m, counter)
+	QI = zeros(n+m, n+m)
+	QI[1:m, 1:m] .= Q
+	QI[m+1:m+n, m+1:m+n] .= Matrix{Float64}(I, n, n)
+	Qλ = similar(QI)
+	for k = 1 : counter
+		Qλ = QI * G_list[k]'
+		QI .= Qλ
+	end
+	mul!(xr, Qλ', x)
+	return Qλ
 end
 
 
@@ -182,40 +188,74 @@ end
 # m = 7
 # n = 5
 # λ = 1.5
-# rows = rand(1:m, 5)
-# cols = rand(1:n, 5)
-# vals = rand(-4.5:4.5, 5)
+# rows = rand(1:m, 8)
+# cols = rand(1:n, 8)
+# vals = rand(-4.5:4.5, 8)
 # A = sparse(rows, cols, vals, m, n)
-# for j = 1 : n
-#   if norm(A[:,j]) == 0
-#     i = rand(1 : m)
-#     A[i, j] = rand(-4.5:4.5)
-#   end
-# end
+# print("\n\nA\n\n", A)
+#
 # b = rand(-4.5:4.5, m+n)
-# QR_A = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_NATURAL)
-# print("\n P \n", QR_A.pcol, "\n", QR_A.prow)
+#
+#
+#
+# # QR facto of A
+# QR_A = qr(A)
+# print("\n\nPcol & Prow for A :\n", QR_A.pcol, "\n", QR_A.prow)
+# print("\n\n", QR_A.Q * vcat(QR_A.R, zeros(m-n, n)))
+#
+# # A_R is [R; √λI]
+# A_R = zeros(m+n, n)
+# A_R[1:n, 1:n] .= QR_A.R
+# for k = 1:n
+# 	A_R[m+k, k] = sqrt(λ)
+# end
+#
+# # Givens rotations on QR_A.R
 # G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
 # news = Vector{Float64}(undef, n)
 # col_norms = ones(n)
 # counter = fullQR_givens!(QR_A.R, G_list, news, sqrt(λ), col_norms, n, m)
 #
+# # performs the same Givens rotations on A_R
+# A_R2 = similar(A_R)
+# for k = 1 : counter
+# 	A_R2 = G_list[k] * A_R
+# 	A_R .= A_R2
+# end
+# print("\n\n", A_R)
 #
+# # Check if the λ have been eliminated in A_R and if A_R = Rλ
+# print("\n\n", norm(A_R[n+1:n+m, :]), "\n", norm(A_R[1:n, :] - QR_A.R))
+#
+#
+# # Check if Qλt_mul! works well
+# my_xr = similar(b)
+# Qλt_mul!(my_xr, QR_A.Q, G_list, b, n, m, counter)
+# true_xr = similar(b)
+# Qλ = Qλt_mul_verif!(true_xr, QR_A.Q, G_list, b, n, m, counter)
+# print("\n\nQλt\n\n", norm(my_xr - true_xr))
+#
+# # Solve [A; √λ] x = b
+# xr1 = similar(b)
+# Prow = vcat(QR_A.prow, collect(m + 1 : m + n))
+# δ1, δr1 = solve_qr2!(m+n, n, xr1, b, QR_A.Q, QR_A.R, Prow, QR_A.pcol, counter, G_list)
+#
+#
+# # Solve [A; √λ] x = b with QR factorization of [A; √λ]
 # AI = [A; sqrt(λ) * Matrix{Float64}(I, n, n)]
-# QR_AI = myqr(AI, ordering=SuiteSparse.SPQR.ORDERING_NATURAL)
-# print("\n P \n", QR_AI.pcol, "\n", QR_AI.prow)
-# xr = similar(b)
-# Qλt_mul!(xr, QR_A.Q, G_list, b, n, m, counter)
+# QR_AI = qr(AI)
+# print("\n\nPcol & Prow for AI :\n", QR_AI.pcol, "\n", QR_AI.prow)
+# print("\n\n AI\n", AI)
+# print("\n\n QR\n", QR_AI.Q * vcat(QR_AI.R, zeros(m, n)))
+# print("\n\nPcol & Prow for A :\n", QR_A.pcol, "\n", QR_A.prow)
+# print("\n\n", Qλ * vcat(QR_A.R, zeros(m, n)))
 #
-# print("\n\n R : \n", QR_A.R, "\n\n", QR_AI.R)
-# print("\n\n", norm(QR_AI.R - QR_A.R))
+# xr2 = similar(b)
+# δ2, δr2 = solve_qr!(m+n, n, xr2, b, QR_AI.Q, QR_AI.R, QR_AI.prow, QR_AI.pcol)
 #
-# inv_A_R = inv(Matrix(QR_A.R))
-# inv_AI_R = inv(Matrix(QR_AI.R))
-#
-# inv_A_R = hcat(inv_A_R, zeros(n, m))
-# inv_AI_R = hcat(inv_AI_R, zeros(n, m))
-#
-# print("\n\n", inv_A_R * xr, "\n\n", inv_AI_R * QR_AI.Q' * b)
-#
-# print("\n\n", norm(QR_AI.R - QR_A.R), "\n", norm(inv_A_R * xr - inv_AI_R * QR_AI.Q' * b))
+# # Check the results
+# print("\n\n Results : ")
+# print("\n\n", δ1, "\n\n", δ2, "\n\n", norm(δ1 - δ2))
+# print("\n\nb\n", b)
+# print("\n\n", AI * δ1, "\n\n", AI * δ2)
+# print("\n\n", AI * δ1 - b, "\n\n", AI * δ2 - b)
