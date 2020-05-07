@@ -14,8 +14,7 @@ solvers = Dict(
 prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
               "LadyBug/problem-73-11032-pre.txt.bz2",
               "LadyBug/problem-138-19878-pre.txt.bz2",
-              "LadyBug/problem-318-41628-pre.txt.bz2",
-              "LadyBug/problem-372-47423-pre.txt.bz2"
+              "LadyBug/problem-318-41628-pre.txt.bz2"
               )
 problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)  # remarque les parenthèses
 
