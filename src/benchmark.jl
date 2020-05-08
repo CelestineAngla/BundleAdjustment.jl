@@ -18,7 +18,9 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
               )
 problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)  # remarque les parenthèses
 
-stats = bmark_solvers(solvers, problems)
+using Logging
+bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger())
+# stats = bmark_solvers(solvers, problems)
 save_stats(stats, "lm_stats.csv")
 # df = join(stats, [:name, :nvar, :nequ, :status, :objective, :elapsed_time, :iter, :dual_feas])
 # latex_table(stdout, df)
