@@ -26,7 +26,7 @@ save_stats(stats, "lm_stats.csv")
 # latex_table(stdout, df)
 # markdown_table(stdout, df)
 
-stats = load_stats("stats.csv")
+# stats = load_stats("stats.csv")
 using Plots
 gr()
 ENV["GKSwstype"] = "100"
