@@ -185,6 +185,23 @@ mutable struct LDLFactorization{T<:Real,Ti<:Integer}
   P::Vector{Ti}
 end
 
+# mutable struct LDLSymbolic{T<:Real,Ti<:Integer}
+#   LDL::LDLFactorization{T<:Real,Ti<:Integer}
+#   n::Int
+#   Cp::Vector{Ti}
+#   Ci::Vector{Ti}
+#   Lp::Vector{Ti}
+#   parent::Vector{Ti}
+#   Lnz::Vector{Ti}
+#   Li::Vector{Ti}
+#   Lx::Vector{Ti}
+#   D::Vector{Ti}
+#   Y::Vector{Ti}
+#   pattern::Vector{Ti}
+#   flag::Vector{Ti}
+#   pinv::Vector{Ti}
+# end
+
 function ldl_symbolic_aux(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti}, n::Int) where {T<:Real,Ti<:Integer}
 	# allocate space for symbolic analysis
   parent = Vector{Ti}(undef, n)

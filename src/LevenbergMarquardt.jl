@@ -63,8 +63,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   if facto == :QR
 	  # Initialize A = [J; √λI] as a sparse matrix
 	  A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
-	  col_norms = ones(model.meta.nvar)
 	  # col_norms = Vector{T}(undef, model.meta.nvar)
+
+	  # Givens version
+	  col_norms = ones(model.meta.nvar)
 	  # normalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 	  QR_J = qr(A[1 : model.nls_meta.nequ, :])
 	  G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(model.meta.nvar*(model.meta.nvar + 1)/2))
@@ -79,7 +81,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  cols_J = copy(cols)
 	  cols .+= model.nls_meta.nequ
 	  A = sparse(vcat(collect(1 : model.nls_meta.nequ), rows, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(collect(1 : model.nls_meta.nequ), cols, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar)))
-	  col_norms = Vector{T}(undef, model.meta.nvar + model.nls_meta.nequ)
+	  # col_norms = Vector{T}(undef, model.meta.nvar + model.nls_meta.nequ)
 	  if perm == :AMD
 		  P = amd(A)
 	  elseif perm == :Metis
@@ -141,11 +143,11 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
 	elseif facto == :LDL
 		# Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
-		normalize_cols!(A, col_norms, model.meta.nvar + model.nls_meta.nequ)
+		# normalize_cols!(A, col_norms, model.meta.nvar + model.nls_meta.nequ)
 		LDLT = ldl_numeric_aux(A, P, model.meta.nvar + model.nls_meta.nequ, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, pinv)
 		xr .= b
 		ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
-		denormalize!(xr, col_norms, model.nls_meta.nequ + model.meta.nvar)
+		# denormalize!(xr, col_norms, model.nls_meta.nequ + model.meta.nvar)
 		δr = xr[1 : model.nls_meta.nequ]
 		δ = xr[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]
 	end
@@ -153,6 +155,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	x_suiv .=  x + δ
 	residual!(model, x_suiv, r_suiv)
 	iter += 1
+	print("\n", norm(Jtr))
 
     # Step not accepted : d(||r||²) > 1e-4 (||Jδ + r||² - ||r||²)
     if norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
@@ -172,7 +175,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		  # A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, :] *= sqrt(νm)
 
 	  elseif facto == :LDL
-		  denormalize_cols!(A, col_norms, model.meta.nvar + model.nls_meta.nequ)
+		  # denormalize_cols!(A, col_norms, model.meta.nvar + model.nls_meta.nequ)
 		  A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar] *= νm
 	  end
 
