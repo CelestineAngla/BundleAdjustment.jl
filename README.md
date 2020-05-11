@@ -27,6 +27,8 @@ The data I use can be found here: https://grail.cs.washington.edu/projects/bal/.
 
 Thus to run my code, you need to create a Data/ folder at the project root and to create five subfolders (LadyBug, Trafalgar, Dubrovnik, Venice and Final) and to download the .bz2 files in the corresponding subfolders.
 
+Or, alternativly, you can run the get_data.sh script that will create the Data/ folder and all his sub-folders, and that will download all the datasets for you.
+
 
 Python script (to have a some results to compare mine with) that export the vector of resiuals as .txt and solves bundle adjustment problems using the least_square function from scipy.optimize (code from https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html):
 https://colab.research.google.com/drive/1li9dBcQ-9feva89QmYI16qgiEBFCf8L9

@@ -1,7 +1,51 @@
 using JuMP
 using Ipopt
 using LinearAlgebra
-include("ReadFiles.jl")
+using CodecBzip2
+
+
+"""
+Read the .txt.bzip2 file in Data/filename and extract the data,
+returns the matrices observed 2D points, cameras and points
+and the vectors of camera indices and points indices
+"""
+function readfile_JuMP(filename::String)
+    filepath = joinpath(@__DIR__, "..", "Data", filename)
+    f = Bzip2DecompressorStream(open(filepath))
+    ncams, npnts, nobs = map(x -> parse(Int, x), split(readline(f)))
+
+    @info "$filename: reading" ncams npnts nobs
+
+    cam_indices = Vector{Int}(undef, nobs)
+    pnt_indices = Vector{Int}(undef, nobs)
+    pt2d = Matrix(undef, nobs, 2)
+
+    # read nobs lines of the form
+    # cam_index point_index xcoord ycoord
+    for i = 1 : nobs
+      cam, pnt, x, y = split(readline(f))
+      cam_indices[i] = parse(Int, cam) + 1  # make indices start at 1
+      pnt_indices[i] = parse(Int, pnt) + 1
+      pt2d[i, 1] = parse(Float64, x)
+      pt2d[i, 2] = parse(Float64, y)
+    end
+    # read 9 camera parameters, one per line, for each camera
+    cam_params = Matrix(undef, ncams, 9)
+    for i = 1 : ncams
+      for j = 1 : 9
+        cam_params[i, j] = parse(Float64, readline(f))
+      end
+    end
+    # read npts 3d points, one coordinate per line
+    pt3d = Matrix(undef, npnts, 3)
+    for i = 1 : npnts
+      for j = 1 : 3
+        pt3d[i, j] = parse(Float64, readline(f))
+      end
+    end
+    close(f)
+    return cam_indices, pnt_indices, pt2d, cam_params, pt3d
+end
 
 
 """
@@ -62,18 +106,19 @@ end
 Builds the direct bundle adjustment optimization model
 min 0.5 ∑ ||proj(X,C) - X_obs||²
 """
-function direct_model(obs::Array{Float64,2}, cameras_init::Array{Float64,2}, points_init::Array{Float64,2})
-    nb_obs = size(obs)[1]
-    nb_cameras = size(cameras_init)[1]
-    nb_points = size(points_init)[1]
+function direct_model(cam_indices::Vector{Int}, pnt_indices::Vector{Int}, pt2d::Matrix, cam_params_init::Matrix, pt3d_init::Matrix)
+    nb_obs = size(pt2d, 1)
+    nb_cameras = size(cam_params_init, 1)
+    nb_points = size(pt3d_init, 1)
 
     model = Model(with_optimizer(Ipopt.Optimizer))
-    @variable(model, cameras[i=1:nb_cameras, j=1:9], start=cameras_init[i,j])
-    @variable(model, points[i=1:nb_points, j=1:3], start=points_init[i,j])
+    @variable(model, cam_params[i=1:nb_cameras, j=1:9], start=cam_params_init[i,j])
+    @variable(model, pt3d[i=1:nb_points, j=1:3], start=pt3d_init[i,j])
     register(model, :sqrt, 1, sqrt, autodiff=true)
     register(model, :sq_residuals, 14, sq_residuals, autodiff=true)
 
-    @NLobjective(model, Min, 0.5*sum(sq_residuals(points[Integer(obs[k,2]+1),1], points[Integer(obs[k,2]+1),2], points[Integer(obs[k,2]+1),3], cameras[Integer(obs[k,1]+1),1], cameras[Integer(obs[k,1]+1),2], cameras[Integer(obs[k,1]+1),3], cameras[Integer(obs[k,1]+1),4], cameras[Integer(obs[k,1]+1),5], cameras[Integer(obs[k,1]+1),6], cameras[Integer(obs[k,1]+1),7], cameras[Integer(obs[k,1]+1),8], cameras[Integer(obs[k,1]+1),9], obs[k,3], obs[k,4])[k] for k = 1:nb_obs))
+    @NLobjective(model, Min, 0.5*sum(sq_residuals(pt3d[pnt_indices[k],1], pt3d[pnt_indices[k],2], pt3d[pnt_indices[k],3], cam_params[cam_indices[k],1], cam_params[cam_indices[k],2], cam_params[cam_indices[k],3], cam_params[cam_indices[k],4], cam_params[cam_indices[k],5], cam_params[cam_indices[k],6], cam_params[cam_indices[k],7], cam_params[cam_indices[k],8], cam_params[cam_indices[k],9], pt2d[k,1], pt2d[k,2])[k] for k = 1:nb_obs))
+
     optimize!(model)
     # @show value.(cameras);
     # @show value.(points);
@@ -114,9 +159,9 @@ function residual_model(cam_indices::Vector{Int}, pnt_indices::Vector{Int}, pt2d
 end
 
 
-# # Get cameras indices, point indices, points 2D, cameras and points 3D matrices for datasets
-# cam_indices, pnt_indices, pt2d, cam_params, pt3d = readfile("LadyBug/problem-49-7776-pre.txt.bz2")
-#
-# # Find optimal camera features and points
+# Get cameras indices, point indices, points 2D, cameras and points 3D matrices for datasets
+# cam_indices, pnt_indices, pt2d, cam_params, pt3d = readfile_JuMP("LadyBug/problem-49-7776-pre.txt.bz2")
+
+# Find optimal camera features and points
 # cameras_opt, points_opt = direct_model(cam_indices, pnt_indices, pt2d, cam_params, pt3d)
 # cameras_opt, points_opt = residual_model(cam_indices, pnt_indices, pt2d, cam_params, pt3d)
