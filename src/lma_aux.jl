@@ -23,23 +23,6 @@ function normalize_cols!(A, col_norms, n)
   end
 end
 
-"""
-Computes the norms of the columns of the matrix [A; √λI]
-using the norms of the columns of A (col_norms)
-"""
-function update_norms!(col_norms, λ, n)
-  q, re = divrem(n, nthreads())
-  if re != 0
-    q += 1
-  end
-
-  @threads for t = 1 : nthreads()
-    @simd for j = 1 + (t - 1) * q : min(t * q, n)
-      col_norms[j] = sqrt(col_norms[j]^2 + λ)
-    end
-  end
-end
-
 
 """
 Denormalize (in place) the sparse matrix A
@@ -56,6 +39,7 @@ function denormalize_cols!(A, col_norms, n)
     end
   end
 end
+
 
 """
 Denormalize (in place) the vector x

@@ -98,45 +98,45 @@ function fullQR_givens!(R, G_list, news, sqrtλ, col_norms, n, m)
 	counter = 1
 	# print("\nbegin\n\n", R)
 	for k = n : -1 : 1
-		print("\n k ", k)
+		# print("\n k ", k)
 	    # We rotate row k of R with row k of √λI to eliminate [k, k]
-		@time begin
+		# @time begin
 	    G, r = givens(R[k, k], sqrtλ/col_norms[k], k, m + k)
-		end
-		@time begin
+		# end
+		# @time begin
 	    apply_givens!(R, G, r, news, n, m, true)
-	    end
+	    # end
 		# print("\n\n", news)
-		@time begin
+		# @time begin
 		G_list[counter] = G
-	    end
-		@time begin
+	    # end
+		# @time begin
 		counter += 1
-		end
+		# end
 	    # print("\n\n", R)
 
 	    for l = k + 1 : n
 	      if news[l] != 0
-			print("\n l ", l)
+			# print("\n l ", l)
 	        # We rotate row l of R with row k of √λI to eliminate [k, l]
-			@time begin
+			# @time begin
 	  	    G, r = givens(R[l, l], news[l], l, m + k)
-		    end
-			@time begin
+		    # end
+			# @time begin
 	        apply_givens!(R, G, r, news, n, m, false)
-			end
+			# end
 			# print("\n\n", news)
-			@time begin
+			# @time begin
 			G_list[counter] = G
-			end
-	  	  	@time begin
+			# end
+	  	  	# @time begin
 	  		counter += 1
-			end
+			# end
 			# print("\n\n", R)
 	      end
 	    end
 
-  end
+     end
   return counter - 1
 end
 

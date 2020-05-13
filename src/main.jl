@@ -6,18 +6,18 @@ include("BALNLPModels.jl")
 include("LevenbergMarquardt.jl")
 
 
-# # Create a BALNLPModel from a dataset
-# BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
-# # Wrap it into a NLS model
-# fr_BA = FeasibilityResidual(BA)
-# # Solve this problem using Levenberg-Marquardt algorithm
-# stats = Levenberg_Marquardt(fr_BA, :QR, :Metis)
-# print("\n ------------ \nStats : \n", stats)
-
+# Create a BALNLPModel from a dataset
 BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+# Wrap it into a NLS model
 fr_BA = FeasibilityResidual(BA)
-stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis)
+# Solve this problem using Levenberg-Marquardt algorithm
+stats = Levenberg_Marquardt(fr_BA, :QR, :Metis)
 print("\n ------------ \nStats : \n", stats)
+
+# BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+# fr_BA = FeasibilityResidual(BA)
+# stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis)
+# print("\n ------------ \nStats : \n", stats)
 
 
 # # Test in other precisions
