@@ -156,7 +156,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	x_suiv .=  x + δ
 	residual!(model, x_suiv, r_suiv)
 	iter += 1
-	print("\n", norm(Jtr))
+	# print("\n", norm(Jtr))
 
     # Step not accepted : d(||r||²) > 1e-4 (||Jδ + r||² - ||r||²)
     if norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
