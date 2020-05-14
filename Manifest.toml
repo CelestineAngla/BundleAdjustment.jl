@@ -46,9 +46,9 @@ uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
 [[BenchmarkProfiles]]
 deps = ["NaNMath", "Plots", "Printf"]
-git-tree-sha1 = "e7c89d73dabf60d46502d1c851bfa1b6f45844d1"
+git-tree-sha1 = "71a41b20df21832b2cef8382aeb1cfd06d106c56"
 uuid = "ecbce9bc-3e5e-569d-9e29-55181f61f8d0"
-version = "0.3.0"
+version = "0.3.1"
 
 [[BenchmarkTools]]
 deps = ["JSON", "Logging", "Printf", "Statistics", "UUIDs"]
@@ -132,12 +132,6 @@ deps = ["TranscodingStreams", "Zlib_jll"]
 git-tree-sha1 = "ded953804d019afa9a3f98981d99b33e3db7b6da"
 uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
 version = "0.7.0"
-
-[[ColorSchemes]]
-deps = ["ColorTypes", "Colors", "FixedPointNumbers", "Random", "StaticArrays"]
-git-tree-sha1 = "7a15e3690529fd1042f0ab954dff7445b1efc8a5"
-uuid = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
-version = "3.9.0"
 
 [[ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
@@ -331,9 +325,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[GR]]
 deps = ["Base64", "DelimitedFiles", "LinearAlgebra", "Printf", "Random", "Serialization", "Sockets", "Test", "UUIDs"]
-git-tree-sha1 = "1185d50c5c90ec7c0784af7f8d0d1a600750dc4d"
+git-tree-sha1 = "7ea6f715b7caa10d7ee16f1cfcd12f3ccc74116a"
 uuid = "28b8d3ca-fb5f-59d9-8090-bfdbd6d07a71"
-version = "0.49.1"
+version = "0.48.0"
 
 [[GTK3_jll]]
 deps = ["ATK_jll", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "FriBidi_jll", "Glib_jll", "Graphene_jll", "HarfBuzz_jll", "Libdl", "Libepoxy_jll", "Pango_jll", "Pkg", "Wayland_jll", "Xorg_libX11_jll", "Xorg_libXcomposite_jll", "Xorg_libXcursor_jll", "Xorg_libXdamage_jll", "Xorg_libXext_jll", "Xorg_libXfixes_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll", "Xorg_libXrender_jll", "adwaita_icon_theme_jll", "at_spi2_atk_jll", "gdk_pixbuf_jll", "iso_codes_jll", "xkbcommon_jll"]
@@ -784,21 +778,21 @@ version = "0.2.8"
 
 [[PlotThemes]]
 deps = ["PlotUtils", "Requires", "Statistics"]
-git-tree-sha1 = "c6f5ea535551b3b16835134697f0c65d06c94b91"
+git-tree-sha1 = "87a4ea7f8c350d87d3a8ca9052663b633c0b2722"
 uuid = "ccf2f8ad-2431-5c83-bf29-c5338b663b6a"
-version = "2.0.0"
+version = "1.0.3"
 
 [[PlotUtils]]
-deps = ["ColorSchemes", "Colors", "Dates", "Printf", "Random", "Reexport"]
-git-tree-sha1 = "44de63b180da00d30dcfbe467dd62bd3cbc87af0"
+deps = ["Colors", "Dates", "Printf", "Random", "Reexport"]
+git-tree-sha1 = "51e742162c97d35f714f9611619db6975e19384b"
 uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
-version = "1.0.2"
+version = "0.6.5"
 
 [[Plots]]
 deps = ["Base64", "Contour", "Dates", "FFMPEG", "FixedPointNumbers", "GR", "GeometryTypes", "JSON", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "Reexport", "Requires", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs"]
-git-tree-sha1 = "11c75a31269c1c64790e7cb910346f64cd4440c1"
+git-tree-sha1 = "f226ff9b8e391f6a10891563c370aae8beb5d792"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "0.27.1"
+version = "0.29.9"
 
 [[PooledArrays]]
 deps = ["DataAPI"]
@@ -853,9 +847,9 @@ uuid = "a223df75-4e93-5b7c-acf9-bdd599c0f4de"
 version = "0.8.3"
 
 [[RecipesBase]]
-git-tree-sha1 = "54f8ceb165a0f6d083f0d12cb4996f5367c6edbc"
+git-tree-sha1 = "b4ed4a7f988ea2340017916f7c9e5d7560b52cae"
 uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-version = "1.0.1"
+version = "0.8.0"
 
 [[Reexport]]
 deps = ["Pkg"]
@@ -880,15 +874,15 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [[SIMDPirates]]
 deps = ["VectorizationBase"]
-git-tree-sha1 = "106acb202e6ff64552a95e5524800f91982a9153"
+git-tree-sha1 = "f9377c7e2e03d245925ce860298e304d3abacfca"
 uuid = "21efa798-c60a-11e8-04d3-e1a92915a26a"
-version = "0.7.22"
+version = "0.7.24"
 
 [[SLEEFPirates]]
 deps = ["Libdl", "SIMDPirates", "VectorizationBase"]
-git-tree-sha1 = "3e92bfb614a647e169379d79a28b63d7959064f0"
+git-tree-sha1 = "19e484ca35bb2b39b0b3b76077927f366727abd4"
 uuid = "476501e8-09a2-5ece-8869-fb82de89a1fa"
-version = "0.4.7"
+version = "0.4.8"
 
 [[Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -948,9 +942,9 @@ version = "0.3.1"
 
 [[SpecialFunctions]]
 deps = ["OpenSpecFun_jll"]
-git-tree-sha1 = "e19b98acb182567bcb7b75bb5d9eedf3a3b5ec6c"
+git-tree-sha1 = "0d440173da9f6d306f0c20664433734e487be8bd"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "0.10.0"
+version = "0.10.1"
 
 [[StaticArrays]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
@@ -1020,9 +1014,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[VectorizationBase]]
 deps = ["CpuId", "LinearAlgebra"]
-git-tree-sha1 = "0b5a9eb6ccb7d1e81b88e63c4133ab46db79e91a"
+git-tree-sha1 = "daaaaca8ced9b518969fec2ed2a8ea239e4544b1"
 uuid = "3d5dd08c-fd9d-11e8-17fa-ed2836048c2f"
-version = "0.11.3"
+version = "0.11.4"
 
 [[VertexSafeGraphs]]
 deps = ["LightGraphs"]
