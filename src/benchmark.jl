@@ -6,9 +6,9 @@ include("LevenbergMarquardt.jl")
 
 solvers = Dict(
   :lmqramd => model -> Levenberg_Marquardt(model, :QR, :AMD),
-  :lmqrmetis => model -> Levenberg_Marquardt(model, :QR, :Metis),
-  :lmldlamd => model -> Levenberg_Marquardt(model,:LDL, :AMD),
-  :lmldlmetis => model -> Levenberg_Marquardt(model,:LDL, :Metis)
+  # :lmqrmetis => model -> Levenberg_Marquardt(model, :QR, :Metis),
+  :lmldlamd => model -> Levenberg_Marquardt(model,:LDL, :AMD)
+  # :lmldlmetis => model -> Levenberg_Marquardt(model,:LDL, :Metis)
 )
 
 prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
@@ -20,7 +20,7 @@ problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)  # re
 
 using Logging
 stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger())
-save_stats(stats, "lm_stats.csv")
+save_stats(stats, "lm_stats_norm.csv")
 
 # df = join(stats, [:name, :nvar, :nequ, :status, :objective, :elapsed_time, :iter, :dual_feas])
 # latex_table(stdout, df)
@@ -43,4 +43,4 @@ costs = [stats -> .!solved(stats) .* Inf .+ stats.elapsed_time,
          stats -> .!solved(stats) .* Inf .+ stats.neval_jac_residual,
         ]
 profile_solvers(stats, costs, costnames)
-savefig("lm_profiles.pdf")
+savefig("lm_profiles_norm.pdf")
