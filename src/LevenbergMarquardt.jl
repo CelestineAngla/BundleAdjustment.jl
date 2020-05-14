@@ -66,13 +66,13 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  # col_norms = Vector{T}(undef, model.meta.nvar)
 
 	  # Givens version
-	  # col_norms = ones(model.meta.nvar)
+	  col_norms = ones(model.meta.nvar)
 	  # col_norms = Vector{T}(undef, model.meta.nvar)
 	  # normalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
-	  # QR_J = qr(A[1 : model.nls_meta.nequ, :])
-	  # G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(model.meta.nvar*(model.meta.nvar + 1)/2))
-	  # news = Vector{Float64}(undef, model.meta.nvar)
-	  # Prow = vcat(QR_J.prow, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
+	  QR_J = qr(A[1 : model.nls_meta.nequ, :])
+	  G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(model.meta.nvar*(model.meta.nvar + 1)/2))
+	  news = Vector{Float64}(undef, model.meta.nvar)
+	  Prow = vcat(QR_J.prow, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
 	  # denormalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 
 	  Jtr = transpose(A[1 : model.nls_meta.nequ, :])*r
@@ -126,20 +126,21 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	    # Solve min ||[J √λI] δ + [r 0]||² with QR factorization
 
 		# Givens version
-		# counter = fullQR_givens!(QR_J.R, G_list, news, sqrt(λ), col_norms, model.meta.nvar, model.nls_meta.nequ)
-		# print("\n", counter)
-		# δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, QR_J.R, Prow, QR_J.pcol, counter, G_list)
+		R = copy(QR_J.R)
+		counter = fullQR_givens!(R, G_list, news, sqrt(λ), col_norms, model.meta.nvar, model.nls_meta.nequ)
+		print("\n", counter)
+		δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, R, Prow, QR_J.pcol, counter, G_list)
 		# denormalize!(δ, col_norms, model.meta.nvar)
 		# denormalize!(δr, col_norms, model.meta.nvar)
 
 		# Original version
 		# normalize_cols!(A, col_norms, model.meta.nvar)
-		if perm == :AMD
-			QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
-		elseif perm == :Metis
-			QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
-		end
-		δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
+		# if perm == :AMD
+		# 	QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
+		# elseif perm == :Metis
+		# 	QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
+		# end
+		# δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
 		# denormalize!(δ, col_norms, model.meta.nvar)
 		# denormalize!(δr, col_norms, model.meta.nvar)
 
@@ -159,11 +160,22 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	iter += 1
 	# print("\n", norm(Jtr))
 
-    # Step not accepted : d(||r||²) > 1e-4 (||Jδ + r||² - ||r||²)
-    if norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
-	  step_accepted = "false"
+	# Step not accepted : d(||r||²) > 1e-4 (||Jδ + r||² - ||r||²)
+	step_accepted = norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
+
+	# Linear search along the δ direction
+	ntimes = 0
+	while !step_accepted && ntimes < 5
+		δ ./= 2
+		x_suiv .=  x + δ
+		residual!(model, x_suiv, r_suiv)
+		step_accepted = norm(r_suiv)^2 - sq_norm_r >= 1e-4 * (norm(δr)^2 - sq_norm_r)
+		ntimes += 1
+	end
+
+    if !step_accepted
       # Update λ
-      λ *= νm
+      λ *= νm^ntimes
 
 	  # Update A
 	  if facto == :QR
@@ -177,12 +189,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		  A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar] *= νm
 	  end
 
-    # Step accepted
     else
-	  step_accepted = "true"
-
       # Update λ and x
-      λ /= νd
+      λ /= νd^ntimes
       x .= x_suiv
 
 	  # Update J and check if the jacobian is constant
@@ -213,7 +222,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
 		  # Givens version
 		  # normalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
-		  # QR_J = qr(A[1 : model.nls_meta.nequ, :])
+		  QR_J = qr(A[1 : model.nls_meta.nequ, :])
 		  # denormalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 
 	      mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, :] ), r)
