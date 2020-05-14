@@ -10,7 +10,7 @@ Compare execution time between CUTEst residuals and jacobian and mine
 """
 
 
-BA = BALNLPModel("LadyBug/problem-138-19878-pre.txt.bz2")
+BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # finalize(BA49_cutest)
 # BA49_cutest = CUTEstModel("BA-L49")
 
