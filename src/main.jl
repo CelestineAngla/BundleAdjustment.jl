@@ -20,6 +20,45 @@ print("\n ------------ \nStats : \n", stats)
 # print("\n ------------ \nStats : \n", stats)
 
 
+
+# Spy
+
+# BA = BALNLPModel("LadyBug/problem-138-19878-pre.txt.bz2")
+# model = FeasibilityResidual(BA)
+# x = model.meta.x0
+# λ = 1.5
+# rows = Vector{Int}(undef, model.nls_meta.nnzj)
+# cols = Vector{Int}(undef, model.nls_meta.nnzj)
+# jac_structure_residual!(model, rows, cols)
+# vals = jac_coord_residual(model, x)
+# perm = :AMD
+
+# A = sparse(vcat(rows,collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(cols, collect(1 : model.meta.nvar)), vcat(vals, fill(sqrt(λ), model.meta.nvar)), model.nls_meta.nequ + model.meta.nvar, model.meta.nvar)
+# if perm == :AMD
+#     QR_A = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
+# elseif perm == :Metis
+#     QR_A = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
+# end
+# print("\nok\n")
+# spy(A[1 : model.nls_meta.nequ, :])
+# spy(QR_A.R)
+
+# cols .+= model.nls_meta.nequ
+# A = sparse(vcat(collect(1 : model.nls_meta.nequ), rows, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(collect(1 : model.nls_meta.nequ), cols, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar)), vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar)))
+# # col_norms = Vector{T}(undef, model.meta.nvar + model.nls_meta.nequ)
+# if perm == :AMD
+#     P = amd(A)
+# elseif perm == :Metis
+#     P , _ = Metis.permutation(A' + A)
+#     P = convert(Array{Int64,1}, P)
+# end
+# ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ)
+# LDLT = ldl_factorize(A, ldl_symbolic, true)
+# print("\nok\n")
+# spy(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar])
+# spy(LDLT.L)
+
+
 # # Test in other precisions
 
 # BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
