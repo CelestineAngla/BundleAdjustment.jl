@@ -23,6 +23,22 @@ function normalize_cols!(A, col_norms, n)
   end
 end
 
+"""
+Multiplies the -λI part of the matrix by D²
+"""
+function normalize_λ!(A, col_norms, n)
+  q, re = divrem(n, nthreads())
+  if re != 0
+    q += 1
+  end
+
+  @threads for t = 1 : nthreads()
+    @simd for j = 1 + (t - 1) * q : min(t * q, n)
+      @inbounds A.nzval[A.colptr[j] : A.colptr[j+1] - 1] /= (col_norms[j])^2
+    end
+  end
+end
+
 
 """
 Denormalize (in place) the sparse matrix A

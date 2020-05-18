@@ -180,15 +180,15 @@ function ldl_numeric_upper!(n, Ap, Ai, Ax, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y
 end
 
 
-mutable struct LDLFactorization{T<:Real,Ti<:Integer}
+mutable struct LDLFactorization{T<:Real,Ti<:Integer, Ti2<:Integer}
   L::SparseMatrixCSC{T,Ti}
   D::Vector{T}
-  P::Vector{Ti}
+  P::Vector{Ti2}
 end
 
 abstract type AbstractLDLSymbolic end
 
-mutable struct LDLSymbolicUpper{T<:Real,Ti<:Integer} <: AbstractLDLSymbolic
+mutable struct LDLSymbolicUpper{T<:Real,Ti<:Integer, Ti2<:Integer} <: AbstractLDLSymbolic
   n::Ti
   Cp::Vector{Ti}
   Ci::Vector{Ti}
@@ -201,7 +201,7 @@ mutable struct LDLSymbolicUpper{T<:Real,Ti<:Integer} <: AbstractLDLSymbolic
   Y::Vector{T}
   pattern::Vector{Ti}
   flag::Vector{Ti}
-  P::Vector{Ti}
+  P::Vector{Ti2}
   pinv::Vector{Ti}
 end
 
@@ -220,7 +220,7 @@ mutable struct LDLSymbolic{T<:Real,Ti<:Integer} <: AbstractLDLSymbolic
   pinv::Vector{Ti}
 end
 
-function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti}; upper=false, n::Int=size(A,1)) where {T<:Real,Ti<:Integer}
+function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::Int=size(A,1)) where {T<:Real,Ti<:Integer, Ti2<:Integer}
 	# allocate space for symbolic analysis
   parent = Vector{Ti}(undef, n)
   Lnz = Vector{Ti}(undef, n)
