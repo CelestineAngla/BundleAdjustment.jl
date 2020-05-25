@@ -16,19 +16,21 @@ Solves min 1/2 ||r(x)||² where r is a vector of residuals
 """
 function Levenberg_Marquardt(model :: AbstractNLSModel,
                              facto :: Symbol,
-                             perm :: Symbol;
+                             perm :: Symbol,
+							 normalize :: Symbol;
                              x :: AbstractVector=copy(model.meta.x0),
                              restol=100*sqrt(eps(eltype(x))),
                              satol=sqrt(eps(eltype(x))), srtol=sqrt(eps(eltype(x))),
-                             otol=100*sqrt(eps(eltype(x))),
+                             oatol=0*sqrt(eps(eltype(x))), ortol=0*sqrt(eps(eltype(x))),
                              atol=100*sqrt(eps(eltype(x))), rtol=100*sqrt(eps(eltype(x))),
-                             νd=eltype(x)(3), νm=eltype(x)(3), λ=eltype(x)(1.5),
+                             νd=eltype(x)(3), νm=eltype(x)(3), λ=eltype(x)(1.5), δd=eltype(x)(2),
                              ite_max :: Int=500)
 
   start_time = time()
   elapsed_time = 0.0
   iter = 0
   step_accepted_str = ""
+  δr2 = 0
   δ = similar(x)
   x_suiv = similar(x)
   T = eltype(x)
@@ -63,9 +65,12 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	cols_A = vcat(cols, collect(1 : model.meta.nvar))
 	vals_A = vcat(vals, fill(sqrt(λ), model.meta.nvar))
 	A = sparse(rows_A, cols_A, vals_A)
-    col_norms = Vector{T}(undef, model.meta.nvar)
 
-    # Givens version
+	if normalize != :None
+      col_norms = Vector{T}(undef, model.meta.nvar)
+    end
+
+	# Givens version
     # col_norms = ones(model.meta.nvar)
     # col_norms = Vector{T}(undef, model.meta.nvar)
     # normalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
@@ -76,7 +81,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     # Prow = vcat(QR_J.prow, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
     # denormalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 
-    Jtr = transpose(A[1 : model.nls_meta.nequ, :])*r
+	# Compute Jᵀr
+    Jtr = transpose(A[1 : model.nls_meta.nequ, :]) * r
 
   elseif facto == :LDL
 	# Initialize A = [[I J]; [Jᵀ - λI]] as sparse upper-triangular matrix
@@ -84,8 +90,16 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	cols .+= model.nls_meta.nequ
 	rows_A = vcat(collect(1 : model.nls_meta.nequ), rows, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
 	cols_A = vcat(collect(1 : model.nls_meta.nequ), cols, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
-	vals_A = vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar))
+
+	if normalize == :A
+	  # In this case we solve [[√λI J]; [Jᵀ -√λI]] [δr; √λδ] = [-√λr; 0]
+	  b[1 : model.nls_meta.nequ] *= sqrt(λ)
+	  vals_A = vcat(fill(sqrt(λ), model.nls_meta.nequ), vals, fill(-sqrt(λ), model.meta.nvar))
+	else
+	  vals_A = vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar))
+    end
 	A = sparse(rows_A, cols_A, vals_A)
+
 	# Compute permutation and perform symbolic analyse of A
 	if perm == :AMD
 	  P = amd(A)
@@ -93,12 +107,15 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       P , _ = Metis.permutation(A' + A)
 	end
 	ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ)
+
 	# Compute Jᵀr
 	Jtr = transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar])*r
+
 	# Normalize J and multiply -λI by D²
-	# col_norms = Vector{T}(undef, model.meta.nvar)
-	# @views normalize_cols!(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar], col_norms, model.meta.nvar)
-	# @views normalize_λ!(A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar], col_norms, model.meta.nvar)
+	if normalize != :None
+      col_norms = Vector{T}(undef, model.meta.nvar)
+	  normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)
+    end
   end
 
   ϵ_first_order = atol + rtol * norm(Jtr)
@@ -117,7 +134,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
   while !(small_step || first_order || small_residual || small_obj_change || tired)
 
-	@info log_row([iter, sq_norm_r / 2, old_obj - sq_norm_r / 2, norm(δ), step_accepted_str])
+	@info log_row([iter, sq_norm_r / 2, old_obj - sq_norm_r / 2, norm(δ), step_accepted_str, δr2])
+
 	# If the residuals are nearly zeros 5 times in a row, we use 2nd order derivatives
 	# if sq_norm_r > resatol + resrtol * sq_norm_r₀
 	# 	counter_res_null += 1
@@ -128,29 +146,40 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	# 	snd_order = true
 	# end
 
-
 	if facto == :QR
-	    # Solve min ||[J √λI] δ + [r 0]||² with QR factorization
+	    # Solve min ‖[J √λI] δ + [r 0]‖² with QR factorization
 
 		# Givens version
 		# R .= QR_J.R
-		# print("\n copie faite\n")
 		# counter = fullQR_givens!(R, G_list, news, sqrt(λ), col_norms, model.meta.nvar, model.nls_meta.nequ)
-		# print("\n", counter, "\n")
 		# δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, R, Prow, QR_J.pcol, counter, G_list)
 		# denormalize!(δ, col_norms, model.meta.nvar)
-		# denormalize!(δr, col_norms, model.meta.nvar)
 
-		# Original version
-		normalize_cols!(A, col_norms, model.meta.nvar)
+		if normalize == :A
+		  normalize_qr_a!(A, col_norms, model.meta.nvar)
+	    elseif normalize == :J
+  		  normalize_qr_j!(A, col_norms, model.meta.nvar)
+  	    end
+
+		# Perform QR factorization and solve the problem
 		if perm == :AMD
 			QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
 		elseif perm == :Metis
 			QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
 		end
 		δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
-		denormalize!(δ, col_norms, model.meta.nvar)
-		# denormalize!(δr, col_norms, model.meta.nvar)
+
+		if normalize != :None
+		  denormalize_vect!(δ, col_norms, model.meta.nvar)
+	    end
+
+		# δr = ‖[J; √λI] δ + [r; 0]‖² - λ‖δ‖² = ‖[R; 0]δ + [r; 0]‖² - λ‖δ‖²
+        if normalize != :None
+		  denormalize_qr!(A, col_norms, model.meta.nvar)
+	    end
+		# Qr = QR.Q[:, 1 : model.nls_meta.nequ] * r
+		# δr2 = norm(QR.R * δ + Qr[1 : model.meta.nvar])^2  + norm(Qr[model.meta.nvar + 1 : end])^2 - λ * norm(δ)^2
+		δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2
 
 	elseif facto == :LDL
 		# Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
@@ -159,44 +188,59 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
 		δr = xr[1 : model.nls_meta.nequ]
 		δ = xr[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]
-		# denormalize!(δ, col_norms, model.meta.nvar)
-	end
+		δr2 = norm(δr)^2
 
+		if normalize != :None
+		  denormalize_vect!(δ, col_norms, model.meta.nvar)
+		  if normalize == :A
+            δ /= sqrt(λ)
+		  end
+	    end
+	end
+	
 	x_suiv .=  x + δ
 	residual!(model, x_suiv, r_suiv)
 	iter += 1
-	# print("\n", norm(Jtr))
 
 	# Step not accepted : d(||r||²) > 1e-4 (||Jδ + r||² - ||r||²)
-	step_accepted = norm(r_suiv)^2 - sq_norm_r < 1e-4 * (norm(δr)^2 - sq_norm_r)
+	step_accepted = norm(r_suiv)^2 - sq_norm_r < 1e-4 * (δr2 - sq_norm_r)
 
 	# Linear search along the δ direction
 	ntimes = 0
-	# while !step_accepted && ntimes < 5
-	# 	print("\n", ntimes)
-	# 	δ /= 2
-	# 	x_suiv .=  x + δ
-	# 	residual!(model, x_suiv, r_suiv)
-	# 	step_accepted = norm(r_suiv)^2 - sq_norm_r < 1e-4 * (norm(δr)^2 - sq_norm_r)
-	# 	ntimes += 1
-	# end
+	while !step_accepted && ntimes < 5
+		δ /= δd
+		x_suiv .=  x + δ
+		residual!(model, x_suiv, r_suiv)
+		print("\n", ntimes, " ", norm(δ), " ", norm(x), " ", norm(x_suiv), " ", norm(r_suiv))
+		if facto == :QR
+		  δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2
+	    elseif facto == :LDL
+		  # δrₖ₊₁ = (δrₖ + r) / δd - r = (δrₖ - r) / δd
+		  δr = (δr - r) / δd
+		  δr2 = norm(δr)^2
+	    end
+		print("\n", δr2, " ", norm(r_suiv)^2, " ", sq_norm_r,  " ", norm(r_suiv)^2 - sq_norm_r, " ", δr2 - sq_norm_r)
+		step_accepted = norm(r_suiv)^2 - sq_norm_r < 1e-4 * (δr2 - sq_norm_r)
+		ntimes += 1
+	end
 
     if !step_accepted
       # Update λ
-      λ *= νm#^ntimes
+      λ *= νm^ntimes
 
 	  # Update A
 	  if facto == :QR
-		  # Original version
-		  denormalize_cols!(A, col_norms, model.meta.nvar)
+        vals_A[model.nls_meta.nnzj + 1 : model.nls_meta.nnzj + model.meta.nvar] .= sqrt(λ)
+		A = sparse(rows_A, cols_A, vals_A)
 
-          vals_A[model.nls_meta.nnzj + 1 : model.nls_meta.nnzj + model.meta.nvar] *= sqrt(νm)
-		  A = sparse(rows_A, cols_A, vals_A)
-
+	  # Update A
 	  elseif facto == :LDL
-		  vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] *= νm
-		  A = sparse(rows_A, cols_A, vals_A)
-		  # normalize_λ!(A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar], col_norms, model.meta.nvar)
+	    if normalize == :A
+	      A[1 : model.meta.nvar, 1 : model.meta.nvar] *= sqrt(νm^ntimes)
+		  A[model.nls_meta.nequ + 1 : end, model.nls_meta.nequ + 1 : end] *= sqrt(νm^ntimes)
+	    else
+		  A[model.nls_meta.nequ + 1 : end, model.nls_meta.nequ + 1 : end] *= νm^ntimes
+		end
 	  end
 
     else
@@ -233,7 +277,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  # Update A and Jtr
 	  if facto == :QR
 		@views vals_A[1 : model.nls_meta.nnzj] = vals
-		# vals_A[model.nls_meta.nnzj + 1 : model.nls_meta.nnzj + model.meta.nvar] /= sqrt(νd)
 		vals_A[model.nls_meta.nnzj + 1 : model.nls_meta.nnzj + model.meta.nvar] .= sqrt(λ)
 		A = sparse(rows_A, cols_A, vals_A)
 
@@ -242,23 +285,32 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		# QR_J = qr(A[1 : model.nls_meta.nequ, :])
 		# denormalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 
-	    mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, :] ), r)
+	    mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, :]), r)
 
 	  elseif facto == :LDL
 		@views vals_A[model.nls_meta.nequ + 1 :  model.nls_meta.nequ + model.nls_meta.nnzj] = vals
-		# vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] /= νd
-		vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] .= -λ
+		if normalize == :A
+		  b[1 : model.nls_meta.nequ] *= sqrt(λ)
+		  vals_A[1 : model.nls_meta.nequ] .= sqrt(λ)
+		  vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] .= -sqrt(λ)
+		else
+		  vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] .= -λ
+	    end
 		A = sparse(rows_A, cols_A, vals_A)
+
 		mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]), r)
-		# normalize_cols!(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar], col_norms, model.meta.nvar)
-		# normalize_λ!(A[model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar], col_norms, model.meta.nvar)
+
+		if normalize != :None
+		  normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)
+	    end
 	  end
 
 	  # Update the stopping criteria
 	  small_step = norm(δ) < satol + srtol * norm(x)
       first_order = norm(Jtr) < ϵ_first_order
       small_residual = norm(r) < restol
-      small_obj_change =  old_obj - sq_norm_r / 2 < otol * old_obj
+	  # ‖rₖ₋₁‖²/2 - ‖rₖ‖²/2 < oatol + ortol * ‖rₖ₋₁‖²/2
+      small_obj_change =  old_obj - sq_norm_r / 2 < oatol + ortol * old_obj
     end
 
 	if step_accepted
@@ -269,7 +321,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	tired = iter > ite_max
   end
 
-  @info log_row(Any[iter, sq_norm_r / 2, old_obj - sq_norm_r / 2, norm(δ), step_accepted_str])
+  @info log_row(Any[iter, sq_norm_r / 2, old_obj - sq_norm_r / 2, norm(δ), step_accepted_str, δr2])
 
   if small_step
 	status = :small_step
