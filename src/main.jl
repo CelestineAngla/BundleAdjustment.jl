@@ -16,8 +16,12 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
-# stats = Levenberg_Marquardt(fr_BA, :QR, :Metis, :A)
-stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
+# stats = Levenberg_Marquardt(fr_BA, :QR, :Metis, :J)
+stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :J)
+
+io = open("ldl_metis_j.txt", "w")
+println(io, stats)
+close(io)
 
 print("\n ------------ \nStats : \n", stats)
 
