@@ -224,8 +224,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	# 	step_accepted = norm(r_suiv)^2 - sq_norm_r < 1e-4 * (δr2 - sq_norm_r)
 	# 	ntimes += 1
 	# end
-	# print("\n", ntimes, "\nλ : ", λ, "\n‖δ‖ : ", norm(δ), "\n‖x‖ : ", norm(x), "\n‖xsuiv‖ : ", norm(x_suiv), "\n‖rsuiv‖ : ", norm(r_suiv))
-
 
     if !step_accepted
       # Update λ
@@ -239,8 +237,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 	  # Update A
 	  elseif facto == :LDL
 	    if normalize == :A
-	      A[1 : model.meta.nvar, 1 : model.meta.nvar] *= sqrt(νm^ntimes)
-		  A[model.nls_meta.nequ + 1 : end, model.nls_meta.nequ + 1 : end] *= sqrt(νm)#sqrt(νm^ntimes)
+		  b[1 : model.nls_meta.nequ] *= sqrt(νm)#^ntimes
+	      A[1 : model.nls_meta.nequ, 1 : model.nls_meta.nequ] *= sqrt(νm)#^ntimes
+		  A[model.nls_meta.nequ + 1 : end, model.nls_meta.nequ + 1 : end] *= sqrt(νm)#^ntimes
 	    else
 		  A[model.nls_meta.nequ + 1 : end, model.nls_meta.nequ + 1 : end] *= νm#^ntimes
 		end
@@ -289,9 +288,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		# denormalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 
 	    mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, :]), r)
-		print("\nJ : ", norm(A[1 : model.nls_meta.nequ, :]))
-		print("\nr : ", norm(r))
-		print("\nJtr : ", norm(Jtr))
 
 	  elseif facto == :LDL
 		@views vals_A[model.nls_meta.nequ + 1 :  model.nls_meta.nequ + model.nls_meta.nnzj] = vals
@@ -305,9 +301,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		A = sparse(rows_A, cols_A, vals_A)
 
 		mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]), r)
-		print("\nJ : ", norm(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]))
-		print("\nr : ", norm(r))
-		print("\nJtr : ", norm(Jtr))
 
 		if normalize != :None
 		  normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)
