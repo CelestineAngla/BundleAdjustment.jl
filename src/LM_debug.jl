@@ -101,24 +101,14 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       @info log_row([iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - old_obj, step_accepted_str])
     end
     print("\n", obj)
-    # If the residuals are nearly zeros 5 times in a row, we use 2nd order derivatives
-    # if sq_norm_r > resatol + resrtol * sq_norm_r₀
-    # 	counter_res_null += 1
-    # else
-    # 	counter_res_null = 0
-    # end
-    # if counter_res_null > 5
-    # 	snd_order = true
-    # end
-
     if facto == :QR
       # Solve min ‖[J √λI] δ + [r 0]‖² with QR factorization
 
       QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
       δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
 
-	  # δ_correct = A \ b
-	  # δ .= δ_correct
+      # δ_correct = A \ b
+      # δ .= δ_correct
 
       δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2 / 2
 
@@ -131,12 +121,12 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       δ = xr[model.nls_meta.nequ + 1 : end]
       δr2 = norm(δr)^2 / 2
 
-	  # full_A = A + A' - Diagonal(A)
-	  # δ_correct = full_A \ b
-	  # # print("\n", norm(xr - δ_correct) / norm(δ_correct))
-	  # δ .= δ_correct[model.nls_meta.nequ + 1 : end]
-	  # δr .= δ_correct[1 : model.nls_meta.nequ]
-	  # δr2 = norm(δr)^2 / 2
+      # full_A = A + A' - Diagonal(A)
+      # δ_correct = full_A \ b
+      # # print("\n", norm(xr - δ_correct) / norm(δ_correct))
+      # δ .= δ_correct[model.nls_meta.nequ + 1 : end]
+      # δr .= δ_correct[1 : model.nls_meta.nequ]
+      # δr2 = norm(δr)^2 / 2
     end
 
     x_suiv .=  x + δ
@@ -148,7 +138,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     # Step not accepted : d(||r||²) < 1e-4 (||Jδ + r||² - ||r||²)
     step_accepted = obj_suiv - obj < 1e-4 * (δr2 - obj)
     if δr2 > obj
-	  @error "‖δr‖² > ‖r‖²"
+      @error "‖δr‖² > ‖r‖²"
     end
 
     if !step_accepted
@@ -162,7 +152,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
       # Update A
       elseif facto == :LDL
-		vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] .= -λ
+        vals_A[model.nls_meta.nequ + model.nls_meta.nnzj + 1 : end] .= -λ
         A = sparse(rows_A, cols_A, vals_A)
       end
 
@@ -187,7 +177,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         vals_A[model.nls_meta.nnzj + 1 : end] .= sqrt(λ)
         A = sparse(rows_A, cols_A, vals_A)
 
-		mul_sparse!(Jtr, cols, rows, vals, r, model.nls_meta.nnzj)
+        mul_sparse!(Jtr, cols, rows, vals, r, model.nls_meta.nnzj)
 
       elseif facto == :LDL
         @views vals_A[model.nls_meta.nequ + 1 :  model.nls_meta.nequ + model.nls_meta.nnzj] = vals
