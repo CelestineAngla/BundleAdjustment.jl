@@ -3,7 +3,6 @@ using SolverTools
 using NLPModels
 using AMD
 using Metis
-using UnicodePlots
 include("lma_aux.jl")
 include("ldl_aux.jl")
 include("qr_aux.jl")
@@ -144,8 +143,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     if iter == 0
       @info log_row([iter, obj, old_obj - obj, norm_Jtr, λ])
     else
-      @info log_row([iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - obj, step_accepted_str])
+      @info log_row([iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - old_obj, step_accepted_str])
     end
+    # print("\n", obj)
 
     # If the residuals are nearly zeros 5 times in a row, we use 2nd order derivatives
     # if sq_norm_r > resatol + resrtol * sq_norm_r₀
@@ -185,6 +185,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         denormalize_qr!(A, col_norms, model.meta.nvar)
       end
 
+	  # δ_correct = A \ b
+	  # print("\n", norm(δ - δ_correct) / norm(δ_correct))
+	  # δ .= δ_correct
+
       # δr = ‖[J; √λI] δ + [r; 0]‖² - λ‖δ‖² = ‖[R; 0]δ + [r; 0]‖² - λ‖δ‖²
       # Qr = QR.Q[:, 1 : model.nls_meta.nequ] * r
       # δr2 = norm(QR.R * δ + Qr[1 : model.meta.nvar])^2  + norm(Qr[model.meta.nvar + 1 : end])^2 - λ * norm(δ)^2
@@ -199,6 +203,13 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       δ = xr[model.nls_meta.nequ + 1 : end]
       δr2 = norm(δr)^2 / 2
 
+	  # full_A = A + A' - Diagonal(A)
+	  # δ_correct = full_A \ b
+	  # # print("\n", norm(xr - δ_correct) / norm(δ_correct))
+	  # δ .= δ_correct[model.nls_meta.nequ + 1 : end]
+	  # δr .= δ_correct[1 : model.nls_meta.nequ]
+	  # δr2 = norm(δr)^2 / 2
+
       if normalize != :None
         denormalize_vect!(δ, col_norms, model.meta.nvar)
         if normalize == :A
@@ -207,13 +218,19 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       end
     end
 
-	# Jᵀ(Jδ + r) + λδ
+    # Jᵀ(Jδ + r) + λδ
     # if facto == :QR
-    #   print("\n", norm(transpose(A[1 : model.nls_meta.nequ, :]) * (A[1 : model.nls_meta.nequ, :] * δ + r) + λ * δ), "\n")
+	#   if norm(A' * (A * δ - b)) / norm(r) > 0.001
+	#     print("\n", norm(A' * (A * δ - b)) / norm(r))
+    #     print("\n", norm(transpose(A[1 : model.nls_meta.nequ, :]) * (A[1 : model.nls_meta.nequ, :] * δ + r) + λ * δ) / norm(r), "\n")
+	#   end
     # else
-	#   full_A = A + A' - Diagonal(A)
-	#   print("\n", norm(full_A*xr - b))
-    #   print("\n", norm(transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]) * (A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar] * δ + r) + λ * δ), "\n")
+	#   if norm(transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]) * (A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar] * δ + r) + λ * δ) / norm(r) > 0.001
+	#     print("\n", norm(δr + A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar] * δ + r) / norm(r))
+    #     full_A = A + A' - Diagonal(A)
+    #     print("\n", norm(full_A*xr - b) / norm(r))
+    #     print("\n", norm(transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar]) * (A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar] * δ + r) + λ * δ) / norm(r), "\n")
+	#   end
     # end
 
     x_suiv .=  x + δ
@@ -309,7 +326,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         # QR_J = qr(A[1 : model.nls_meta.nequ, :])
         # denormalize_cols!(A[1 : model.nls_meta.nequ, :], col_norms, model.meta.nvar)
 
-        mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, :]), r)
+		mul_sparse!(Jtr, cols, rows, vals, r, model.nls_meta.nnzj)
+
 
       elseif facto == :LDL
         @views vals_A[model.nls_meta.nequ + 1 :  model.nls_meta.nequ + model.nls_meta.nnzj] = vals
@@ -322,7 +340,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         end
         A = sparse(rows_A, cols_A, vals_A)
 
-        mul!(Jtr, transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : end]), r)
+        mul_sparse!(Jtr, cols_J, rows, vals, r, model.nls_meta.nnzj)
 
         if normalize != :None
           normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)

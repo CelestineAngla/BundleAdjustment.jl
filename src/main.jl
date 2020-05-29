@@ -16,21 +16,24 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
-# stats = Levenberg_Marquardt(fr_BA, :QR, :Metis, :J)
-stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
+# stats = Levenberg_Marquardt(fr_BA, :QR, :Metis, :A)
+stats = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None)
+
+print("\n ------------ \nStats : \n", stats)
+
+
+# Write the output into a file
 
 # using Logging
-# io = open("qr_metis_j.log", "w")
+# io = open("ldl_metis_simple.log", "w")
 # file_logger = Logging.SimpleLogger(io)
 # stats = with_logger(file_logger) do
-#   Levenberg_Marquardt(fr_BA, :QR, :Metis, :J)
+#   Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
 # end
 # println(io, stats)
 # flush(io)
 # close(io)
 
-
-print("\n ------------ \nStats : \n", stats)
 
 
 
