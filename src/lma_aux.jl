@@ -4,72 +4,77 @@ using .Threads
 
 
 
+
+
 """
 Normalize (in place) the n columns of a sparse matrix A
 and return the vector of norms
 """
-function normalize_cols!(A, col_norms, n)
-  q, re = divrem(n, nthreads())
-  if re != 0
-    q += 1
-  end
-
-  @threads for t = 1 : nthreads()
-    @simd for j = 1 + (t - 1) * q : min(t * q, n)
+function normalize_qr_a!(A, col_norms, n)
+  for j = 1 : n
       @views colj = A.nzval[A.colptr[j] : A.colptr[j+1] - 1]
       col_norms[j] = norm(colj)
       @inbounds A.nzval[A.colptr[j] : A.colptr[j+1] - 1] /= col_norms[j]
-    end
-  end
-end
-
-"""
-Computes the norms of the columns of the matrix [A; √λI]
-using the norms of the columns of A (col_norms)
-"""
-function update_norms!(col_norms, λ, n)
-  q, re = divrem(n, nthreads())
-  if re != 0
-    q += 1
-  end
-
-  @threads for t = 1 : nthreads()
-    @simd for j = 1 + (t - 1) * q : min(t * q, n)
-      col_norms[j] = sqrt(col_norms[j]^2 + λ)
-    end
   end
 end
 
 
 """
-Denormalize (in place) the sparse matrix A
+Normalize the submatrix J in the matrix A = [J; √λI]
+and multiply the √λI part by D
 """
-function denormalize_cols!(A, col_norms, n)
-  q, re = divrem(n, nthreads())
-  if re != 0
-    q += 1
-  end
-
-  @threads for t = 1 : nthreads()
-    @simd for j = 1 + (t - 1) * q : min(t * q, n)
-      A.nzval[A.colptr[j] : A.colptr[j+1] - 1] *= col_norms[j]
-    end
+function normalize_qr_j!(A, col_norms, n)
+  for j = 1 : n
+    # the √λ element does not count in the norm of J
+    @views colj = A.nzval[A.colptr[j] : A.colptr[j+1] - 2]
+    col_norms[j] = norm(colj)
+    @inbounds A.nzval[A.colptr[j] : A.colptr[j+1] - 1] /= col_norms[j]
   end
 end
+
+
+"""
+Denormalize the sparse matrix A
+"""
+function denormalize_qr!(A, col_norms, n)
+  for j = 1 : n
+    A.nzval[A.colptr[j] : A.colptr[j+1] - 1] *= col_norms[j]
+  end
+end
+
+
+"""
+Normalize the submatrix J in the matrix A = [ [I J]; [Jᵀ -λI] ]
+and multiply the -λI part by D²
+"""
+function normalize_ldl!(A, col_norms, n, m)
+  for j = 1 : n
+    # the -λ element does not count in the norm of J
+    @views colj = A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2]
+    col_norms[j] = norm(colj)
+    @inbounds A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2] /= col_norms[j]
+    # -λ is multiplied by D[j,j]²
+    A.nzval[A.colptr[m + j + 1] - 1] /= col_norms[j]^2
+  end
+end
+
+
+"""
+Denormalize the submatrix J in the matrix A = [ [I J]; [Jᵀ -λI] ]
+"""
+function denormalize_ldl!(A, col_norms, n, m)
+  for j = 1 : n
+    A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2] *= col_norms[j]
+  end
+end
+
 
 """
 Denormalize (in place) the vector x
 """
-function denormalize!(x, col_norms, n)
-  q, re = divrem(n, nthreads())
-  if re != 0
-    q += 1
-  end
-
-  @threads for t = 1 : nthreads()
-    @simd for j = 1 + (t - 1) * q : min(t * q, n)
-      x[j] /= col_norms[j]
-    end
+function denormalize_vect!(x, col_norms, n)
+  for j = 1 : n
+    x[j] /= col_norms[j]
   end
 end
 

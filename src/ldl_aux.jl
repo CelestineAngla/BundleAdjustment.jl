@@ -179,13 +179,48 @@ function ldl_numeric_upper!(n, Ap, Ai, Ax, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y
   end
 end
 
-mutable struct LDLFactorization{T<:Real,Ti<:Integer}
+
+mutable struct LDLFactorization{T<:Real,Ti<:Integer, Ti2<:Integer}
   L::SparseMatrixCSC{T,Ti}
   D::Vector{T}
-  P::Vector{Ti}
+  P::Vector{Ti2}
 end
 
-function ldl_symbolic_aux(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti}, n::Int) where {T<:Real,Ti<:Integer}
+abstract type AbstractLDLSymbolic end
+
+mutable struct LDLSymbolicUpper{T<:Real,Ti<:Integer, Ti2<:Integer} <: AbstractLDLSymbolic
+  n::Ti
+  Cp::Vector{Ti}
+  Ci::Vector{Ti}
+  Lp::Vector{Ti}
+  parent::Vector{Ti}
+  Lnz::Vector{Ti}
+  Li::Vector{Ti}
+  Lx::Vector{T}
+  D::Vector{T}
+  Y::Vector{T}
+  pattern::Vector{Ti}
+  flag::Vector{Ti}
+  P::Vector{Ti2}
+  pinv::Vector{Ti}
+end
+
+mutable struct LDLSymbolic{T<:Real,Ti<:Integer} <: AbstractLDLSymbolic
+  n::Ti
+  Lp::Vector{Ti}
+  parent::Vector{Ti}
+  Lnz::Vector{Ti}
+  Li::Vector{Ti}
+  Lx::Vector{T}
+  D::Vector{T}
+  Y::Vector{T}
+  pattern::Vector{Ti}
+  flag::Vector{Ti}
+  P::Vector{Ti}
+  pinv::Vector{Ti}
+end
+
+function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::Int=size(A,1)) where {T<:Real,Ti<:Integer, Ti2<:Integer}
 	# allocate space for symbolic analysis
   parent = Vector{Ti}(undef, n)
   Lnz = Vector{Ti}(undef, n)
@@ -198,27 +233,38 @@ function ldl_symbolic_aux(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti}, n::Int) where
     pinv[P[k]] = k
   end
 
-	Cp = Vector{Ti}(undef, n + 1)
-	col_symb!(n, A.colptr, A.rowval, Cp, Lp, pinv)
-	Ci = Vector{Ti}(undef, Cp[end] - 1)
-	col_num!(n, A.colptr, A.rowval, A.nzval, Cp, Ci, Lp, pinv)
+  # perform symbolic analysis
+  if upper
+  	Cp = Vector{Ti}(undef, n + 1)
+  	col_symb!(n, A.colptr, A.rowval, Cp, Lp, pinv)
+  	Ci = Vector{Ti}(undef, Cp[end] - 1)
+  	col_num!(n, A.colptr, A.rowval, A.nzval, Cp, Ci, Lp, pinv)
+  	ldl_symbolic_upper!(n, A.colptr, A.rowval, Cp, Ci, Lp, parent, Lnz, flag, P, pinv)
+  else
+    ldl_symbolic!(n, A.colptr, A.rowval, Lp, parent, Lnz, flag, P, pinv)
+  end
 
-	# perform symbolic analysis
-	ldl_symbolic_upper!(n, A.colptr, A.rowval, Cp, Ci, Lp, parent, Lnz, flag, P, pinv)
-
-	# allocate space for numerical factorization
+  # allocate space for numerical factorization
 	Li = Vector{Ti}(undef, Lp[n] - 1)
 	Lx = Vector{T}(undef, Lp[n] - 1)
 	Y = Vector{T}(undef, n)
 	D = Vector{T}(undef, n)
 	pattern = Vector{Ti}(undef, n)
 
-	return Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, pinv
+  if upper
+    return LDLSymbolicUpper(n, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, P, pinv)
+  else
+    return LDLSymbolic(n, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, P, pinv)
+  end
 end
 
-function ldl_numeric_aux(A::SparseMatrixCSC{T,Ti}, P, n, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, pinv) where {T<:Real,Ti<:Integer}
-  # perform numerical factorization
-  ldl_numeric_upper!(n, A.colptr, A.rowval, A.nzval, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, P, pinv)
 
-  return LDLFactorization(SparseMatrixCSC{T,Ti}(n, n, Lp, Li, Lx), D, P)
+
+function ldl_factorize(A::SparseMatrixCSC{T,Ti}, LDLSymbolic::AbstractLDLSymbolic, upper=false) where {T<:Real,Ti<:Integer}
+  if upper
+    ldl_numeric_upper!(LDLSymbolic.n, A.colptr, A.rowval, A.nzval, LDLSymbolic.Cp, LDLSymbolic.Ci, LDLSymbolic.Lp, LDLSymbolic.parent, LDLSymbolic.Lnz, LDLSymbolic.Li, LDLSymbolic.Lx, LDLSymbolic.D, LDLSymbolic.Y, LDLSymbolic.pattern, LDLSymbolic.flag, LDLSymbolic.P, LDLSymbolic.pinv)
+  else
+    ldl_numeric!(LDLSymbolic.n, A.colptr, A.rowval, A.nzval, LDLSymbolic.Lp, LDLSymbolic.parent, LDLSymbolic.Lnz, LDLSymbolic.Li, LDLSymbolic.Lx, LDLSymbolic.D, LDLSymbolic.Y, LDLSymbolic.pattern, LDLSymbolic.flag, LDLSymbolic.P, LDLSymbolic.pinv)
+  end
+  return LDLFactorization(SparseMatrixCSC{T,Ti}(LDLSymbolic.n, LDLSymbolic.n, LDLSymbolic.Lp, LDLSymbolic.Li, LDLSymbolic.Lx), LDLSymbolic.D, LDLSymbolic.P)
 end

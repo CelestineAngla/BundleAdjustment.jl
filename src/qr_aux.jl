@@ -96,33 +96,95 @@ rotations that we store in G_list and then Qλ = [ [Q  0]; [0  I] ] * Gᵀ
 """
 function fullQR_givens!(R, G_list, news, sqrtλ, col_norms, n, m)
 	counter = 1
-	print("\nbegin\n\n", R)
+	# print("\nbegin\n\n", R)
 	for k = n : -1 : 1
-			print("\n k ", k)
+		# print("\n k ", k)
 	    # We rotate row k of R with row k of √λI to eliminate [k, k]
+		# @time begin
 	    G, r = givens(R[k, k], sqrtλ/col_norms[k], k, m + k)
+		# end
+		# @time begin
 	    apply_givens!(R, G, r, news, n, m, true)
-			print("\n\n", news)
-		  G_list[counter] = G
-		  counter += 1
-			print("\n\n", R)
+	    # end
+		# print("\n\n", news)
+		# @time begin
+		G_list[counter] = G
+	    # end
+		# @time begin
+		counter += 1
+		# end
+	    # print("\n\n", R)
 
 	    for l = k + 1 : n
 	      if news[l] != 0
-					print("\n l ", l)
+			# print("\n l ", l)
 	        # We rotate row l of R with row k of √λI to eliminate [k, l]
-	  			G, r = givens(R[l, l], news[l], l, m + k)
+			# @time begin
+	  	    G, r = givens(R[l, l], news[l], l, m + k)
+		    # end
+			# @time begin
 	        apply_givens!(R, G, r, news, n, m, false)
-					print("\n\n", news)
-	  	  	G_list[counter] = G
-	  		  counter += 1
-					print("\n\n", R)
+			# end
+			# print("\n\n", news)
+			# @time begin
+			G_list[counter] = G
+			# end
+	  	  	# @time begin
+	  		counter += 1
+			# end
+			# print("\n\n", R)
 	      end
 	    end
 
-	end
+     end
   return counter - 1
 end
+
+# function fullQR_givens2!(R, G_list, news_idx, news_vals, sqrtλ, col_norms, n, m)
+# 	counter = 1
+# 	# print("\nbegin\n\n", R)
+# 	for k = n : -1 : 1
+# 		print("\n k ", k)
+# 	    # We rotate row k of R with row k of √λI to eliminate [k, k]
+# 		@time begin
+# 	    G, r = givens(R[k, k], sqrtλ/col_norms[k], k, m + k)
+# 		end
+# 		@time begin
+# 	    news_length = apply_givens2!(R, G, r, news_idx, news_vals, n, m, true, k)
+# 	    end
+# 		# print("\n\n", news)
+# 		@time begin
+# 		G_list[counter] = G
+# 	    end
+# 		@time begin
+# 		counter += 1
+# 		end
+# 	    # print("\n\n", R)
+#
+# 	    for l = 1 : news_length
+#
+# 			print("\n l ", news_idx[l])
+# 	        # We rotate row l of R with row k of √λI to eliminate [k, l]
+# 			@time begin
+# 	  	    G, r = givens(R[news_idx[l], news_idx[l]], news_vals[l], news_idx[l], m + k)
+# 		    end
+# 			@time begin
+# 	        apply_givens2!(R, G, r, news_idx, news_vals, n, m, false, l)
+# 			end
+# 			# print("\n\n", news)
+# 			@time begin
+# 			G_list[counter] = G
+# 			end
+# 	  	  	@time begin
+# 	  		counter += 1
+# 			end
+# 			# print("\n\n", R)
+# 	      end
+# 	    end
+#
+#   end
+#   return counter - 1
+# end
 
 
 """
@@ -136,7 +198,7 @@ function apply_givens!(R, G, r, news, n, m, diag)
     	for j = G.i1 : n
       		if j == G.i2 - m
         		R[G.i1, G.i2 - m] = r
-      		else
+      		elseif R[G.i1, j] != 0
         		R[G.i1, j], news[j] = G.c * R[G.i1, j], - G.s * R[G.i1, j]
       		end
     	end
@@ -147,12 +209,44 @@ function apply_givens!(R, G, r, news, n, m, diag)
       		if j == G.i2 - m
         		R[G.i1, G.i2 - m] = r
         		news[G.i2 - m] = 0
-      		else
-						R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
+      		elseif R[G.i1, j] != 0 || news[j] != 0
+				R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
       		end
     	end
 	end
 end
+
+# """
+# Performs the Givens rotation G on [R; 0; √λI] knowing the news
+# elements in the √λI part and returns the new elements created
+# """
+# function apply_givens2!(R, G, r, news_idx, news_vals, n, m, diag, start_news)
+# 	# If we want to eliminate the diagonal element (ie: √λ),
+# 	# we know that news is empty so far
+# 	if diag
+# 		idx = 1
+#     	for j = G.i1 : n
+#       		if j == G.i2 - m
+#         		R[G.i1, G.i2 - m] = r
+#       		elseif R[G.i1, j] != 0
+# 				news_vals[idx] = idx
+#         		R[G.i1, j], news_vals[idx] = G.c * R[G.i1, j], - G.s * R[G.i1, j]
+# 				idx += 1
+#       		end
+#     	end
+#
+# 	# Otherwise we eliminate the first non-zero element of news
+# 	else
+#     	for j = G.i1 : n
+#       		if j == G.i2 - m
+#         		R[G.i1, G.i2 - m] = r
+#         		news[G.i2 - m] = 0
+#       		elseif R[G.i1, j] != 0 || news[j] != 0
+# 				R[G.i1, j], news[j] = G.c * R[G.i1, j] + G.s * news[j], - G.s * R[G.i1, j] + G.c * news[j]
+#       		end
+#     	end
+# 	end
+# end
 
 
 """
@@ -213,6 +307,7 @@ end
 # # Givens rotations on QR_A.R
 # G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
 # news = Vector{Float64}(undef, n)
+# # news = sparsevec(I,V)
 # col_norms = ones(n)
 # counter = fullQR_givens!(QR_A.R, G_list, news, sqrt(λ), col_norms, n, m)
 #
