@@ -2,21 +2,16 @@ using SparseArrays
 using SolverTools
 using NLPModels
 using AMD
-using Metis
 include("lma_aux.jl")
 include("ldl_aux.jl")
 include("qr_aux.jl")
-
-
 
 """
 Implementation of Levenberg Marquardt algorithm for NLSModels
 Solves min 1/2 ||r(x)||² where r is a vector of residuals
 """
 function Levenberg_Marquardt(model :: AbstractNLSModel,
-                             facto :: Symbol,
-                             perm :: Symbol,
-							 normalize :: Symbol;
+                             facto :: Symbol;
                              x :: AbstractVector=copy(model.meta.x0),
                              restol=100*sqrt(eps(eltype(x))),
                              satol=sqrt(eps(eltype(x))), srtol=sqrt(eps(eltype(x))),
@@ -25,15 +20,13 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
                              νd=eltype(x)(3), νm=eltype(x)(3), λ=eltype(x)(1.5), δd=eltype(x)(2),
                              ite_max :: Int=500)
 
-  show(model)
-  print("\n")
+  # @show model
 
   start_time = time()
   elapsed_time = 0.0
   iter = 0
   x_suiv = similar(x)
   T = eltype(x)
-
 
   # Initialize residuals
   r = residual(model, x)
@@ -42,7 +35,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   r_suiv = copy(r)
 
   # Initialize b = [r; 0]
-  b = [-r; zeros(T, model.meta.nvar)]
+  b = similar(r, (model.nls_meta.nequ + model.meta.nvar,))
+  b[1 : model.nls_meta.nequ] .= -r
   xr = similar(b)
 
   # Initialize J in the format J[rows[k], cols[k]] = vals[k]
@@ -68,16 +62,14 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     cols_A = vcat(collect(1 : model.nls_meta.nequ), cols, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
     vals_A = vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar))
     A = sparse(rows_A, cols_A, vals_A)
-    # Compute permutation and perform symbolic analyse of A
+    # Compute permutation and perform symbolic analysis of A
     P = amd(A)
     ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ)
     # Compute Jᵀr
     Jtr = transpose(A[1 : model.nls_meta.nequ, model.nls_meta.nequ + 1 : end]) * r
   end
 
-  norm_δ = 0
-  δr2 = 0
-  step_accepted_str = ""
+  local norm_δ, δr2
   norm_Jtr = norm(Jtr)
   ϵ_first_order = atol + rtol * norm_Jtr
   old_obj = obj
@@ -88,24 +80,20 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   small_residual = norm_r < restol
   small_obj_change =  false
   tired = iter > ite_max
+  fail = false
   status = :unknown
 
+  @info log_header([:iter, :f, :Δf, :dFeas, :λ, :δ, :ρ, :status], [Int, T, T, T, T, T, T, String],
+                   hdr_override = Dict(:f => "f(x)", :dFeas => "‖Jᵀr‖", :δ => "‖δ‖"))
 
-  @info log_header([:iter, :f, :bk, :dual, :ratio, :step, :radius, :slope, :cgstatus], [Int, T, T, T, T, T, T, T, String],
-  hdr_override=Dict(:f=>"f(x)", :bk=>"Δf", :dual=>"‖Jᵀr‖", :ratio=>"λ", :step=>"‖δ‖  ", :radius=>"½‖δr‖²", :slope=>"½‖δr‖² - f", :cgstatus=>"step accepted"))
-
-  while !(small_step || first_order || small_residual || small_obj_change || tired)
-    if iter == 0
-      @info log_row([iter, obj, old_obj - obj, norm_Jtr, λ])
-    else
-      @info log_row([iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - old_obj, step_accepted_str])
-    end
-    print("\n", obj)
+  while !(small_step || first_order || small_residual || small_obj_change || tired || fail)
     if facto == :QR
       # Solve min ‖[J √λI] δ + [r 0]‖² with QR factorization
 
       QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
       δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
+      # QR = qr(A)
+      # δ = QR \ b
 
       # δ_correct = A \ b
       # δ .= δ_correct
@@ -120,30 +108,32 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       δr = xr[1 : model.nls_meta.nequ]
       δ = xr[model.nls_meta.nequ + 1 : end]
       δr2 = norm(δr)^2 / 2
-
-      # full_A = A + A' - Diagonal(A)
-      # δ_correct = full_A \ b
-      # # print("\n", norm(xr - δ_correct) / norm(δ_correct))
-      # δ .= δ_correct[model.nls_meta.nequ + 1 : end]
-      # δr .= δ_correct[1 : model.nls_meta.nequ]
-      # δr2 = norm(δr)^2 / 2
     end
 
+    # Check model decrease
+    if δr2 > obj
+      @error "‖δr‖² > ‖r‖²" δr2 obj
+      fail = true
+      continue
+    end
+
+    norm_δ = norm(δ)
     x_suiv .=  x + δ
     residual!(model, x_suiv, r_suiv)
     norm_rsuiv = norm(r_suiv)
     obj_suiv = norm_rsuiv^2 / 2
-    iter += 1
 
     # Step not accepted : d(||r||²) < 1e-4 (||Jδ + r||² - ||r||²)
-    step_accepted = obj_suiv - obj < 1e-4 * (δr2 - obj)
-    if δr2 > obj
-      @error "‖δr‖² > ‖r‖²"
-    end
+    pred = obj - δr2       # predicted reduction
+    ared = obj - obj_suiv  # actual reduction
+    step_accepted = ared ≥ 1e-4 * pred
+    step_accepted_str = step_accepted ? "acc" : "rej"
+    @info log_row((iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, ared / pred, step_accepted_str))
 
     if !step_accepted
       # Update λ
-      λ *= νm#^ntimes
+      # λ *= νm
+      λ = max(λ, norm_δ) * νm
 
       # Update A
       if facto == :QR
@@ -159,6 +149,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     else
       # Update λ and x
       λ /= νd
+      if ared ≥ 0.9 * pred  # very successful step
+        λ /= νd
+      end
+      λ = max(1.0e-8, λ)
       x .= x_suiv
 
       # Update J
@@ -189,7 +183,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
       # Update the stopping criteria
       norm_Jtr = norm(Jtr)
-      norm_δ = norm(δ)
       small_step = norm_δ < satol + srtol * norm(x)
       first_order = norm_Jtr < ϵ_first_order
       small_residual = norm_r < restol
@@ -197,15 +190,11 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       small_obj_change =  old_obj - obj < oatol + ortol * old_obj
     end
 
-    if step_accepted
-      step_accepted_str = "true"
-    else
-      step_accepted_str = "false"
-    end
+    iter += 1
     tired = iter > ite_max
   end
 
-  @info log_row(Any[iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - obj, step_accepted_str])
+  # fail || (@info log_row((iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - obj, "")))
 
   if small_step
     status = :small_step
@@ -215,19 +204,25 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     status = :small_residual
   elseif small_obj_change
     status = :acceptable
-  else
+  elseif fail
+    status = :neg_pred
+  elseif tired
     status = :max_iter
   end
 
   elapsed_time = time() - start_time
 
-  return GenericExecutionStats(status, model, solution=x, objective=obj, iter=iter, elapsed_time=elapsed_time, primal_feas=norm_Jtr)
+  return GenericExecutionStats(status,
+                               model,
+                               solution = x,
+                               objective = obj,
+                               iter = iter,
+                               elapsed_time = elapsed_time,
+                               dual_feas = norm_Jtr)
 end
 
-
-
-include("BALNLPModels.jl")
-BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
-fr_BA = FeasibilityResidual(BA)
-stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
-print("\n ------------ \nStats : \n", stats)
+# include("BALNLPModels.jl")
+# BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+# fr_BA = FeasibilityResidual(BA)
+# stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
+# print("\n ------------ \nStats : \n", stats)

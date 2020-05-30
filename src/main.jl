@@ -1,10 +1,10 @@
-using Quadmath
-using SolverBenchmark
+# using Quadmath
+# using SolverBenchmark
 using SolverTools
 using DataFrames
 include("BALNLPModels.jl")
-include("LevenbergMarquardt.jl")
-
+# include("LevenbergMarquardt.jl")
+include("LM_debug.jl")
 
 # Create a BALNLPModel from a dataset
 BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
@@ -17,7 +17,8 @@ fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
 # stats = Levenberg_Marquardt(fr_BA, :QR, :Metis, :A)
-stats = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None)
+# stats = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None, ite_max=100)
+stats = Levenberg_Marquardt(fr_BA, :LDL, ite_max=100)
 
 print("\n ------------ \nStats : \n", stats)
 
@@ -26,7 +27,7 @@ print("\n ------------ \nStats : \n", stats)
 
 # using Logging
 # io = open("ldl_metis_simple.log", "w")
-# file_logger = Logging.SimpleLogger(io)
+# file_logger = Logging.ConsoleLogger(io)
 # stats = with_logger(file_logger) do
 #   Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
 # end
