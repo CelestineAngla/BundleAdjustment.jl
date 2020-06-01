@@ -20,10 +20,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
                              x :: AbstractVector=copy(model.meta.x0),
                              restol=100*sqrt(eps(eltype(x))),
                              satol=sqrt(eps(eltype(x))), srtol=sqrt(eps(eltype(x))),
-                             oatol=0*sqrt(eps(eltype(x))), ortol=0*sqrt(eps(eltype(x))),
-                             atol=100*sqrt(eps(eltype(x))), rtol=100*sqrt(eps(eltype(x))),
-                             νd=eltype(x)(3), νm=eltype(x)(3), λ=eltype(x)(1.5), δd=eltype(x)(2),
-                             ite_max :: Int=500)
+                             oatol=sqrt(eps(eltype(x))), ortol=1000*sqrt(eps(eltype(x))),
+                             atol=100*sqrt(eps(eltype(x))), rtol=1000*sqrt(eps(eltype(x))),
+                             νd=eltype(x)(3), νm=eltype(x)(3), λ=eltype(x)(0.1), δd=eltype(x)(2),
+                             ite_max :: Int=100)
 
   show(model)
   print("\n")

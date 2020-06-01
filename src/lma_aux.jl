@@ -113,6 +113,14 @@ function mul_sparse!(xr, rows, cols, vals, x, n)
   return xr
 end
 
+function mul_sparse(rows, cols, vals, x, n, l)
+  xr = zeros(eltype(x), l)
+  for k = 1 : n
+    xr[rows[k]] += vals[k] * x[cols[k]]
+  end
+  return xr
+end
+
 
 # m = 7
 # n = 5

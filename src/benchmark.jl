@@ -1,42 +1,50 @@
 using SolverBenchmark
 using SolverTools
-using DataFrames
 include("BALNLPModels.jl")
-include("LevenbergMarquardt.jl")
+include("lm.jl")
 
 solvers = Dict(
-  :lmqramdnone => model -> Levenberg_Marquardt(model, :QR, :AMD, :None),
-  :lmqramdj => model -> Levenberg_Marquardt(model, :QR, :AMD, :J),
-  :lmqramda => model -> Levenberg_Marquardt(model, :QR, :AMD, :A),
-  :lmqrmetis => model -> Levenberg_Marquardt(model, :QR, :Metis, :None),
-  :lmldlamdnone => model -> Levenberg_Marquardt(model,:LDL, :AMD, :None),
-  :lmldlamdj => model -> Levenberg_Marquardt(model,:LDL, :AMD, :J),
-  :lmldlmetis => model -> Levenberg_Marquardt(model,:LDL, :Metis, :None)
+  :lmqramd => model -> Levenberg_Marquardt(model, :QR, :AMD),
+  :lmqrmetis => model -> Levenberg_Marquardt(model, :QR, :Metis),
+  :lmldlamd => model -> Levenberg_Marquardt(model,:LDL, :AMD),
+  :lmldlmetis => model -> Levenberg_Marquardt(model,:LDL, :Metis)
 )
 
 prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
               "LadyBug/problem-73-11032-pre.txt.bz2",
               "LadyBug/problem-138-19878-pre.txt.bz2",
-              "LadyBug/problem-318-41628-pre.txt.bz2"
+              "LadyBug/problem-318-41628-pre.txt.bz2",
+              "LadyBug/problem-460-56811-pre.txt.bz2",
+              "LadyBug/problem-646-73584-pre.txt.bz2",
+              "LadyBug/problem-810-88814-pre.txt.bz2",
+              "LadyBug/problem-1031-110968-pre.txt.bz2",
+              "LadyBug/problem-1723-156502-pre.txt.bz2",
+              "Dubrovnik/problem-356-226730-pre.txt.bz2",
+              "Venice/problem-1350-894716-pre.txt.bz2",
+              "Venice/problem-1672-986962-pre.txt.bz2",
+              "Final/problem-4585-1324582-pre.txt.bz2",
+              "Final/problem-13682-4456117-pre.txt.bz2"
               )
-problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)  # remarque les parenthèses
+problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
 
 using Logging
-stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger())
-save_stats(stats, "lm_stats.csv")
+io = open("lm.log", "w")
+stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger(io))
+flush(io)
+close(io)
+# save_stats(stats, "lm_stats.csv")
 
-# df = join(stats, [:name, :nvar, :nequ, :status, :objective, :elapsed_time, :iter, :dual_feas])
-# latex_table(stdout, df)
-# markdown_table(stdout, df)
-
-# joinpath(@__DIR__, "..", "lm_stats.csv")
-# stats = load_stats(joinpath(@__DIR__, "..", "lm_stats.csv"))
-# print(latex_table(stdout, stats[:lmldlmetis], cols=[:nvar, :nequ, :status, :objective, :elapsed_time, :iter, :primal_feas]))
+for solver in solvers
+  open(String(solver.first) * "_table.log","w") do io
+    latex_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
+    markdown_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
+  end
+end
 
 using Plots
 gr()
 ENV["GKSwstype"] = "100"
-solved(stats) = stats.status .== stats.status
+solved(stats) = stats.status .!= :neg_pred
 costnames = ["time",
              "r evals",
              "J evals",
