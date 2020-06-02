@@ -15,7 +15,7 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # BA49_cutest = CUTEstModel("BA-L49")
 
 @btime cons(BA, BA.meta.x0)
-@btime jac(BA, BA.meta.x0)
+# @btime jac(BA, BA.meta.x0)
 rows = Vector{Int}(undef, BA.meta.nnzj)
 cols = Vector{Int}(undef, BA.meta.nnzj)
 @btime jac_structure!(BA, rows, cols)

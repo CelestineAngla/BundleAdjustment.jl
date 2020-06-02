@@ -39,8 +39,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   r_suiv = copy(r)
 
   # Initialize b = [r; 0]
-  b = similar(r, (model.nls_meta.nequ + model.meta.nvar,))
+  b = Vector{T}(undef, model.nls_meta.nequ + model.meta.nvar)
   b[1 : model.nls_meta.nequ] .= -r
+  b[model.nls_meta.nequ + 1 : end] .= 0
   xr = similar(b)
 
   # Initialize J in the format J[rows[k], cols[k]] = vals[k]

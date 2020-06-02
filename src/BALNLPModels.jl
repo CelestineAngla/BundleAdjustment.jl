@@ -148,11 +148,14 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   npnts = nlp.npnts
   T = eltype(x)
 
-  q, re = divrem(nobs, nthreads())
+  # jac_coord is optimal with 3 threads
+  nthreads_used = min(3, nthreads())
+
+  q, re = divrem(nobs, nthreads_used)
   if re != 0
     q += 1
   end
-  @threads for t = 1 : nthreads()
+  @threads for t = 1 : nthreads_used
 
     denseJ = Matrix{T}(undef, 2, 12)
     JP1_mat = zeros(6, 12)
