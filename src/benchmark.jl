@@ -18,8 +18,8 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
               "LadyBug/problem-1031-110968-pre.txt.bz2",
               "LadyBug/problem-1723-156502-pre.txt.bz2",
               "Dubrovnik/problem-356-226730-pre.txt.bz2",
-              "Venice/problem-1350-894716-pre.txt.bz2",
-              "Final/problem-4585-1324582-pre.txt.bz2"
+              "Venice/problem-1350-894716-pre.txt.bz2"
+              # "Final/problem-4585-1324582-pre.txt.bz2"
               )
 problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
 

@@ -24,7 +24,7 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
-stats = Levenberg_Marquardt(fr_BA, :LDL, :AMD)
+stats = Levenberg_Marquardt(fr_BA, :QR, :AMD)
 
 
 # Write the output into a file
