@@ -247,49 +247,49 @@ end
 
 # Uncomment to test fullQR_givens
 
-m = 7
-n = 5
-λ = 1.5
-rows = rand(1:m, 8)
-cols = rand(1:n, 8)
-vals = rand(-4.5:4.5, 8)
-A = sparse(rows, cols, vals, m, n)
-print("\n\nA\n\n", A)
-
-b = rand(-4.5:4.5, m+n)
-
-
-
-# QR facto of A
-QR_A = qr(A)
-print("\n\nPcol & Prow for A :\n", QR_A.pcol, "\n", QR_A.prow)
-print("\n\n", QR_A.Q * vcat(QR_A.R, zeros(m-n, n)))
-
-# A_R is [R; √λI]
-A_R = zeros(m+n, n)
-A_R[1:n, 1:n] .= QR_A.R
-for k = 1:n
-	A_R[m+k, k] = sqrt(λ)
-end
-
-# Givens rotations on QR_A.R
-G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
-news = Vector{Float64}(undef, n)
-# news = sparsevec(I,V)
-Rt = sparse(QR_A.R')
-col_norms = ones(n)
-counter = fullQR_givens!(QR_A.R, Rt, G_list, news, sqrt(λ), col_norms, n, m)
-
-# performs the same Givens rotations on A_R
-A_R2 = similar(A_R)
-for k = 1 : counter
-	A_R2 = G_list[k] * A_R
-	A_R .= A_R2
-end
-print("\n\n", A_R)
-
-# Check if the λ have been eliminated in A_R and if A_R = Rλ
-print("\n\n", norm(A_R[n+1:n+m, :]), "\n", norm(A_R[1:n, :] - QR_A.R))
+# m = 7
+# n = 5
+# λ = 1.5
+# rows = rand(1:m, 8)
+# cols = rand(1:n, 8)
+# vals = rand(-4.5:4.5, 8)
+# A = sparse(rows, cols, vals, m, n)
+# print("\n\nA\n\n", A)
+#
+# b = rand(-4.5:4.5, m+n)
+#
+#
+#
+# # QR facto of A
+# QR_A = qr(A)
+# print("\n\nPcol & Prow for A :\n", QR_A.pcol, "\n", QR_A.prow)
+# print("\n\n", QR_A.Q * vcat(QR_A.R, zeros(m-n, n)))
+#
+# # A_R is [R; √λI]
+# A_R = zeros(m+n, n)
+# A_R[1:n, 1:n] .= QR_A.R
+# for k = 1:n
+# 	A_R[m+k, k] = sqrt(λ)
+# end
+#
+# # Givens rotations on QR_A.R
+# G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(n*(n + 1)/2))
+# news = Vector{Float64}(undef, n)
+# # news = sparsevec(I,V)
+# Rt = sparse(QR_A.R')
+# col_norms = ones(n)
+# counter = fullQR_givens!(QR_A.R, Rt, G_list, news, sqrt(λ), col_norms, n, m)
+#
+# # performs the same Givens rotations on A_R
+# A_R2 = similar(A_R)
+# for k = 1 : counter
+# 	A_R2 = G_list[k] * A_R
+# 	A_R .= A_R2
+# end
+# print("\n\n", A_R)
+#
+# # Check if the λ have been eliminated in A_R and if A_R = Rλ
+# print("\n\n", norm(A_R[n+1:n+m, :]), "\n", norm(A_R[1:n, :] - QR_A.R))
 
 
 # # Check if Qλt_mul! works well
