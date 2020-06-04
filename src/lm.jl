@@ -34,15 +34,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
   # Initialize residuals
   r = residual(model, x)
-  print("\n", r[1:10])
-  print("\n", length(x))
-  for cam_idx in [1 2 4 27 30]
-    idx_cam = 3*7776 + 9* (cam_idx - 1)
-    idx_pnt = 1
-    print("\n", idx_cam,"\n")
-    print("\n", x[(idx_pnt - 1) * 3 + 1 : (idx_pnt - 1) * 3 + 3])
-    print("\n", x[idx_cam  + 1 : idx_cam + 9])
-  end
   norm_r = norm(r)
   obj = norm_r^2 / 2
   r_suiv = copy(r)
