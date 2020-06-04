@@ -167,20 +167,3 @@ function Qλt_mul!(xr, Q, G_list, x, n, m, counter, Pcol)
   end
   return xr
 end
-
-
-"""
-Function to test Qλt_mul!
-"""
-function Qλt_mul_verif!(xr, Q, G_list, x, n, m, counter)
-  QI = zeros(n+m, n+m)
-  QI[1:m, 1:m] .= Q
-  QI[m+1:m+n, m+1:m+n] .= Matrix{Float64}(I, n, n)
-  Qλ = similar(QI)
-  for k = 1 : counter
-    Qλ = QI * G_list[k]'
-    QI .= Qλ
-  end
-  mul!(xr, Qλ', x)
-  return Qλ
-end

@@ -170,13 +170,6 @@ end
 @test norm(A_R[n+1:n+m, :]) < 1e-10
 @test norm(A_R[1:n, :] - R) < 1e-10
 
-# Check if Qλt_mul! works well
-my_xr = similar(b)
-Qλt_mul!(my_xr, QR_A.Q, G_list, b, n, m, counter)
-true_xr = similar(b)
-Qλ = Qλt_mul_verif!(true_xr, QR_A.Q, G_list, b, n, m, counter)
-@test norm(my_xr - true_xr) < 1e-10
-
 # Solve min ||[A; √λ] x - b|| with Givens strategy
 xr = similar(b)
 δ1 = solve_qr2!(m + n, n, xr, b, QR_A.Q, R, Prow, QR_A.pcol, counter, G_list)
