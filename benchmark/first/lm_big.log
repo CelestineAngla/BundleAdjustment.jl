@@ -1,0 +1,654 @@
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-1723-156502-feasres
+│   Total variables………485013  Total constraints…0     
+│     free………………………………485013    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………117619047591    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………1357436
+│     linear…………………………0     
+│     nonlinear…………………1357436
+│     nnzj………………………………16289232
+│     nnzh………………………………117619047591
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :AMD
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   6.2e+07   0.0e+00   5.4e+13   3.0e+01   6.7e+00   9.8e-01              acc
+[ Info:      2   1.3e+06   6.1e+07   7.9e+10   3.3e+00   9.6e+00  -9.8e+00              rej
+[ Info:      3   1.3e+06   6.1e+07   7.9e+10   1.0e+01   6.1e+00  -2.7e+00              rej
+[ Info:      4   1.3e+06   6.1e+07   7.9e+10   3.0e+01   3.8e+00  -1.6e+00              rej
+[ Info:      5   1.3e+06   6.1e+07   7.9e+10   9.0e+01   2.4e+00  -7.0e-01              rej
+[ Info:      6   1.3e+06   6.1e+07   7.9e+10   2.7e+02   1.6e+00  -9.2e-02              rej
+[ Info:      7   1.3e+06   6.1e+07   7.9e+10   8.1e+02   1.2e+00   1.0e-01              acc
+[ Info:      8   1.2e+06   9.5e+04   2.2e+10   2.7e+02   1.4e+00  -5.6e+02              rej
+[ Info:      9   1.2e+06   9.5e+04   2.2e+10   8.1e+02   1.0e+00  -6.7e-01              rej
+[ Info:     10   1.2e+06   9.5e+04   2.2e+10   2.4e+03   7.7e-01   4.7e-01              acc
+[ Info:     11   8.3e+05   4.0e+05   2.1e+10   8.1e+02   1.1e+00  -6.9e+14              rej
+[ Info:     12   8.3e+05   4.0e+05   2.1e+10   2.4e+03   5.9e-01  -5.2e+10              rej
+[ Info:     13   8.3e+05   4.0e+05   2.1e+10   7.3e+03   3.1e-01  -6.3e+09              rej
+[ Info:     14   8.3e+05   4.0e+05   2.1e+10   2.2e+04   1.9e-01  -8.3e+03              rej
+[ Info:     15   8.3e+05   4.0e+05   2.1e+10   6.6e+04   1.3e-01  -5.7e+01              rej
+[ Info:     16   8.3e+05   4.0e+05   2.1e+10   2.0e+05   9.0e-02  -2.5e+02              rej
+[ Info:     17   8.3e+05   4.0e+05   2.1e+10   5.9e+05   5.6e-02  -4.3e+03              rej
+[ Info:     18   8.3e+05   4.0e+05   2.1e+10   1.8e+06   3.3e-02  -3.1e+04              rej
+[ Info:     19   8.3e+05   4.0e+05   2.1e+10   5.3e+06   2.0e-02  -5.6e+05              rej
+[ Info:     20   8.3e+05   4.0e+05   2.1e+10   1.6e+07   1.3e-02  -8.6e+07              rej
+[ Info:     21   8.3e+05   4.0e+05   2.1e+10   4.8e+07   8.9e-03  -1.6e+08              rej
+[ Info:     22   8.3e+05   4.0e+05   2.1e+10   1.4e+08   6.0e-03  -9.9e+05              rej
+[ Info:     23   8.3e+05   4.0e+05   2.1e+10   4.3e+08   3.8e-03  -1.3e+05              rej
+[ Info:     24   8.3e+05   4.0e+05   2.1e+10   1.3e+09   2.3e-03  -9.5e+06              rej
+[ Info:     25   8.3e+05   4.0e+05   2.1e+10   3.9e+09   1.4e-03  -8.0e+09              rej
+[ Info:     26   8.3e+05   4.0e+05   2.1e+10   1.2e+10   8.4e-04  -6.9e+03              rej
+[ Info:     27   8.3e+05   4.0e+05   2.1e+10   3.5e+10   5.7e-04  -9.5e+01              rej
+[ Info:     28   8.3e+05   4.0e+05   2.1e+10   1.0e+11   3.9e-04  -3.3e+01              rej
+[ Info:     29   8.3e+05   4.0e+05   2.1e+10   3.1e+11   2.6e-04  -3.7e+01              rej
+[ Info:     30   8.3e+05   4.0e+05   2.1e+10   9.4e+11   2.0e-04  -2.8e+01              rej
+[ Info:     31   8.3e+05   4.0e+05   2.1e+10   2.8e+12   1.4e-04  -1.5e+01              rej
+[ Info:     32   8.3e+05   4.0e+05   2.1e+10   8.5e+12   9.5e-05  -6.3e+00              rej
+[ Info:     33   8.3e+05   4.0e+05   2.1e+10   2.5e+13   6.0e-05  -7.2e-01              rej
+[ Info:     34   8.3e+05   4.0e+05   2.1e+10   7.6e+13   3.7e-05   7.2e-01              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 633149.3515236515
+│   primal feasibility: 0.0
+│   dual feasibility: 1.1683659141177484e11
+│   solution: [1.3039482954013277  0.8723391877277292  -7.798775491398905  -0.7401937475980759 ⋯ 243.9409824431039]
+│   iterations: 34
+└   elapsed time: 11136.656998872757
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Dubrovnik-273-176305-feasres
+│   Total variables………531372  Total constraints…0     
+│     free………………………………531372    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………141178366878    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………1885940
+│     linear…………………………0     
+│     nonlinear…………………1885940
+│     nnzj………………………………22631280
+│     nnzh………………………………141178366878
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :AMD
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   7.9e+07   0.0e+00   7.5e+08   3.0e+01   2.9e+01   1.0e+00              acc
+[ Info:      2   4.1e+05   7.9e+07   2.3e+06   3.3e+00   6.7e+01   9.9e-01              acc
+[ Info:      3   3.9e+05   2.7e+04   3.6e+05   3.7e-01   1.5e+02   1.0e+00              acc
+[ Info:      4   3.7e+05   1.6e+04   1.0e+06   4.1e-02   4.1e+02   9.7e-01              acc
+[ Info:      5   3.6e+05   1.1e+04   8.4e+06   4.6e-03   8.8e+02   9.0e-01              acc
+[ Info:      6   3.5e+05   6.4e+03   1.7e+07   5.1e-04   2.3e+03   9.8e-01              acc
+[ Info:      7   3.5e+05   5.4e+03   3.2e+06   5.6e-05   2.6e+03   9.9e-01              acc
+[ Info:      8   3.5e+05   1.4e+03   1.8e+06   6.3e-06   7.4e+03  -9.8e+00              rej
+[ Info:      9   3.5e+05   1.4e+03   1.8e+06   4.0e-04   2.9e+02   1.0e+00              acc
+[ Info:     10   3.5e+05   4.8e+01   2.5e+04   4.5e-05   1.6e+03   9.6e-01              acc
+[ Info:     11   3.5e+05   1.3e+02   2.0e+06   5.0e-06   7.8e+03  -2.0e+01              rej
+[ Info:     12   3.5e+05   1.3e+02   2.0e+06   3.8e-04   2.0e+02   1.0e+00              acc
+[ Info:     13   3.5e+05   2.5e+01   2.8e+04   4.3e-05   1.5e+03   9.3e-01              acc
+[ Info:     14   3.5e+05   9.6e+01   2.0e+06   4.7e-06   7.4e+03  -2.4e+01              rej
+[ Info:     15   3.5e+05   9.6e+01   2.0e+06   4.1e-04   1.7e+02   1.0e+00              acc
+[ Info:     16   3.5e+05   2.4e+01   2.3e+04   4.5e-05   1.2e+03   9.4e-01              acc
+[ Info:     17   3.5e+05   7.1e+01   1.6e+06   5.0e-06   6.6e+03  -2.2e+01              rej
+[ Info:     18   3.5e+05   7.1e+01   1.6e+06   4.6e-04   1.3e+02   1.0e+00              acc
+[ Info:     19   3.5e+05   1.5e+01   1.7e+04   5.1e-05   9.6e+02   9.6e-01              acc
+[ Info:     20   3.5e+05   4.9e+01   1.2e+06   5.6e-06   5.8e+03  -1.7e+01              rej
+[ Info:     21   3.5e+05   4.9e+01   1.2e+06   5.2e-04   9.4e+01   1.0e+00              acc
+[ Info:     22   3.5e+05   7.4e+00   1.2e+04   5.8e-05   7.6e+02   9.8e-01              acc
+[ Info:     23   3.5e+05   3.4e+01   8.8e+05   6.4e-06   5.0e+03  -1.2e+01              rej
+[ Info:     24   3.5e+05   3.4e+01   8.8e+05   6.0e-04   7.3e+01   1.0e+00              acc
+[ Info:     25   3.5e+05   4.3e+00   8.4e+03   6.7e-05   6.2e+02   9.8e-01              acc
+[ Info:     26   3.5e+05   2.6e+01   6.3e+05   7.4e-06   4.3e+03  -7.9e+00              rej
+[ Info:     27   3.5e+05   2.6e+01   6.3e+05   7.0e-04   5.9e+01   1.0e+00              acc
+[ Info:     28   3.5e+05   3.0e+00   6.0e+03   7.7e-05   5.1e+02   9.9e-01              acc
+[ Info:     29   3.5e+05   2.0e+01   4.5e+05   8.6e-06   3.7e+03  -5.0e+00              rej
+[ Info:     30   3.5e+05   2.0e+01   4.5e+05   8.0e-04   4.9e+01   1.0e+00              acc
+┌ Info: Generic Execution stats
+│   status: first-order stationary
+│   objective value: 345643.8381160201
+│   primal feasibility: 0.0
+│   dual feasibility: 4259.269543661912
+│   solution: [-13.1976680826541  13.511719257616276  -37.2474932084987  4.422969463385222 ⋯ 2814.5348573170027]
+│   iterations: 30
+└   elapsed time: 1184.9812190532684
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Dubrovnik-356-226730-feasres
+│   Total variables………683394  Total constraints…0     
+│     free………………………………683394    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………233514021315    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………2510536
+│     linear…………………………0     
+│     nonlinear…………………2510536
+│     nnzj………………………………30126432
+│     nnzh………………………………233514021315
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :AMD
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   1.1e+08   0.0e+00   1.1e+09   3.0e+01   9.6e+01   1.0e+00              acc
+[ Info:      2   1.2e+06   1.0e+08   5.6e+06   3.3e+00   1.9e+02   9.9e-01              acc
+[ Info:      3   9.5e+05   2.1e+05   7.0e+05   3.7e-01   6.4e+02   9.7e-01              acc
+[ Info:      4   7.2e+05   2.3e+05   3.9e+07   4.1e-02   1.4e+03   8.0e-01              acc
+[ Info:      5   5.9e+05   1.4e+05   2.6e+08   1.4e-02   1.3e+03   7.7e-01              acc
+[ Info:      6   5.3e+05   5.7e+04   1.4e+08   4.6e-03   1.2e+03   9.3e-01              acc
+[ Info:      7   5.0e+05   2.7e+04   5.1e+07   5.1e-04   1.9e+03   9.7e-01              acc
+[ Info:      8   5.0e+05   6.6e+03   1.6e+07   5.6e-05   2.0e+03   9.5e-01              acc
+[ Info:      9   5.0e+05   8.3e+02   1.9e+07   6.3e-06   5.4e+03  -5.9e+00              rej
+[ Info:     10   5.0e+05   8.3e+02   1.9e+07   5.6e-04   1.9e+02   1.0e+00              acc
+[ Info:     11   5.0e+05   7.3e+01   9.2e+04   6.2e-05   1.3e+03   9.2e-01              acc
+[ Info:     12   4.9e+05   1.1e+02   2.0e+06   6.9e-06   4.1e+03  -3.7e+00              rej
+[ Info:     13   4.9e+05   1.1e+02   2.0e+06   7.3e-04   1.2e+02   1.0e+00              acc
+[ Info:     14   4.9e+05   2.8e+01   2.1e+04   8.2e-05   8.7e+02   9.6e-01              acc
+[ Info:     15   4.9e+05   6.7e+01   9.1e+05   9.1e-06   2.9e+03  -1.3e+00              rej
+[ Info:     16   4.9e+05   6.7e+01   9.1e+05   1.0e-03   7.6e+01   1.0e+00              acc
+[ Info:     17   4.9e+05   1.3e+01   8.6e+03   1.1e-04   5.6e+02   1.0e+00              acc
+[ Info:     18   4.9e+05   3.9e+01   4.2e+05   1.3e-05   2.1e+03  -1.0e-01              rej
+[ Info:     19   4.9e+05   3.9e+01   4.2e+05   1.4e-03   4.7e+01   1.0e+00              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 494819.04867121746
+│   primal feasibility: 0.0
+│   dual feasibility: 3775.9793193950236
+│   solution: [-11.8144176111375  11.740827756502863  -35.52672285964143  5.975526760897499 ⋯ 1724.6553386367352]
+│   iterations: 19
+└   elapsed time: 1245.3690149784088
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Venice-427-310384-feasres
+│   Total variables………934995  Total constraints…0     
+│     free………………………………934995    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………437108292510    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………3398290
+│     linear…………………………0     
+│     nonlinear…………………3398290
+│     nnzj………………………………40779480
+│     nnzh………………………………437108292510
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :AMD
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   8.1e+07   0.0e+00   6.8e+08   3.0e+01   9.4e+01   1.0e+00              acc
+[ Info:      2   1.7e+06   8.0e+07   3.6e+08   3.3e+00   2.1e+02   7.2e-01              acc
+[ Info:      3   1.4e+06   3.0e+05   3.3e+07   1.1e+00   2.7e+02   7.7e-01              acc
+[ Info:      4   1.3e+06   1.8e+05   8.6e+06   3.7e-01   4.0e+02   6.2e-01              acc
+[ Info:      5   1.2e+06   8.5e+04   3.5e+07   1.2e-01   4.3e+02  -1.7e+00              rej
+[ Info:      6   1.2e+06   8.5e+04   3.5e+07   3.7e-01   2.5e+02   5.3e-01              acc
+[ Info:      7   1.1e+06   4.5e+04   1.6e+07   1.2e-01   2.7e+02   4.3e-01              acc
+[ Info:      8   1.1e+06   2.5e+04   1.8e+07   4.1e-02   3.0e+02   9.1e-01              acc
+[ Info:      9   1.1e+06   3.5e+04   2.0e+07   4.6e-03   6.4e+02  -1.1e+00              rej
+[ Info:     10   1.1e+06   3.5e+04   2.0e+07   1.4e-02   3.6e+02   4.4e-01              acc
+[ Info:     11   1.1e+06   2.6e+03   2.3e+07   4.6e-03   4.1e+02   7.3e-01              acc
+[ Info:     12   1.1e+06   3.1e+03   1.2e+07   1.5e-03   4.8e+02   8.3e-01              acc
+[ Info:     13   1.1e+06   1.3e+03   2.7e+06   5.1e-04   5.7e+02   5.7e-01              acc
+[ Info:     14   1.1e+06   2.2e+02   2.2e+06   1.7e-04   7.6e+02  -2.0e-01              rej
+[ Info:     15   1.1e+06   2.2e+02   2.2e+06   3.9e-03   4.3e+01   8.0e-01              acc
+[ Info:     16   1.1e+06   1.1e+02   7.0e+04   1.3e-03   1.1e+02  -9.8e-01              rej
+[ Info:     17   1.1e+06   1.1e+02   7.0e+04   2.6e-02   8.0e+00  -2.0e+00              rej
+[ Info:     18   1.1e+06   1.1e+02   7.0e+04   3.8e-01   1.9e+00  -1.5e+00              rej
+[ Info:     19   1.1e+06   1.1e+02   7.0e+04   1.6e+00   1.3e+00  -5.0e-01              rej
+[ Info:     20   1.1e+06   1.1e+02   7.0e+04   4.7e+00   9.4e-01   1.5e-01              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 1.0621031209891376e6
+│   primal feasibility: 0.0
+│   dual feasibility: 121619.15120201274
+│   solution: [-0.4095029399506333  -0.8532202410611764  -5.604845473702431  -0.4549294274660956 ⋯ 1414.9866247870211]
+│   iterations: 20
+└   elapsed time: 1708.254823923111
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Venice-1350-894716-feasres
+│   Total variables………2696298  Total constraints…0     
+│     free………………………………2696298    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………3635012800551    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………9034252
+│     linear…………………………0     
+│     nonlinear…………………9034252
+│     nnzj………………………………108411024
+│     nnzh………………………………3635012800551
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :AMD
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   2.3e+08   0.0e+00   1.0e+15   3.0e+01   5.4e+01   1.0e+00              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 2.6558177491578707e6
+│   primal feasibility: 0.0
+│   dual feasibility: 3.692891576726828e15
+│   solution: [-0.44667502859769426  -0.8736525168779843  -5.632258675116736  -0.5004054180139412 ⋯ 1408.308640962493]
+│   iterations: 1
+└   elapsed time: 1921.8368301391602
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-1723-156502-feasres
+│   Total variables………485013  Total constraints…0     
+│     free………………………………485013    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………117619047591    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………1357436
+│     linear…………………………0     
+│     nonlinear…………………1357436
+│     nnzj………………………………16289232
+│     nnzh………………………………117619047591
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   6.2e+07   0.0e+00   5.4e+13   3.0e+01   6.8e+00   5.4e-01              acc
+[ Info:      2   2.9e+07   3.3e+07   1.1e+14   1.0e+01   6.2e+00  -1.5e-01              rej
+[ Info:      3   2.9e+07   3.3e+07   1.1e+14   3.0e+01   3.9e+00   1.0e-01              acc
+[ Info:      4   2.6e+07   2.9e+06   1.2e+13   1.0e+01   4.4e+00  -3.0e+03              rej
+[ Info:      5   2.6e+07   2.9e+06   1.2e+13   3.0e+01   2.6e+00  -3.6e+03              rej
+[ Info:      6   2.6e+07   2.9e+06   1.2e+13   9.0e+01   1.8e+00  -9.6e+02              rej
+[ Info:      7   2.6e+07   2.9e+06   1.2e+13   2.7e+02   1.4e+00  -5.1e+01              rej
+[ Info:      8   2.6e+07   2.9e+06   1.2e+13   8.1e+02   1.1e+00  -3.2e+00              rej
+[ Info:      9   2.6e+07   2.9e+06   1.2e+13   2.4e+03   8.2e-01  -4.4e+00              rej
+[ Info:     10   2.6e+07   2.9e+06   1.2e+13   7.3e+03   6.4e-01  -6.6e+00              rej
+[ Info:     11   2.6e+07   2.9e+06   1.2e+13   2.2e+04   4.9e-01  -1.9e+01              rej
+[ Info:     12   2.6e+07   2.9e+06   1.2e+13   6.6e+04   3.6e-01  -1.4e+02              rej
+[ Info:     13   2.6e+07   2.9e+06   1.2e+13   2.0e+05   2.5e-01  -3.2e+04              rej
+[ Info:     14   2.6e+07   2.9e+06   1.2e+13   5.9e+05   1.5e-01  -1.6e+05              rej
+[ Info:     15   2.6e+07   2.9e+06   1.2e+13   1.8e+06   8.9e-02   9.6e-01              acc
+[ Info:     16   1.5e+06   2.4e+07   2.5e+11   2.0e+05   2.1e-01   6.4e-01              acc
+[ Info:     17   7.9e+05   7.0e+05   3.7e+10   6.6e+04   1.6e-01   7.0e-01              acc
+[ Info:     18   5.0e+05   2.8e+05   6.7e+09   2.2e+04   1.3e-01   8.5e-01              acc
+[ Info:     19   4.0e+05   1.0e+05   2.4e+09   7.3e+03   1.7e-01   7.4e-01              acc
+[ Info:     20   3.8e+05   1.4e+04   5.7e+08   2.4e+03   2.9e-01   9.1e-01              acc
+┌ Info: Generic Execution stats
+│   status: first-order stationary
+│   objective value: 379325.0684726068
+│   primal feasibility: 0.0
+│   dual feasibility: 1.0005139980270359e8
+│   solution: [1.3034286949095464  0.8719652544903156  -7.798913545879196  -0.740574582110586 ⋯ 243.94079466367316]
+│   iterations: 20
+└   elapsed time: 5086.024492025375
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Dubrovnik-273-176305-feasres
+│   Total variables………531372  Total constraints…0     
+│     free………………………………531372    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………141178366878    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………1885940
+│     linear…………………………0     
+│     nonlinear…………………1885940
+│     nnzj………………………………22631280
+│     nnzh………………………………141178366878
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   7.9e+07   0.0e+00   7.5e+08   3.0e+01   2.9e+01   1.0e+00              acc
+[ Info:      2   4.1e+05   7.9e+07   2.3e+06   3.3e+00   6.7e+01   9.9e-01              acc
+[ Info:      3   3.9e+05   2.7e+04   3.6e+05   3.7e-01   1.5e+02   1.0e+00              acc
+[ Info:      4   3.7e+05   1.6e+04   1.0e+06   4.1e-02   4.1e+02   9.7e-01              acc
+[ Info:      5   3.6e+05   1.1e+04   8.4e+06   4.6e-03   8.8e+02   9.0e-01              acc
+[ Info:      6   3.5e+05   6.4e+03   1.7e+07   5.1e-04   2.3e+03   9.8e-01              acc
+[ Info:      7   3.5e+05   5.4e+03   3.2e+06   5.6e-05   2.6e+03   9.9e-01              acc
+[ Info:      8   3.5e+05   1.4e+03   1.8e+06   6.3e-06   7.4e+03  -9.8e+00              rej
+[ Info:      9   3.5e+05   1.4e+03   1.8e+06   4.0e-04   2.9e+02   1.0e+00              acc
+[ Info:     10   3.5e+05   4.8e+01   2.5e+04   4.5e-05   1.6e+03   9.6e-01              acc
+[ Info:     11   3.5e+05   1.3e+02   2.0e+06   5.0e-06   7.8e+03  -2.0e+01              rej
+[ Info:     12   3.5e+05   1.3e+02   2.0e+06   3.8e-04   2.0e+02   1.0e+00              acc
+[ Info:     13   3.5e+05   2.5e+01   2.8e+04   4.3e-05   1.5e+03   9.3e-01              acc
+[ Info:     14   3.5e+05   9.6e+01   2.0e+06   4.7e-06   7.4e+03  -2.4e+01              rej
+[ Info:     15   3.5e+05   9.6e+01   2.0e+06   4.1e-04   1.7e+02   1.0e+00              acc
+[ Info:     16   3.5e+05   2.4e+01   2.3e+04   4.5e-05   1.2e+03   9.4e-01              acc
+[ Info:     17   3.5e+05   7.1e+01   1.6e+06   5.0e-06   6.6e+03  -2.2e+01              rej
+[ Info:     18   3.5e+05   7.1e+01   1.6e+06   4.6e-04   1.3e+02   1.0e+00              acc
+[ Info:     19   3.5e+05   1.5e+01   1.7e+04   5.1e-05   9.6e+02   9.6e-01              acc
+[ Info:     20   3.5e+05   4.9e+01   1.2e+06   5.6e-06   5.8e+03  -1.7e+01              rej
+[ Info:     21   3.5e+05   4.9e+01   1.2e+06   5.2e-04   9.4e+01   1.0e+00              acc
+[ Info:     22   3.5e+05   7.4e+00   1.2e+04   5.8e-05   7.6e+02   9.8e-01              acc
+[ Info:     23   3.5e+05   3.4e+01   8.8e+05   6.4e-06   5.0e+03  -1.2e+01              rej
+[ Info:     24   3.5e+05   3.4e+01   8.8e+05   6.0e-04   7.3e+01   1.0e+00              acc
+[ Info:     25   3.5e+05   4.3e+00   8.4e+03   6.7e-05   6.2e+02   9.8e-01              acc
+[ Info:     26   3.5e+05   2.6e+01   6.3e+05   7.4e-06   4.3e+03  -7.9e+00              rej
+[ Info:     27   3.5e+05   2.6e+01   6.3e+05   7.0e-04   5.9e+01   1.0e+00              acc
+[ Info:     28   3.5e+05   3.0e+00   6.0e+03   7.7e-05   5.1e+02   9.9e-01              acc
+[ Info:     29   3.5e+05   2.0e+01   4.5e+05   8.6e-06   3.7e+03  -5.0e+00              rej
+[ Info:     30   3.5e+05   2.0e+01   4.5e+05   8.0e-04   4.9e+01   1.0e+00              acc
+┌ Info: Generic Execution stats
+│   status: first-order stationary
+│   objective value: 345643.8381215064
+│   primal feasibility: 0.0
+│   dual feasibility: 4258.3044440487965
+│   solution: [-13.197667876342088  13.51171916271121  -37.24749325378112  4.4229696714009705 ⋯ 2814.534857299511]
+│   iterations: 30
+└   elapsed time: 1222.0484058856964
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Dubrovnik-356-226730-feasres
+│   Total variables………683394  Total constraints…0     
+│     free………………………………683394    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………233514021315    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………2510536
+│     linear…………………………0     
+│     nonlinear…………………2510536
+│     nnzj………………………………30126432
+│     nnzh………………………………233514021315
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   1.1e+08   0.0e+00   1.1e+09   3.0e+01   9.6e+01   1.0e+00              acc
+[ Info:      2   1.2e+06   1.0e+08   5.6e+06   3.3e+00   1.9e+02   9.9e-01              acc
+[ Info:      3   9.5e+05   2.1e+05   7.0e+05   3.7e-01   6.4e+02   9.7e-01              acc
+[ Info:      4   7.2e+05   2.3e+05   3.9e+07   4.1e-02   1.4e+03   8.0e-01              acc
+[ Info:      5   5.9e+05   1.4e+05   2.6e+08   1.4e-02   1.3e+03   7.7e-01              acc
+[ Info:      6   5.3e+05   5.7e+04   1.4e+08   4.6e-03   1.2e+03   9.3e-01              acc
+[ Info:      7   5.0e+05   2.7e+04   5.1e+07   5.1e-04   1.9e+03   9.7e-01              acc
+[ Info:      8   5.0e+05   6.6e+03   1.6e+07   5.6e-05   2.0e+03   9.5e-01              acc
+[ Info:      9   5.0e+05   8.3e+02   1.9e+07   6.3e-06   5.4e+03  -5.9e+00              rej
+[ Info:     10   5.0e+05   8.3e+02   1.9e+07   5.6e-04   1.9e+02   1.0e+00              acc
+[ Info:     11   5.0e+05   7.3e+01   9.2e+04   6.2e-05   1.3e+03   9.2e-01              acc
+[ Info:     12   4.9e+05   1.1e+02   2.0e+06   6.9e-06   4.1e+03  -3.7e+00              rej
+[ Info:     13   4.9e+05   1.1e+02   2.0e+06   7.3e-04   1.2e+02   1.0e+00              acc
+[ Info:     14   4.9e+05   2.8e+01   2.1e+04   8.2e-05   8.7e+02   9.6e-01              acc
+[ Info:     15   4.9e+05   6.7e+01   9.1e+05   9.1e-06   2.9e+03  -1.3e+00              rej
+[ Info:     16   4.9e+05   6.7e+01   9.1e+05   1.0e-03   7.6e+01   1.0e+00              acc
+[ Info:     17   4.9e+05   1.3e+01   8.6e+03   1.1e-04   5.6e+02   1.0e+00              acc
+[ Info:     18   4.9e+05   3.9e+01   4.2e+05   1.3e-05   2.1e+03  -1.0e-01              rej
+[ Info:     19   4.9e+05   3.9e+01   4.2e+05   1.4e-03   4.7e+01   1.0e+00              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 494819.0486741145
+│   primal feasibility: 0.0
+│   dual feasibility: 3750.372636990957
+│   solution: [-11.814417578910817  11.740827731352539  -35.52672288625311  5.975526793362507 ⋯ 1724.6553386303901]
+│   iterations: 19
+└   elapsed time: 1183.3935008049011
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Venice-427-310384-feasres
+│   Total variables………934995  Total constraints…0     
+│     free………………………………934995    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………437108292510    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………3398290
+│     linear…………………………0     
+│     nonlinear…………………3398290
+│     nnzj………………………………40779480
+│     nnzh………………………………437108292510
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   8.1e+07   0.0e+00   6.8e+08   3.0e+01   9.4e+01   1.0e+00              acc
+[ Info:      2   1.7e+06   8.0e+07   3.6e+08   3.3e+00   2.1e+02   7.2e-01              acc
+[ Info:      3   1.4e+06   3.0e+05   3.3e+07   1.1e+00   2.7e+02   7.7e-01              acc
+[ Info:      4   1.3e+06   1.8e+05   8.6e+06   3.7e-01   4.0e+02   6.2e-01              acc
+[ Info:      5   1.2e+06   8.5e+04   3.5e+07   1.2e-01   4.3e+02  -1.7e+00              rej
+[ Info:      6   1.2e+06   8.5e+04   3.5e+07   3.7e-01   2.5e+02   5.3e-01              acc
+[ Info:      7   1.1e+06   4.5e+04   1.6e+07   1.2e-01   2.7e+02   4.3e-01              acc
+[ Info:      8   1.1e+06   2.5e+04   1.8e+07   4.1e-02   3.0e+02   9.1e-01              acc
+[ Info:      9   1.1e+06   3.5e+04   2.0e+07   4.6e-03   6.4e+02  -1.1e+00              rej
+[ Info:     10   1.1e+06   3.5e+04   2.0e+07   1.4e-02   3.6e+02   4.4e-01              acc
+[ Info:     11   1.1e+06   2.6e+03   2.3e+07   4.6e-03   4.1e+02   7.3e-01              acc
+[ Info:     12   1.1e+06   3.1e+03   1.2e+07   1.5e-03   4.8e+02   8.3e-01              acc
+[ Info:     13   1.1e+06   1.3e+03   2.7e+06   5.1e-04   5.7e+02   5.7e-01              acc
+[ Info:     14   1.1e+06   2.2e+02   2.2e+06   1.7e-04   7.6e+02  -2.0e-01              rej
+[ Info:     15   1.1e+06   2.2e+02   2.2e+06   3.9e-03   4.3e+01   8.0e-01              acc
+[ Info:     16   1.1e+06   1.1e+02   7.0e+04   1.3e-03   1.1e+02  -9.8e-01              rej
+[ Info:     17   1.1e+06   1.1e+02   7.0e+04   2.6e-02   8.0e+00  -2.0e+00              rej
+[ Info:     18   1.1e+06   1.1e+02   7.0e+04   3.8e-01   1.9e+00  -1.5e+00              rej
+[ Info:     19   1.1e+06   1.1e+02   7.0e+04   1.6e+00   1.3e+00  -5.0e-01              rej
+[ Info:     20   1.1e+06   1.1e+02   7.0e+04   4.7e+00   9.4e-01   1.5e-01              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 1.0621031210019353e6
+│   primal feasibility: 0.0
+│   dual feasibility: 121619.23847946721
+│   solution: [-0.4095029555819867  -0.8532202706805828  -5.604845479772684  -0.45492944312246264 ⋯ 1414.9866247889477]
+│   iterations: 20
+└   elapsed time: 1819.8929371833801
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: Venice-1350-894716-feasres
+│   Total variables………2696298  Total constraints…0     
+│     free………………………………2696298    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………3635012800551    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………9034252
+│     linear…………………………0     
+│     nonlinear…………………9034252
+│     nnzj………………………………108411024
+│     nnzh………………………………3635012800551
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+└   ite_max = 200
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   2.3e+08   0.0e+00   1.0e+15   3.0e+01   5.4e+01   1.0e+00              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 2.655817749138509e6
+│   primal feasibility: 0.0
+│   dual feasibility: 3.692891576671682e15
+│   solution: [-0.446675028597661  -0.8736525168779649  -5.6322586751167485  -0.500405418013904 ⋯ 1408.3086409624923]
+│   iterations: 1
+└   elapsed time: 1909.2834560871124

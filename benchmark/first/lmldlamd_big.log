@@ -1,0 +1,31 @@
+\begin{longtable}[c]{lrrrrrrr}
+\hline 
+name & nvar & nequ & objective & elapsed\_time & iter & status & dual\_feas \\
+\hline 
+\endfirsthead
+\multicolumn{8}{l}
+{{\bfseries \tablename\ \thetable{} --- continued from previous page}} \\
+\hline 
+name & nvar & nequ & objective & elapsed\_time & iter & status & dual\_feas \\
+\hline 
+\endhead
+\hline 
+\multicolumn{8}{r}{{\bfseries Continued on next page}} \\
+\hline 
+\endfoot
+\hline 
+\endlastfoot
+LadyBug-1723-156502-feasres & \(485013\) & \(1357436\) & \( 6.3\)e\(+05\) & \( 1.1\)e\(+04\) & \(   34\) & small\_step & \( 1.2\)e\(+11\) \\
+Dubrovnik-273-176305-feasres & \(531372\) & \(1885940\) & \( 3.5\)e\(+05\) & \( 1.2\)e\(+03\) & \(   30\) & first\_order & \( 4.3\)e\(+03\) \\
+Dubrovnik-356-226730-feasres & \(683394\) & \(2510536\) & \( 4.9\)e\(+05\) & \( 1.2\)e\(+03\) & \(   19\) & small\_step & \( 3.8\)e\(+03\) \\
+Venice-427-310384-feasres & \(934995\) & \(3398290\) & \( 1.1\)e\(+06\) & \( 1.7\)e\(+03\) & \(   20\) & small\_step & \( 1.2\)e\(+05\) \\
+Venice-1350-894716-feasres & \(2696298\) & \(9034252\) & \( 2.7\)e\(+06\) & \( 1.9\)e\(+03\) & \(    1\) & small\_step & \( 3.7\)e\(+15\) \\
+\hline 
+\end{longtable}
+|                         name |    nvar |    nequ | objective | elapsed_time |  iter |      status | dual_feas |
+|------------------------------|---------|---------|-----------|--------------|-------|-------------|-----------|
+|  LadyBug-1723-156502-feasres |  485013 | 1357436 |   6.3e+05 |      1.1e+04 |    34 |  small_step |   1.2e+11 |
+| Dubrovnik-273-176305-feasres |  531372 | 1885940 |   3.5e+05 |      1.2e+03 |    30 | first_order |   4.3e+03 |
+| Dubrovnik-356-226730-feasres |  683394 | 2510536 |   4.9e+05 |      1.2e+03 |    19 |  small_step |   3.8e+03 |
+|    Venice-427-310384-feasres |  934995 | 3398290 |   1.1e+06 |      1.7e+03 |    20 |  small_step |   1.2e+05 |
+|   Venice-1350-894716-feasres | 2696298 | 9034252 |   2.7e+06 |      1.9e+03 |     1 |  small_step |   3.7e+15 |
