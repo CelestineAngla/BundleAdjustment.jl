@@ -21,6 +21,7 @@ include("lm.jl")
 # BA = BALNLPModel("Dubrovnik/problem-356-226730-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-427-310384-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-1350-894716-pre.txt.bz2")
+# BA = BALNLPModel("Venice/problem-1778-993923-pre.txt.bz2")
 # BA = BALNLPModel("Final/problem-4585-1324582-pre.txt.bz2")
 # BA = BALNLPModel("Final/problem-13682-4456117-pre.txt.bz2")
 
@@ -29,7 +30,7 @@ include("lm.jl")
 fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
-stats = Levenberg_Marquardt(fr_BA, :QR, :AMD)
+stats = Levenberg_Marquardt(fr_BA, :LDL, :AMD)
 
 
 # Write the output into a file
