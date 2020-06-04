@@ -1,0 +1,41 @@
+\begin{longtable}[c]{lrrrrrrr}
+\hline 
+name & nvar & nequ & objective & elapsed\_time & iter & status & dual\_feas \\
+\hline 
+\endfirsthead
+\multicolumn{8}{l}
+{{\bfseries \tablename\ \thetable{} --- continued from previous page}} \\
+\hline 
+name & nvar & nequ & objective & elapsed\_time & iter & status & dual\_feas \\
+\hline 
+\endhead
+\hline 
+\multicolumn{8}{r}{{\bfseries Continued on next page}} \\
+\hline 
+\endfoot
+\hline 
+\endlastfoot
+LadyBug-49-7776-feasres & \(23769\) & \(63686\) & \( 1.3\)e\(+04\) & \( 6.0\)e\(+01\) & \(   57\) & acceptable & \( 2.1\)e\(+02\) \\
+LadyBug-73-11032-feasres & \(33753\) & \(92244\) & \( 1.7\)e\(+04\) & \( 2.4\)e\(+01\) & \(   17\) & first\_order & \( 7.1\)e\(+01\) \\
+LadyBug-138-19878-feasres & \(60876\) & \(170434\) & \( 6.0\)e\(+04\) & \( 3.9\)e\(+02\) & \(   95\) & acceptable & \( 3.5\)e\(+02\) \\
+LadyBug-318-41628-feasres & \(127746\) & \(359838\) & \( 8.6\)e\(+04\) & \( 4.3\)e\(+02\) & \(   14\) & acceptable & \( 4.5\)e\(+03\) \\
+LadyBug-460-56811-feasres & \(174573\) & \(483754\) & \( 1.3\)e\(+05\) & \( 8.9\)e\(+02\) & \(   26\) & acceptable & \( 2.0\)e\(+05\) \\
+LadyBug-646-73584-feasres & \(226566\) & \(654594\) & \( 1.9\)e\(+05\) & \( 9.1\)e\(+02\) & \(   12\) & first\_order & \( 1.0\)e\(+09\) \\
+LadyBug-810-88814-feasres & \(273732\) & \(787550\) & \( 2.0\)e\(+05\) & \( 1.4\)e\(+03\) & \(   13\) & acceptable & \( 4.8\)e\(+08\) \\
+LadyBug-1031-110968-feasres & \(342183\) & \(1000530\) & \( 2.8\)e\(+05\) & \( 3.2\)e\(+03\) & \(   37\) & acceptable & \( 1.6\)e\(+08\) \\
+LadyBug-1235-129634-feasres & \(400017\) & \(1152572\) & \( 3.2\)e\(+05\) & \( 2.2\)e\(+03\) & \(   18\) & first\_order & \( 1.6\)e\(+07\) \\
+Dubrovnik-202-132796-feasres & \(400206\) & \(1503304\) & \( 3.3\)e\(+05\) & \( 3.3\)e\(+02\) & \(   10\) & first\_order & \( 2.2\)e\(+03\) \\
+\hline 
+\end{longtable}
+|                         name |   nvar |    nequ | objective | elapsed_time |  iter |      status | dual_feas |
+|------------------------------|--------|---------|-----------|--------------|-------|-------------|-----------|
+|      LadyBug-49-7776-feasres |  23769 |   63686 |   1.3e+04 |      6.0e+01 |    57 |  acceptable |   2.1e+02 |
+|     LadyBug-73-11032-feasres |  33753 |   92244 |   1.7e+04 |      2.4e+01 |    17 | first_order |   7.1e+01 |
+|    LadyBug-138-19878-feasres |  60876 |  170434 |   6.0e+04 |      3.9e+02 |    95 |  acceptable |   3.5e+02 |
+|    LadyBug-318-41628-feasres | 127746 |  359838 |   8.6e+04 |      4.3e+02 |    14 |  acceptable |   4.5e+03 |
+|    LadyBug-460-56811-feasres | 174573 |  483754 |   1.3e+05 |      8.9e+02 |    26 |  acceptable |   2.0e+05 |
+|    LadyBug-646-73584-feasres | 226566 |  654594 |   1.9e+05 |      9.1e+02 |    12 | first_order |   1.0e+09 |
+|    LadyBug-810-88814-feasres | 273732 |  787550 |   2.0e+05 |      1.4e+03 |    13 |  acceptable |   4.8e+08 |
+|  LadyBug-1031-110968-feasres | 342183 | 1000530 |   2.8e+05 |      3.2e+03 |    37 |  acceptable |   1.6e+08 |
+|  LadyBug-1235-129634-feasres | 400017 | 1152572 |   3.2e+05 |      2.2e+03 |    18 | first_order |   1.6e+07 |
+| Dubrovnik-202-132796-feasres | 400206 | 1503304 |   3.3e+05 |      3.3e+02 |    10 | first_order |   2.2e+03 |
