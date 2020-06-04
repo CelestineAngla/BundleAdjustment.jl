@@ -34,15 +34,6 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
   # Initialize residuals
   r = residual(model, x)
-  print("\n", r[1:10])
-  print("\n", length(x))
-  for cam_idx in [1 2 4 27 30]
-    idx_cam = 3*7776 + 9* (cam_idx - 1)
-    idx_pnt = 1
-    print("\n", idx_cam,"\n")
-    print("\n", x[(idx_pnt - 1) * 3 + 1 : (idx_pnt - 1) * 3 + 3])
-    print("\n", x[idx_cam  + 1 : idx_cam + 9])
-  end
   norm_r = norm(r)
   obj = norm_r^2 / 2
   r_suiv = copy(r)
@@ -70,6 +61,16 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     cols_A = vcat(cols, collect(1 : model.meta.nvar))
     vals_A = vcat(vals, fill(sqrt(λ), model.meta.nvar))
     A = sparse(rows_A, cols_A, vals_A)
+
+    # Givens version
+    col_norms = ones(model.meta.nvar)
+    QR_J = qr(A[1 : model.nls_meta.nequ, :])
+    R = similar(QR_J.R)
+    nnz_R = nnz(QR_J.R)
+    # Rt = sparse(QR_J.R')
+    G_list = Vector{LinearAlgebra.Givens{Float64}}(undef, Int(model.meta.nvar*(model.meta.nvar + 1)/2))
+    news = zeros(T, model.meta.nvar)
+    Prow = vcat(QR_J.prow, collect(model.nls_meta.nequ + 1 : model.nls_meta.nequ + model.meta.nvar))
 
   elseif facto == :LDL
     # Initialize A = [[I J]; [Jᵀ - λI]] as sparse upper-triangular matrix
@@ -108,14 +109,38 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     iter += 1
 
     if facto == :QR
-      # Solve min ‖[J √λI] δ + [r 0]‖² with QR factorization
-      if perm == :AMD
-        QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
-      elseif perm == :Metis
-        QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
+      # Givens version
+      @time begin
+        R .= QR_J.R
       end
-      δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
+      @time begin
+        nnz_R = nnz(R)
+      end
+      print("\n nnz_R : ", nnz_R)
+      @time begin
+        Rt = sparse(R')
+      end
+      @time begin
+        counter = fullQR_givens!(R, Rt, G_list, news, sqrt(λ), model.meta.nvar, model.nls_meta.nequ, nnz_R)
+      end
+      @time begin
+        δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, R, Prow, QR_J.pcol, counter, G_list)
+      end
+      print("\n", norm(A * δ - b), " ", norm(δr))
+      @time begin
+        news .= 0
+      end
+
+      # # Solve min ‖[J √λI] δ + [r 0]‖² with QR factorization
+      # if perm == :AMD
+      #   QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_AMD)
+      # elseif perm == :Metis
+      #   QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
+      # end
+      # δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
       δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2 / 2
+      δc = A \ b
+      print("\n", norm(δ - δc))
 
     elseif facto == :LDL
       # Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
@@ -187,6 +212,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         vals_A[model.nls_meta.nnzj + 1 : end] .= sqrt(λ)
         A = sparse(rows_A, cols_A, vals_A)
 
+        # Givens version
+        QR_J = qr(A[1 : model.nls_meta.nequ, :])
+
         mul_sparse!(Jtr, cols, rows, vals, r, model.nls_meta.nnzj)
 
       elseif facto == :LDL
@@ -237,3 +265,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   @info stats
   return stats
 end
+
+include("BALNLPModels.jl")
+BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+fr_BA = FeasibilityResidual(BA)
+stats = Levenberg_Marquardt(fr_BA, :QR, :AMD)

@@ -1,6 +1,6 @@
 using LinearAlgebra
 using SparseArrays
-using .Threads
+
 
 using DataFrames
 using JLD
@@ -34,7 +34,9 @@ function normalize_qr_j!(A, col_norms, n)
     # the √λ element does not count in the norm of J
     @views colj = A.nzval[A.colptr[j] : A.colptr[j+1] - 2]
     col_norms[j] = norm(colj)
-    @inbounds A.nzval[A.colptr[j] : A.colptr[j+1] - 1] /= col_norms[j]
+    if col_norms[j] != 0
+      @inbounds A.nzval[A.colptr[j] : A.colptr[j+1] - 1] /= col_norms[j]
+    end
   end
 end
 
@@ -44,7 +46,9 @@ Denormalize the sparse matrix A
 """
 function denormalize_qr!(A, col_norms, n)
   for j = 1 : n
-    A.nzval[A.colptr[j] : A.colptr[j+1] - 1] *= col_norms[j]
+    if col_norms[j] != 0
+      A.nzval[A.colptr[j] : A.colptr[j+1] - 1] *= col_norms[j]
+    end
   end
 end
 
@@ -58,9 +62,11 @@ function normalize_ldl!(A, col_norms, n, m)
     # the -λ element does not count in the norm of J
     @views colj = A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2]
     col_norms[j] = norm(colj)
-    @inbounds A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2] /= col_norms[j]
-    # -λ is multiplied by D[j,j]²
-    A.nzval[A.colptr[m + j + 1] - 1] /= col_norms[j]^2
+    if col_norms[j] != 0
+      @inbounds A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2] /= col_norms[j]
+      # -λ is multiplied by D[j,j]²
+      A.nzval[A.colptr[m + j + 1] - 1] /= col_norms[j]^2
+    end
   end
 end
 
@@ -70,7 +76,9 @@ Denormalize the submatrix J in the matrix A = [ [I J]; [Jᵀ -λI] ]
 """
 function denormalize_ldl!(A, col_norms, n, m)
   for j = 1 : n
-    A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2] *= col_norms[j]
+    if col_norms[j] != 0
+      A.nzval[A.colptr[m + j] : A.colptr[m + j + 1] - 2] *= col_norms[j]
+    end
   end
 end
 
@@ -80,25 +88,11 @@ Denormalize (in place) the vector x
 """
 function denormalize_vect!(x, col_norms, n)
   for j = 1 : n
-    x[j] /= col_norms[j]
+    if col_norms[j] != 0
+      x[j] /= col_norms[j]
+    end
   end
 end
-
-# Uncomment to test normalize_cols! and denormalize_cols!
-
-# m = 7
-# n = 5
-# rows = rand(1:m, 5)
-# cols = rand(1:n, 5)
-# vals = rand(-4.5:4.5, 5)
-# A = sparse(rows, cols, vals, m, n)
-# col_norms = Vector{eltype(A)}(undef, n)
-# print(A)
-# normalize_cols!(A, col_norms, n)
-# print("\n\n", A)
-# print("\n\n", col_norms)
-# denormalize_cols!(A, col_norms, n)
-# print("\n\n", A)
 
 
 """
@@ -111,6 +105,9 @@ function jac_not_const(Jδ, Jδ_suiv, rows, cols, vals, δ, n, tol)
 end
 
 
+"""
+Multiply (in place) a sparse matrix (with n non-zeros) with a vector
+"""
 function mul_sparse!(xr, rows, cols, vals, x, n)
   xr .= 0
   for k = 1 : n
@@ -119,6 +116,10 @@ function mul_sparse!(xr, rows, cols, vals, x, n)
   return xr
 end
 
+
+"""
+Multiply a sparse matrix (with n non-zeros) with a vector
+"""
 function mul_sparse(rows, cols, vals, x, n, l)
   xr = zeros(eltype(x), l)
   for k = 1 : n
@@ -126,28 +127,6 @@ function mul_sparse(rows, cols, vals, x, n, l)
   end
   return xr
 end
-
-
-# m = 7
-# n = 5
-# nz = 5
-# rows = rand(1:m, nz)
-# cols = rand(1:n, nz)
-# vals = rand(-4.5:4.5, nz)
-# A = sparse(rows, cols, vals, m, n)
-#
-# x = rand(-4.5:4.5, n)
-# xr = Vector{Float64}(undef, m)
-#
-# @time begin
-# mul!(xr, A, x)
-# end
-# print(xr)
-#
-# @time begin
-# mul_sparse!(xr, rows, cols, vals, x, nz)
-# end
-# print(xr)
 
 
 """
@@ -177,7 +156,6 @@ function Cholesky(A::Array{Float64,2})::Array{Float64,2}
   end
   return L
 end
-
 
 
 """

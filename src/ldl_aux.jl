@@ -29,6 +29,7 @@ function ldl_ltsolve!(n, x, Lp, Li, Lx)
   return x
 end
 
+
 """
 Solves A x = b using the LDL factorization of A (A is symetric)
 """
@@ -59,6 +60,7 @@ function col_symb!(n, Ap, Ai, Cp, w, Pinv)
   end
 end
 
+
 function col_num!(n, Ap, Ai, Ax, Cp, Ci, w, Pinv)
   @inbounds for j = 1:n
     @inbounds for p = Ap[j] : (Ap[j+1]-1)
@@ -70,6 +72,7 @@ function col_num!(n, Ap, Ai, Ax, Cp, Ci, w, Pinv)
     end
   end
 end
+
 
 function ldl_symbolic_upper!(n, Ap, Ai, Cp, Ci , Lp, parent, Lnz, flag, P, Pinv)
   @inbounds for k = 1:n
@@ -109,6 +112,7 @@ function ldl_symbolic_upper!(n, Ap, Ai, Cp, Ci , Lp, parent, Lnz, flag, P, Pinv)
     Lp[k+1] = Lp[k] + Lnz[k]
   end
 end
+
 
 function ldl_numeric_upper!(n, Ap, Ai, Ax, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y,
                       pattern, flag, P, Pinv)
@@ -186,6 +190,7 @@ mutable struct LDLFactorization{T<:Real,Ti<:Integer, Ti2<:Integer}
   P::Vector{Ti2}
 end
 
+
 abstract type AbstractLDLSymbolic end
 
 mutable struct LDLSymbolicUpper{T<:Real,Ti<:Integer, Ti2<:Integer} <: AbstractLDLSymbolic
@@ -219,6 +224,7 @@ mutable struct LDLSymbolic{T<:Real,Ti<:Integer} <: AbstractLDLSymbolic
   P::Vector{Ti}
   pinv::Vector{Ti}
 end
+
 
 function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::Int=size(A,1)) where {T<:Real,Ti<:Integer, Ti2<:Integer}
 	# allocate space for symbolic analysis
@@ -257,7 +263,6 @@ function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::I
     return LDLSymbolic(n, Lp, parent, Lnz, Li, Lx, D, Y, pattern, flag, P, pinv)
   end
 end
-
 
 
 function ldl_factorize(A::SparseMatrixCSC{T,Ti}, LDLSymbolic::AbstractLDLSymbolic, upper=false) where {T<:Real,Ti<:Integer}
