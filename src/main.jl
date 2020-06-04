@@ -5,7 +5,7 @@ include("BALNLPModels.jl")
 include("lm.jl")
 
 # Create a BALNLPModel from a dataset
-# BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-73-11032-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-138-19878-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-318-41628-pre.txt.bz2")
