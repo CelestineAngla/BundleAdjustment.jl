@@ -114,7 +114,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       elseif perm == :Metis
         QR = myqr(A, ordering=SuiteSparse.SPQR.ORDERING_METIS)
       end
-      δ, δr = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
+      δ = solve_qr!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR.Q, QR.R, QR.prow, QR.pcol)
       δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2 / 2
 
     elseif facto == :LDL

@@ -124,9 +124,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         counter = fullQR_givens!(R, Rt, G_list, news, sqrt(λ), model.meta.nvar, model.nls_meta.nequ, nnz_R)
       end
       @time begin
-        δ, δr = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, R, Prow, QR_J.pcol, counter, G_list)
+        δ = solve_qr2!(model.nls_meta.nequ + model.meta.nvar, model.meta.nvar, xr, b, QR_J.Q, R, Prow, QR_J.pcol, counter, G_list)
       end
-      print("\n", norm(A * δ - b), " ", norm(δr))
       @time begin
         news .= 0
       end

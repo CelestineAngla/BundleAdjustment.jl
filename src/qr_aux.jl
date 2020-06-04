@@ -50,8 +50,8 @@ function solve_qr!(m, n, xr, b, Q, R, Prow, Pcol)
   @views x = xr[1:n]
   ldiv!(LinearAlgebra.UpperTriangular(R), x)  # x ← R⁻¹ x
   @views x[Pcol] .= x
-  @views r = xr[n+1:m]  # = Q₂'b
-  return x, r
+  # @views r = xr[n+1:m]  # = Q₂'b
+  return x
 end
 
 
@@ -143,28 +143,31 @@ function solve_qr2!(m, n, xr, b, Q, R, Prow, Pcol, counter, G_list)
   m ≥ n || error("currently, this function only supports overdetermined problems")
   @assert length(b) == m
   @assert length(xr) == m
-  Qλt_mul!(xr, Q, G_list, b[Prow], n, m - n, counter)
+  Qλt_mul!(xr, Q, G_list, b[Prow], n, m - n, counter, Pcol)
   @views x = xr[1:n]
   ldiv!(LinearAlgebra.UpperTriangular(R), x)  # x ← R⁻¹ x
   @views x[Pcol] .= x
-  @views r = xr[n+1:m]  # = Q₂'b
-  return x, r
+  # @views r = xr[n+1:m]  # = Q₂'b
+  return x
 end
 
 
 """
-Computes Qλᵀ * x where Qλ = [ [Q  0]; [0  I] ] * Gᵀ
-Qλᵀ * x = G * [Qᵀx₁; x₂]
+Computes Qλᵀ * x where Qλ =  [ [I  0]; [0  P₂ᵀ] ]  [ [Q  0]; [0  I] ] * Gᵀ
+Qλᵀ * x = G * [Qᵀx₁; P₂x₂]
 """
-function Qλt_mul!(xr, Q, G_list, x, n, m, counter)
+function Qλt_mul!(xr, Q, G_list, x, n, m, counter, Pcol)
   @views mul!(xr[1:m], Q', x[1:m])
-  xr[m + 1 : m + n] = @views x[m + 1 : m + n]
+  Pcolbis = copy(Pcol)
+  Pcolbis .+= m
+  xr[m + 1 : m + n] = @views x[Pcolbis]
   for k = 1 : counter
     G = G_list[k]
     xr[G.i1], xr[G.i2] = G.c * xr[G.i1] + G.s * xr[G.i2], - G.s * xr[G.i1] + G.c * xr[G.i2]
   end
   return xr
 end
+
 
 """
 Function to test Qλt_mul!

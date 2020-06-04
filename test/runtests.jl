@@ -122,11 +122,10 @@ b = rand(-4.5:4.5, m + n)
 
 xr = similar(b)
 QR_A = myqr(A)
-x, r = solve_qr!(m + n, n, xr, b, QR_A.Q, QR_A.R, QR_A.prow, QR_A.pcol)
+x = solve_qr!(m + n, n, xr, b, QR_A.Q, QR_A.R, QR_A.prow, QR_A.pcol)
 
 true_x = A \ b
 @test norm(x - true_x) < 1e-10
-@test norm(r) - norm(A*x - b) < 1e-10
 
 
 # Test Givens strategy
@@ -152,7 +151,7 @@ Prow = vcat(QR_A.prow, collect(m + 1 : m + n))
 A_R = zeros(m + n, n)
 A_R[1:n, 1:n] .= QR_A.R
 for k = 1:n
-	A_R[m+k, k] = sqrt(λ)
+  A_R[m+k, k] = sqrt(λ)
 end
 
 # Perform Givens rotations on QR_A.R
@@ -178,11 +177,10 @@ true_xr = similar(b)
 Qλ = Qλt_mul_verif!(true_xr, QR_A.Q, G_list, b, n, m, counter)
 @test norm(my_xr - true_xr) < 1e-10
 
-# # Solve min ||[A; √λ] x - b|| with Givens strategy
-# xr = similar(b)
-# δ1, δr1 = solve_qr2!(m + n, n, xr, b, QR_A.Q, R, Prow, QR_A.pcol, counter, G_list)
-#
-# # Check the results
-# true_delta = A \ b
-# print("\n", norm(A * δ1 - b), "\n", norm(δr1), "\n", norm(A * true_delta - b))
-# @test norm(δ1 - true_delta) < 1e-10
+# Solve min ||[A; √λ] x - b|| with Givens strategy
+xr = similar(b)
+δ1 = solve_qr2!(m + n, n, xr, b, QR_A.Q, R, Prow, QR_A.pcol, counter, G_list)
+
+# Check the results
+true_delta = A \ b
+@test norm(δ1 - true_delta) < 1e-10
