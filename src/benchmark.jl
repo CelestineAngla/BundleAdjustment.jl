@@ -1,5 +1,7 @@
 using SolverBenchmark
 using SolverTools
+using JLD2
+using DataFrames
 include("BALNLPModels.jl")
 include("lm.jl")
 
@@ -41,13 +43,13 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
 #               )
 
 problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
-
+#
 using Logging
 io = open("lm_norm.log", "w")
 stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger(io))
 flush(io)
 close(io)
-save_stats(stats, "lm_stats_norm.csv")
+save_stats(stats, "lm_stats_norm.jld2")
 
 for solver in solvers
   open(String(solver.first) * "_norm.log","w") do io
@@ -55,11 +57,11 @@ for solver in solvers
     markdown_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
   end
 end
-
+#
 using Plots
 gr()
 ENV["GKSwstype"] = "100"
-solved(stats) = stats.status .!= :neg_pred
+solved(stats) = stats.status in (:first_order, :small_residual, :small_step, :acceptable)
 costnames = ["time",
              "r evals",
              "J evals",

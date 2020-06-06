@@ -136,7 +136,8 @@ rows = vcat([1, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7], collect(m + 1 : m + n))
 cols = vcat([1, 3, 2, 4, 4, 1, 4, 3, 1, 4, 2, 5], collect(1 : n))
 vals = vcat([3.5, 2.3, -0.5, -1.5, 3.5, -4.5, -1.3, 2.7, 3.5, -4.5, -1.3, 2.7], fill(sqrt(λ), n))
 A = sparse(rows, cols, vals, m + n, n)
-b = rand(-4.5:4.5, m + n)
+b = zeros(Float64, m + n)
+b[1 : m] .= rand(-4.5:4.5, m)
 
 
 # QR facto of A
