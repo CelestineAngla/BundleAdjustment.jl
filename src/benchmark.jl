@@ -40,22 +40,21 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
 #               "Venice/problem-1350-894716-pre.txt.bz2"
 #               )
 
-# problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
-#
-# using Logging
-# io = open("lm.log", "w")
-# stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger(io))
-# flush(io)
-# close(io)
-# save_stats(stats, "lm_stats.jld2")
-stats = load_stats("benchmark/first/lm_stats.jld2")
+problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
 
-# for solver in solvers
-#   open(String(solver.first) * ".log","w") do io
-#     latex_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
-#     markdown_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
-#   end
-# end
+using Logging
+io = open("lm.log", "w")
+stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger(io))
+flush(io)
+close(io)
+save_stats(stats, "lm_stats.jld2")
+
+for solver in solvers
+  open(String(solver.first) * ".log","w") do io
+    latex_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
+    markdown_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
+  end
+end
 
 using Plots
 gr()
