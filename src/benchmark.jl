@@ -61,7 +61,8 @@ end
 using Plots
 gr()
 ENV["GKSwstype"] = "100"
-solved(stats) = stats.status in (:first_order, :small_residual, :small_step, :acceptable)
+# solved(stats) = stats.status in (:first_order, :small_residual, :small_step, :acceptable)
+solved(stats) = map(x -> x in (:first_order, :small_residual, :small_step, :acceptable), stats.status)
 costnames = ["time",
              "r evals",
              "J evals",
