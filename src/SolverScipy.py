@@ -101,7 +101,7 @@ import time
 from scipy.optimize import least_squares
 
 tab = np.empty((1,6), dtype=object)
-dic_status= {-1 : "error", 0 : "max funct eval", 1 : "||Jᵀr|| < gtol", 2 : "dF < ftol * F", 3 : "||δ|| < xtol * (xtol + ||x||)", 4 : "xtol and ftol"}
+dic_status= {-1 : "error", 0 : "max funct eval", 1 : "||Jtr|| < gtol", 2 : "dF < ftol * F", 3 : "||d|| < xtol * (xtol + ||x||)", 4 : "xtol and ftol"}
 problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
               "LadyBug/problem-73-11032-pre.txt.bz2"]
 # problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
