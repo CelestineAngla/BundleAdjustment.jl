@@ -54,7 +54,7 @@ xᵣₒₜ = cos(θ) x+ sin(θ) k × x + (1 - cos(θ)) (k.x) k
 with θ = ||r|| and k = r/θ and K the "cross product matrix" of k
 """
 function Rodrigues_rotation(r, x)
-    θ = norm(r)
+    θ = sqrt(dot(r,r))
     k = r / θ
     return cos(θ) * x + sin(θ) * cross(k, x) + (1 - cos(θ)) * dot(k, x) * k
 end
@@ -159,9 +159,9 @@ function residual_model(cam_indices::Vector{Int}, pnt_indices::Vector{Int}, pt2d
 end
 
 
-# Get cameras indices, point indices, points 2D, cameras and points 3D matrices for datasets
-# cam_indices, pnt_indices, pt2d, cam_params, pt3d = readfile_JuMP("LadyBug/problem-49-7776-pre.txt.bz2")
-
-# Find optimal camera features and points
-# cameras_opt, points_opt = direct_model(cam_indices, pnt_indices, pt2d, cam_params, pt3d)
+# # Get cameras indices, point indices, points 2D, cameras and points 3D matrices for datasets
+cam_indices, pnt_indices, pt2d, cam_params, pt3d = readfile_JuMP("LadyBug/problem-49-7776-pre.txt.bz2")
+#
+# # Find optimal camera features and points
+cameras_opt, points_opt = direct_model(cam_indices, pnt_indices, pt2d, cam_params, pt3d)
 # cameras_opt, points_opt = residual_model(cam_indices, pnt_indices, pt2d, cam_params, pt3d)
