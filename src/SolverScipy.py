@@ -100,7 +100,7 @@ def name(filename):
 import time
 from scipy.optimize import least_squares
 
-tab = np.empty((1,6), dtype=object)
+tab = np.empty((2,6), dtype=object)
 dic_status= {-1 : "error", 0 : "max funct eval", 1 : "||Jtr|| < gtol", 2 : "dF < ftol * F", 3 : "||d|| < xtol * (xtol + ||x||)", 4 : "xtol and ftol"}
 problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
               "LadyBug/problem-73-11032-pre.txt.bz2"]
@@ -129,11 +129,11 @@ for k in range(nb_pb):
   A = bundle_adjustment_sparsity(n_cameras, n_points, camera_indices, point_indices)
 
   t0 = time.time()
-  res = least_squares(fun, x0, jac_sparsity=A, verbose=2, x_scale='jac', ftol=1e-6, gtol=1e-6, method='trf',
+  res = least_squares(fun, x0, jac_sparsity=A, verbose=2, x_scale='jac', ftol=6e-6, gtol=6e-6, xtol=1.5e-8 method='trf',
                     args=(n_cameras, n_points, camera_indices, point_indices, points_2d))
   t1 = time.time()
 
-  tab[k, 1] = name(problems[k])
+  tab[k, 0] = name(problems[k])
   tab[k, 1] = str(res.cost)
   tab[k, 2] = str(t1 - t0)
   tab[k, 3] = str(res.nfev)
