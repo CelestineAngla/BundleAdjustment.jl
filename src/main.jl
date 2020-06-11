@@ -14,23 +14,19 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-810-88814-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-1031-110968-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-1235-129634-pre.txt.bz2")
-# BA = BALNLPModel("LadyBug/problem-1514-147317-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-1723-156502-pre.txt.bz2")
 # BA = BALNLPModel("Dubrovnik/problem-202-132796-pre.txt.bz2")
 # BA = BALNLPModel("Dubrovnik/problem-273-176305-pre.txt.bz2")
 # BA = BALNLPModel("Dubrovnik/problem-356-226730-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-427-310384-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-1350-894716-pre.txt.bz2")
-# BA = BALNLPModel("Venice/problem-1778-993923-pre.txt.bz2")
-# BA = BALNLPModel("Final/problem-4585-1324582-pre.txt.bz2")
-# BA = BALNLPModel("Final/problem-13682-4456117-pre.txt.bz2")
 
 
 # Wrap it into a NLS model
 fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
-stats = Levenberg_Marquardt(fr_BA, :QR, :AMD)
+stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
 
 
 # Write the output into a file
