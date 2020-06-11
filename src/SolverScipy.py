@@ -122,7 +122,7 @@ problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
 nb_pb = len(problems)
 
 for k in range(nb_pb):
-  camera_params, points_3d, camera_indices, point_indices, points_2d = read_bal_data("../Data/" + problems[k])
+  camera_params, points_3d, camera_indices, point_indices, points_2d = read_bal_data("BundleAdjustment.jl/Data/" + problems[k])
   n_cameras = camera_params.shape[0]
   n_points = points_3d.shape[0]
   x0 = np.hstack((camera_params.ravel(), points_3d.ravel()))
