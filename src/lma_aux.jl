@@ -2,15 +2,6 @@ using LinearAlgebra
 using SparseArrays
 
 
-using DataFrames
-using JLD
-function save_stats(stats::Dict{Symbol,DataFrame}, filename::AbstractString; force::Bool=false, key::String="stats")
-  isfile(filename) && !force && error("$filename already exists; use `force=true` to overwrite")
-  jldopen(filename, "w") do file
-    file[key] = stats
-  end
-end
-
 
 """
 Normalize (in place) the n columns of a sparse matrix A
