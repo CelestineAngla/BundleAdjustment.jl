@@ -50,6 +50,7 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
               "Venice/problem-1350-894716-pre.txt.bz2"
               )
 
+
 problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
 
 using Logging
@@ -65,12 +66,13 @@ for solver in solvers
     markdown_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
   end
 end
-#
+
 using Plots
 gr()
 ENV["GKSwstype"] = "100"
 # solved(stats) = stats.status in (:first_order, :small_residual, :small_step, :acceptable)
 solved(stats) = map(x -> x in (:first_order, :small_residual, :small_step, :acceptable), stats.status)
+
 costnames = ["time",
              "r evals",
              "J evals",
@@ -79,5 +81,8 @@ costs = [stats -> .!solved(stats) .* Inf .+ stats.elapsed_time,
          stats -> .!solved(stats) .* Inf .+ stats.neval_residual,
          stats -> .!solved(stats) .* Inf .+ stats.neval_jac_residual,
         ]
+
 profile_solvers(stats, costs, costnames)
+
 savefig("lm_profiles_norm_ldl.pdf")
+

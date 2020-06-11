@@ -100,7 +100,7 @@
 │   dual feasibility: 160.33170664306257
 │   solution: [-0.2974572843144623  0.2347104238947274  -3.016503091678376  0.0607805006898077 ⋯ 404.13850152356804]
 │   iterations: 57
-└   elapsed time: 43.175025939941406
+└   elapsed time: 44.25019598007202
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-73-11032-feasres
 │   Total variables………33753   Total constraints…0     
@@ -163,7 +163,7 @@
 │   dual feasibility: 71.474298971062
 │   solution: [1.634522017374472  0.9603209036117343  -6.8907251291148315  -0.3377937792443826 ⋯ 389.12119231241104]
 │   iterations: 17
-└   elapsed time: 17.991985082626343
+└   elapsed time: 19.78980588912964
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-138-19878-feasres
 │   Total variables………60876   Total constraints…0     
@@ -304,7 +304,7 @@
 │   dual feasibility: 359.29042110837736
 │   solution: [0.297593932662774  0.2778510017510414  -3.9045150721090494  0.03211918508493891 ⋯ 404.13858573514534]
 │   iterations: 95
-└   elapsed time: 257.79411792755127
+└   elapsed time: 229.10190892219543
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-318-41628-feasres
 │   Total variables………127746  Total constraints…0     
@@ -364,7 +364,7 @@
 │   dual feasibility: 4547.05131265229
 │   solution: [1.6228306851881873  0.9278620718352414  -6.791256797984446  -0.3539784136538437 ⋯ 409.57339732692515]
 │   iterations: 14
-└   elapsed time: 152.41169810295105
+└   elapsed time: 152.04120898246765
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-460-56811-feasres
 │   Total variables………174573  Total constraints…0     
@@ -436,7 +436,7 @@
 │   dual feasibility: 197860.90306700053
 │   solution: [1.6706885753680363  0.9181732290831282  -6.683978835004873  -0.2748484295001521 ⋯ 384.17177018881955]
 │   iterations: 26
-└   elapsed time: 488.34297013282776
+└   elapsed time: 574.0063791275024
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-646-73584-feasres
 │   Total variables………226566  Total constraints…0     
@@ -483,7 +483,7 @@
 │   dual feasibility: 6.761036174154559e8
 │   solution: [1.3082873311059209  0.8979057691782828  -6.915121836127142  -0.6429266880673653 ⋯ 411.0114562557531]
 │   iterations: 1
-└   elapsed time: 57.76410412788391
+└   elapsed time: 63.8624370098114
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-810-88814-feasres
 │   Total variables………273732  Total constraints…0     
@@ -542,7 +542,7 @@
 │   dual feasibility: 4.7851281063703907e8
 │   solution: [1.4064898504774166  0.87578052753965  -7.801327735144147  -0.6523755749304884 ⋯ 418.9276225681579]
 │   iterations: 13
-└   elapsed time: 591.214761018753
+└   elapsed time: 615.1938889026642
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-1031-110968-feasres
 │   Total variables………342183  Total constraints…0     
@@ -614,7 +614,7 @@
 │   dual feasibility: 108476.8917689245
 │   solution: [1.3550604344960226  0.880565530084806  -7.77909806391972  -0.6977127691586555 ⋯ 385.8310186448282]
 │   iterations: 26
-└   elapsed time: 1350.9205870628357
+└   elapsed time: 1348.0605671405792
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-1235-129634-feasres
 │   Total variables………400017  Total constraints…0     
@@ -677,7 +677,7 @@
 │   dual feasibility: 1.3997259742574807e7
 │   solution: [1.3290609792298544  0.8699152526866948  -7.794689217345446  -0.7126252088336372 ⋯ 413.99331879462017]
 │   iterations: 17
-└   elapsed time: 1315.3931322097778
+└   elapsed time: 1303.2521719932556
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: Dubrovnik-202-132796-feasres
 │   Total variables………400206  Total constraints…0     
@@ -733,7 +733,7 @@
 │   dual feasibility: 2184.1088804751985
 │   solution: [-11.47342999781334  11.47230103509196  -35.61337054238339  6.082640043347636 ⋯ 1752.1439323387065]
 │   iterations: 10
-└   elapsed time: 404.2090389728546
+└   elapsed time: 402.8748321533203
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-49-7776-feasres
 │   Total variables………23769   Total constraints…0     
@@ -836,7 +836,7 @@
 │   dual feasibility: 212.8837261433195
 │   solution: [-0.2974566578419464  0.2347096939636635  -3.0165035137156773  0.060780624842185556 ⋯ 404.13850175014795]
 │   iterations: 57
-└   elapsed time: 50.76792502403259
+└   elapsed time: 59.947839975357056
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-73-11032-feasres
 │   Total variables………33753   Total constraints…0     
@@ -899,7 +899,7 @@
 │   dual feasibility: 71.47699565255266
 │   solution: [1.634522017554567  0.960320903657473  -6.890725129284257  -0.33779377916922854 ⋯ 389.12119229804887]
 │   iterations: 17
-└   elapsed time: 26.84733009338379
+└   elapsed time: 24.4358549118042
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-138-19878-feasres
 │   Total variables………60876   Total constraints…0     
@@ -1040,7 +1040,7 @@
 │   dual feasibility: 348.6084729598136
 │   solution: [0.29759370782721845  0.2778507890533583  -3.904514326216146  0.03211933335000197 ⋯ 404.138586307685]
 │   iterations: 95
-└   elapsed time: 332.13611602783203
+└   elapsed time: 387.79589581489563
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-318-41628-feasres
 │   Total variables………127746  Total constraints…0     
@@ -1100,7 +1100,7 @@
 │   dual feasibility: 4537.4022747817935
 │   solution: [1.622830684902542  0.927862071850495  -6.791256797638527  -0.353978413908046 ⋯ 409.5733973167131]
 │   iterations: 14
-└   elapsed time: 258.5668339729309
+└   elapsed time: 425.9797511100769
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-460-56811-feasres
 │   Total variables………174573  Total constraints…0     
@@ -1172,7 +1172,7 @@
 │   dual feasibility: 197883.98954931283
 │   solution: [1.6706885753472849  0.9181732290845477  -6.683978834941252  -0.27484842955874333 ⋯ 384.1717701880436]
 │   iterations: 26
-└   elapsed time: 909.4857668876648
+└   elapsed time: 890.1651890277863
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-646-73584-feasres
 │   Total variables………226566  Total constraints…0     
@@ -1230,7 +1230,7 @@
 │   dual feasibility: 1.0303302797371577e9
 │   solution: [1.3074455721916345  0.898483072828686  -6.914774250334256  -0.6435196782913027 ⋯ 411.0101576677851]
 │   iterations: 12
-└   elapsed time: 638.48823595047
+└   elapsed time: 906.0755929946899
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-810-88814-feasres
 │   Total variables………273732  Total constraints…0     
@@ -1289,7 +1289,7 @@
 │   dual feasibility: 4.7895714995365185e8
 │   solution: [1.4064898301272624  0.8757805080505839  -7.80132772138757  -0.6523756092917156 ⋯ 418.92762258226594]
 │   iterations: 13
-└   elapsed time: 1394.755231142044
+└   elapsed time: 1366.6250541210175
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-1031-110968-feasres
 │   Total variables………342183  Total constraints…0     
@@ -1372,7 +1372,7 @@
 │   dual feasibility: 1.6135018427284083e8
 │   solution: [1.3503425464697298  0.8796429218683028  -7.775188309408551  -0.699466286231107 ⋯ 385.8374389746486]
 │   iterations: 37
-└   elapsed time: 3095.6363978385925
+└   elapsed time: 3161.2970390319824
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-1235-129634-feasres
 │   Total variables………400017  Total constraints…0     
@@ -1436,7 +1436,7 @@
 │   dual feasibility: 1.6213143958526786e7
 │   solution: [1.3289355711254693  0.870113416504349  -7.794381770038084  -0.7130505003309235 ⋯ 413.99754721944686]
 │   iterations: 18
-└   elapsed time: 2140.0001089572906
+└   elapsed time: 2187.8659298419952
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: Dubrovnik-202-132796-feasres
 │   Total variables………400206  Total constraints…0     
@@ -1492,7 +1492,7 @@
 │   dual feasibility: 2182.4225870436217
 │   solution: [-11.473430147463846  11.472301113285909  -35.613370682076514  6.082639895661528 ⋯ 1752.1439325740976]
 │   iterations: 10
-└   elapsed time: 343.8216938972473
+└   elapsed time: 328.72719407081604
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-49-7776-feasres
 │   Total variables………23769   Total constraints…0     
@@ -1595,7 +1595,7 @@
 │   dual feasibility: 212.86391012812723
 │   solution: [-0.2974571900011522  0.2347111238395755  -3.0165034774596737  0.06078011951355635 ⋯ 404.1385017492109]
 │   iterations: 57
-└   elapsed time: 220.44686222076416
+└   elapsed time: 222.97623491287231
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-73-11032-feasres
 │   Total variables………33753   Total constraints…0     
@@ -1658,7 +1658,7 @@
 │   dual feasibility: 71.47699771108955
 │   solution: [1.6345220174541624  0.9603209038607774  -6.890725129264273  -0.33779377929022286 ⋯ 389.12119229774686]
 │   iterations: 17
-└   elapsed time: 132.183513879776
+└   elapsed time: 134.02910494804382
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-138-19878-feasres
 │   Total variables………60876   Total constraints…0     
@@ -1799,7 +1799,7 @@
 │   dual feasibility: 348.60499260356056
 │   solution: [0.29759368527632724  0.27785081826230756  -3.9045143705324175  0.032119306473533636 ⋯ 404.1385863069894]
 │   iterations: 95
-└   elapsed time: 2573.942253112793
+└   elapsed time: 2432.1669030189514
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-318-41628-feasres
 │   Total variables………127746  Total constraints…0     
@@ -1859,7 +1859,7 @@
 │   dual feasibility: 4537.401836621232
 │   solution: [1.6228306851797163  0.92786207175261  -6.791256797859879  -0.35397841356171134 ⋯ 409.5733973167189]
 │   iterations: 14
-└   elapsed time: 2385.712007045746
+└   elapsed time: 2308.688665866852
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-460-56811-feasres
 │   Total variables………174573  Total constraints…0     
@@ -1931,7 +1931,7 @@
 │   dual feasibility: 197883.97697820136
 │   solution: [1.6706885753808862  0.9181732291003679  -6.683978835031109  -0.2748484295084801 ⋯ 384.1717701883532]
 │   iterations: 26
-└   elapsed time: 7101.580914974213
+└   elapsed time: 6931.968277931213
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-646-73584-feasres
 │   Total variables………226566  Total constraints…0     
@@ -2232,7 +2232,7 @@
 │   dual feasibility: 212.86390945315935
 │   solution: [-0.29745719023972983  0.23471112368962063  -3.0165034774836705  0.060780119285254515 ⋯ 404.1385017492141]
 │   iterations: 57
-└   elapsed time: 220.28018712997437
+└   elapsed time: 218.15000987052917
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-73-11032-feasres
 │   Total variables………33753   Total constraints…0     
@@ -2295,7 +2295,7 @@
 │   dual feasibility: 71.47699854225381
 │   solution: [1.6345220174535522  0.9603209038618454  -6.890725129264671  -0.3377937792907475 ⋯ 389.1211922977468]
 │   iterations: 17
-└   elapsed time: 129.33064699172974
+└   elapsed time: 121.8306291103363
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-138-19878-feasres
 │   Total variables………60876   Total constraints…0     
@@ -2436,7 +2436,7 @@
 │   dual feasibility: 348.60481936473406
 │   solution: [0.2975936852165015  0.2778508183603028  -3.904514370743629  0.03211930641368349 ⋯ 404.13858630698746]
 │   iterations: 95
-└   elapsed time: 2465.034959077835
+└   elapsed time: 2429.919000148773
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-318-41628-feasres
 │   Total variables………127746  Total constraints…0     
@@ -2496,7 +2496,7 @@
 │   dual feasibility: 4537.402288087874
 │   solution: [1.6228306851801837  0.9278620717523915  -6.791256797860096  -0.35397841356126086 ⋯ 409.573397316719]
 │   iterations: 14
-└   elapsed time: 2279.926288127899
+└   elapsed time: 2218.3532021045685
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-460-56811-feasres
 │   Total variables………174573  Total constraints…0     
@@ -2568,7 +2568,7 @@
 │   dual feasibility: 197884.15147884248
 │   solution: [1.670688575380733  0.9181732291004173  -6.683978835031021  -0.2748484295086405 ⋯ 384.1717701883531]
 │   iterations: 26
-└   elapsed time: 7333.298869848251
+└   elapsed time: 7335.104068040848
 ┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
 │   Problem name: LadyBug-646-73584-feasres
 │   Total variables………226566  Total constraints…0     
