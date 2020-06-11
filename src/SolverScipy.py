@@ -100,26 +100,21 @@ def name(filename):
 import time
 from scipy.optimize import least_squares
 
-tab = np.empty((2,6), dtype=object)
+
 dic_status= {-1 : "error", 0 : "max funct eval", 1 : "||Jtr|| < gtol", 2 : "dF < ftol * F", 3 : "||d|| < xtol * (xtol + ||x||)", 4 : "xtol and ftol"}
 problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
-              "LadyBug/problem-73-11032-pre.txt.bz2"]
-# problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
-#               "LadyBug/problem-73-11032-pre.txt.bz2",
-#               "LadyBug/problem-138-19878-pre.txt.bz2",
-#               "LadyBug/problem-318-41628-pre.txt.bz2",
-#               "LadyBug/problem-460-56811-pre.txt.bz2",
-#               "LadyBug/problem-646-73584-pre.txt.bz2",
-#               "LadyBug/problem-810-88814-pre.txt.bz2",
-#               "LadyBug/problem-1031-110968-pre.txt.bz2",
-#               "LadyBug/problem-1235-129634-pre.txt.bz2",
-#               "Dubrovnik/problem-202-132796-pre.txt.bz2",
-#               "LadyBug/problem-1723-156502-pre.txt.bz2",
-#               "Dubrovnik/problem-273-176305-pre.txt.bz2",
-#               "Dubrovnik/problem-356-226730-pre.txt.bz2",
-#               "Venice/problem-427-310384-pre.txt.bz2",
-#                "Venice/problem-1350-894716-pre.txt.bz2"]
+              "LadyBug/problem-73-11032-pre.txt.bz2",
+              "LadyBug/problem-318-41628-pre.txt.bz2",
+              "LadyBug/problem-460-56811-pre.txt.bz2",
+              "LadyBug/problem-810-88814-pre.txt.bz2",
+              "LadyBug/problem-1031-110968-pre.txt.bz2",
+              "Dubrovnik/problem-202-132796-pre.txt.bz2",
+              "Dubrovnik/problem-273-176305-pre.txt.bz2",
+              "Dubrovnik/problem-356-226730-pre.txt.bz2",
+              "Venice/problem-427-310384-pre.txt.bz2",
+               "Venice/problem-1350-894716-pre.txt.bz2"]
 nb_pb = len(problems)
+tab = np.empty((nb_pb,6), dtype=object)
 
 for k in range(nb_pb):
   camera_params, points_3d, camera_indices, point_indices, points_2d = read_bal_data("BundleAdjustment.jl/Data/" + problems[k])
