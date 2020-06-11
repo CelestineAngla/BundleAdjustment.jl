@@ -119,7 +119,7 @@ problems = ["LadyBug/problem-49-7776-pre.txt.bz2",
 #               "Dubrovnik/problem-356-226730-pre.txt.bz2",
 #               "Venice/problem-427-310384-pre.txt.bz2",
 #                "Venice/problem-1350-894716-pre.txt.bz2"]
-nb_pb = length(problems)
+nb_pb = len(problems)
 
 for k in range(nb_pb):
   camera_params, points_3d, camera_indices, point_indices, points_2d = read_bal_data("../Data/" + problems[k])
