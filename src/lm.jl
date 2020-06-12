@@ -25,7 +25,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
                              ite_max :: Int=200, max_time :: Int=3600)
 
   @info model
-  @info "Parameters of the solver:\n" facto perm normalize νd νm λ ite_max
+  @info "Parameters of the solver:\n" facto perm normalize linesearch νd νm λ ite_max
   @info "Tolerances:\n" restol satol srtol oatol ortol atol rtol
 
   start_time = time()
@@ -159,11 +159,11 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     end
 
     # Check model decrease
-    if δr2 > obj
-      @error "‖δr‖² > ‖r‖²" δr2 obj
-      fail = true
-      continue
-    end
+    # if δr2 > obj
+    #   @error "‖δr‖² > ‖r‖²" δr2 obj
+    #   fail = true
+    #   continue
+    # end
 
     x_suiv .=  x + δ
     residual!(model, x_suiv, r_suiv)
@@ -174,13 +174,13 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     pred = obj - δr2       # predicted reduction
     ared = obj - obj_suiv  # actual reduction
     step_accepted = ared ≥ 1e-4 * pred
-    step_accepted_str = step_accepted ? "acc" : "rej"
+    step_accepted_str = (step_accepted && δr2 <= obj) ? "acc" : "rej"
 
     ntimes = 0
     # Linear search along the δ direction
     if linesearch
       while !step_accepted && ntimes < 4
-    	  δ /= δd
+        δ /= δd
         x_suiv .=  x + δ
         residual!(model, x_suiv, r_suiv)
         norm_rsuiv = norm(r_suiv)
@@ -190,9 +190,18 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
           δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2 / 2
         elseif facto == :LDL
           # δrₖ₊₁ = (δrₖ + r) / δd - r = (δrₖ - r) / δd
-          δr = (δr - r) / δd
+          # δrₖ = - Jδₖ - r
+          δr = (δr + r) / δd
           δr2 = norm(δr)^2 / 2
         end
+
+        # # Check model decrease
+        # if δr2 > obj
+        #   @error "‖δr‖² > ‖r‖²" δr2 obj
+        #   fail = true
+        #   continue
+        # end
+
         # Step not accepted : d(||r||²) < 1e-4 (||Jδ + r||² - ||r||²)
         pred = obj - δr2       # predicted reduction
         ared = obj - obj_suiv  # actual reduction
@@ -230,14 +239,11 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       # Update λ and x
       if ntimes > 0
         λ /= νd^(ntimes - 1)
-        if ared ≥ 0.9 * pred  # very successful step
-          λ /= νd^(ntimes - 1)
-        end
       else
         λ /= νd
-        if ared ≥ 0.9 * pred  # very successful step
-          λ /= νd
-        end
+      end
+      if ared ≥ 0.9 * pred  # very successful step
+        λ /= νd
       end
       λ = max(1.0e-8, λ)
       x .= x_suiv
