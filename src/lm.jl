@@ -197,13 +197,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         pred = obj - δr2       # predicted reduction
         ared = obj - obj_suiv  # actual reduction
         step_accepted = ared ≥ 1e-4 * pred
-        step_accepted_str = step_accepted ? "acc" : "rej"
-        # Check model decrease
-        if δr2 > obj
-          @error "‖δr‖² > ‖r‖²" δr2 obj
-          fail = true
-          continue
-        end
+        step_accepted_str = (step_accepted && δr2 <= obj) ? "acc" : "rej"
         ntimes += 1
       end
     end

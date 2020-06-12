@@ -28,8 +28,8 @@ include("lm.jl")
 
 # Benchmarks or LDL
 
-solvers = Dict(:lmldlnone=> model -> Levenberg_Marquardt(model,:LDL, :AMD, :None, false),
-               :lmldlj => model -> Levenberg_Marquardt(model,:LDL, :AMD, :None, true)
+solvers = Dict(:lmldl=> model -> Levenberg_Marquardt(model,:LDL, :AMD, :None, false),
+               :lmldl_ls => model -> Levenberg_Marquardt(model,:LDL, :AMD, :None, true)
 )
 
 prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
