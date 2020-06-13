@@ -1,0 +1,43 @@
+\begin{longtable}[c]{lrrrrrrr}
+\hline 
+name & nvar & nequ & objective & elapsed\_time & iter & status & dual\_feas \\
+\hline 
+\endfirsthead
+\multicolumn{8}{l}
+{{\bfseries \tablename\ \thetable{} --- continued from previous page}} \\
+\hline 
+name & nvar & nequ & objective & elapsed\_time & iter & status & dual\_feas \\
+\hline 
+\endhead
+\hline 
+\multicolumn{8}{r}{{\bfseries Continued on next page}} \\
+\hline 
+\endfoot
+\hline 
+\endlastfoot
+LadyBug-49-7776-feasres & \(23769\) & \(63686\) & \( 1.3\)e\(+04\) & \( 2.2\)e\(+01\) & \(   26\) & acceptable & \( 2.4\)e\(+03\) \\
+LadyBug-73-11032-feasres & \(33753\) & \(92244\) & \( 1.7\)e\(+04\) & \( 1.7\)e\(+01\) & \(   13\) & acceptable & \( 2.5\)e\(+02\) \\
+LadyBug-318-41628-feasres & \(127746\) & \(359838\) & \( 8.6\)e\(+04\) & \( 9.0\)e\(+01\) & \(    7\) & first\_order & \( 7.9\)e\(+02\) \\
+LadyBug-460-56811-feasres & \(174573\) & \(483754\) & \( 1.3\)e\(+05\) & \( 3.3\)e\(+02\) & \(   17\) & acceptable & \( 2.0\)e\(+05\) \\
+LadyBug-810-88814-feasres & \(273732\) & \(787550\) & \( 2.0\)e\(+05\) & \( 6.0\)e\(+02\) & \(   13\) & acceptable & \( 7.6\)e\(+04\) \\
+LadyBug-1031-110968-feasres & \(342183\) & \(1000530\) & \( 2.8\)e\(+05\) & \( 1.0\)e\(+03\) & \(   19\) & first\_order & \( 3.1\)e\(+06\) \\
+Dubrovnik-202-132796-feasres & \(400206\) & \(1503304\) & \( 3.3\)e\(+05\) & \( 5.1\)e\(+02\) & \(   10\) & small\_step & \( 7.6\)e\(+02\) \\
+Dubrovnik-273-176305-feasres & \(531372\) & \(1885940\) & \( 3.4\)e\(+05\) & \( 1.5\)e\(+03\) & \(   30\) & acceptable & \( 4.8\)e\(+05\) \\
+Dubrovnik-356-226730-feasres & \(683394\) & \(2510536\) & \( 4.9\)e\(+05\) & \( 1.6\)e\(+03\) & \(   24\) & acceptable & \( 1.8\)e\(+06\) \\
+Venice-427-310384-feasres & \(934995\) & \(3398290\) & \( 1.1\)e\(+06\) & \( 1.3\)e\(+03\) & \(   13\) & small\_step & \( 3.0\)e\(+04\) \\
+Venice-1350-894716-feasres & \(2696298\) & \(9034252\) & \( 2.7\)e\(+06\) & \( 1.6\)e\(+03\) & \(    1\) & small\_step & \( 3.7\)e\(+15\) \\
+\hline 
+\end{longtable}
+|                         name |    nvar |    nequ | objective | elapsed_time |  iter |      status | dual_feas |
+|------------------------------|---------|---------|-----------|--------------|-------|-------------|-----------|
+|      LadyBug-49-7776-feasres |   23769 |   63686 |   1.3e+04 |      2.2e+01 |    26 |  acceptable |   2.4e+03 |
+|     LadyBug-73-11032-feasres |   33753 |   92244 |   1.7e+04 |      1.7e+01 |    13 |  acceptable |   2.5e+02 |
+|    LadyBug-318-41628-feasres |  127746 |  359838 |   8.6e+04 |      9.0e+01 |     7 | first_order |   7.9e+02 |
+|    LadyBug-460-56811-feasres |  174573 |  483754 |   1.3e+05 |      3.3e+02 |    17 |  acceptable |   2.0e+05 |
+|    LadyBug-810-88814-feasres |  273732 |  787550 |   2.0e+05 |      6.0e+02 |    13 |  acceptable |   7.6e+04 |
+|  LadyBug-1031-110968-feasres |  342183 | 1000530 |   2.8e+05 |      1.0e+03 |    19 | first_order |   3.1e+06 |
+| Dubrovnik-202-132796-feasres |  400206 | 1503304 |   3.3e+05 |      5.1e+02 |    10 |  small_step |   7.6e+02 |
+| Dubrovnik-273-176305-feasres |  531372 | 1885940 |   3.4e+05 |      1.5e+03 |    30 |  acceptable |   4.8e+05 |
+| Dubrovnik-356-226730-feasres |  683394 | 2510536 |   4.9e+05 |      1.6e+03 |    24 |  acceptable |   1.8e+06 |
+|    Venice-427-310384-feasres |  934995 | 3398290 |   1.1e+06 |      1.3e+03 |    13 |  small_step |   3.0e+04 |
+|   Venice-1350-894716-feasres | 2696298 | 9034252 |   2.7e+06 |      1.6e+03 |     1 |  small_step |   3.7e+15 |
