@@ -14,7 +14,8 @@ Solves min 1/2 ||r(x)||² where r is a vector of residuals
 function Levenberg_Marquardt(model :: AbstractNLSModel,
                              facto :: Symbol,
                              perm :: Symbol,
-                             normalize :: Symbol;
+                             normalize :: Symbol,
+                             linesearch :: Bool;
                              x :: AbstractVector=copy(model.meta.x0),
                              restol=eltype(x)(eps(eltype(x))^(1/3)),
                              satol=sqrt(eps(eltype(x))), srtol=sqrt(eps(eltype(x))),
@@ -24,7 +25,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
                              ite_max :: Int=200, max_time :: Int=3600)
 
   @info model
-  @info "Parameters of the solver:\n" facto perm normalize νd νm λ ite_max
+  @info "Parameters of the solver:\n" facto perm normalize linesearch νd νm λ ite_max
   @info "Tolerances:\n" restol satol srtol oatol ortol atol rtol
 
   start_time = time()
@@ -158,13 +159,12 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     end
 
     # Check model decrease
-    if δr2 > obj
-      @error "‖δr‖² > ‖r‖²" δr2 obj
-      fail = true
-      continue
-    end
+    # if δr2 > obj
+    #   @error "‖δr‖² > ‖r‖²" δr2 obj
+    #   fail = true
+    #   continue
+    # end
 
-    norm_δ = norm(δ)
     x_suiv .=  x + δ
     residual!(model, x_suiv, r_suiv)
     norm_rsuiv = norm(r_suiv)
@@ -174,12 +174,49 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     pred = obj - δr2       # predicted reduction
     ared = obj - obj_suiv  # actual reduction
     step_accepted = ared ≥ 1e-4 * pred
-    step_accepted_str = step_accepted ? "acc" : "rej"
+    step_accepted_str = (step_accepted && δr2 <= obj) ? "acc" : "rej"
+
+    ntimes = 0
+    # Linear search along the δ direction
+    if linesearch
+      while !step_accepted && ntimes < 4
+        δ /= δd
+        x_suiv .=  x + δ
+        residual!(model, x_suiv, r_suiv)
+        norm_rsuiv = norm(r_suiv)
+        obj_suiv = norm_rsuiv^2 / 2
+        if facto == :QR
+          # δr2 = ‖Jδ + r‖²
+          δr2 = norm(A[1 : model.nls_meta.nequ, :] * δ + r)^2 / 2
+        elseif facto == :LDL
+          # δrₖ₊₁ = (δrₖ + r) / δd - r = (δrₖ - r) / δd
+          # δrₖ = - Jδₖ - r
+          δr = (δr + r) / δd
+          δr2 = norm(δr)^2 / 2
+        end
+
+        # # Check model decrease
+        # if δr2 > obj
+        #   @error "‖δr‖² > ‖r‖²" δr2 obj
+        #   fail = true
+        #   continue
+        # end
+
+        # Step not accepted : d(||r||²) < 1e-4 (||Jδ + r||² - ||r||²)
+        pred = obj - δr2       # predicted reduction
+        ared = obj - obj_suiv  # actual reduction
+        step_accepted = ared ≥ 1e-4 * pred
+        step_accepted_str = (step_accepted && δr2 <= obj) ? "acc" : "rej"
+        ntimes += 1
+      end
+    end
+
+    norm_δ = norm(δ)
     @info log_row((iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, ared / pred, step_accepted_str))
 
     if !step_accepted
       # Update λ
-      λ = max(λ, 1 / norm_δ) * νm
+      λ = max(λ, 1 / norm_δ) * νm^(ntimes + 1)
 
       # Update A
       if facto == :QR
@@ -200,7 +237,11 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
     else
       # Update λ and x
-      λ /= νd
+      if ntimes > 0
+        λ /= νd^(ntimes - 1)
+      else
+        λ /= νd
+      end
       if ared ≥ 0.9 * pred  # very successful step
         λ /= νd
       end

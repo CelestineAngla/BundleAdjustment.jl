@@ -28,9 +28,8 @@ include("lm.jl")
 
 # Benchmarks or LDL
 
-solvers = Dict(:lmldlnone=> model -> Levenberg_Marquardt(model,:LDL, :AMD, :None),
-               :lmldlj => model -> Levenberg_Marquardt(model,:LDL, :AMD, :J),
-               :lmldla => model -> Levenberg_Marquardt(model,:LDL, :AMD, :A)
+solvers = Dict(:lmldl=> model -> Levenberg_Marquardt(model,:LDL, :AMD, :None, false),
+               :lmldl_ls => model -> Levenberg_Marquardt(model,:LDL, :AMD, :None, true)
 )
 
 prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
@@ -54,14 +53,14 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
 problems = (FeasibilityResidual(BALNLPModel(name)) for name in prob_names)
 
 using Logging
-io = open("lm_norm_ldl.log", "w")
+io = open("lm_linesearch.log", "w")
 stats = bmark_solvers(solvers, problems, solver_logger = Logging.ConsoleLogger(io))
 flush(io)
 close(io)
-save_stats(stats, "lm_stats_norm_ldl.jld2")
+save_stats(stats, "lm_stats_linesearch.jld2")
 
 for solver in solvers
-  open(String(solver.first) * "_norm_ldl.log","w") do io
+  open(String(solver.first) * "_linesearch.log","w") do io
     latex_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
     markdown_table(io, stats[solver.first], cols=[:name, :nvar, :nequ, :objective, :elapsed_time, :iter,  :status, :dual_feas])
   end
@@ -84,5 +83,4 @@ costs = [stats -> .!solved(stats) .* Inf .+ stats.elapsed_time,
 
 profile_solvers(stats, costs, costnames)
 
-savefig("lm_profiles_norm_ldl.pdf")
-
+savefig("lm_profiles_linesearch.pdf")

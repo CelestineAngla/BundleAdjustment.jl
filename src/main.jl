@@ -5,7 +5,7 @@ include("BALNLPModels.jl")
 include("lm.jl")
 
 # Create a BALNLPModel from a dataset
-BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
+# BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-73-11032-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-138-19878-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-318-41628-pre.txt.bz2")
@@ -16,7 +16,7 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-1235-129634-pre.txt.bz2")
 # BA = BALNLPModel("LadyBug/problem-1723-156502-pre.txt.bz2")
 # BA = BALNLPModel("Dubrovnik/problem-202-132796-pre.txt.bz2")
-# BA = BALNLPModel("Dubrovnik/problem-273-176305-pre.txt.bz2")
+BA = BALNLPModel("Dubrovnik/problem-273-176305-pre.txt.bz2")
 # BA = BALNLPModel("Dubrovnik/problem-356-226730-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-427-310384-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-1350-894716-pre.txt.bz2")
@@ -26,7 +26,7 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 fr_BA = FeasibilityResidual(BA)
 
 # Solve this problem using Levenberg-Marquardt algorithm
-stats = Levenberg_Marquardt(fr_BA, :LDL, :Metis, :None)
+stats = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None, true)
 
 
 # Write the output into a file
