@@ -35,12 +35,13 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   T = eltype(x)
 
   # Initialize residuals
-  r = residual(model, x)
+  r = zeros(T, model.nls_meta.nequ)
+  residual!(model, x, r)
   norm_r = norm(r)
   obj = norm_r^2 / 2
   r_suiv = copy(r)
 
-  # Initialize b = [r; 0]
+  # Initialize b = [-r; 0]
   b = Vector{T}(undef, model.nls_meta.nequ + model.meta.nvar)
   b[1 : model.nls_meta.nequ] .= -r
   b[model.nls_meta.nequ + 1 : end] .= 0
@@ -50,13 +51,16 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   rows = Vector{Int}(undef, model.nls_meta.nnzj)
   cols = Vector{Int}(undef, model.nls_meta.nnzj)
   jac_structure_residual!(model, rows, cols)
-  vals = jac_coord_residual(model, x)
+  vals = zeros(T, model.nls_meta.nnzj)
+  jac_coord_residual!(model, x, vals)
   if normalize != :None
     col_norms = Vector{T}(undef, model.meta.nvar)
   end
 
   # Compute Jᵀr and λ
+  # print("\n", norm(vals), " ", norm(r))
   Jtr = mul_sparse(cols, rows, vals, r, model.nls_meta.nnzj, model.meta.nvar)
+  # print("\n", norm(Jtr))
   norm_Jtr = norm(Jtr)
   λ = T(max(λ, 1e10 / norm_Jtr))
 
@@ -191,7 +195,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         elseif facto == :LDL
           # δrₖ₊₁ = (δrₖ + r) / δd - r = (δrₖ - r) / δd
           # δrₖ = - Jδₖ - r
-          δr = (δr + r) / δd
+          δr = (δr - r) / δd
           δr2 = norm(δr)^2 / 2
         end
 

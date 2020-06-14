@@ -12,17 +12,21 @@ function scaling_factor(point, k1, k2)
 end
 
 
-function projection!(p3, r, t, k1, k2, f, r2)
+function projection!(p3, r, t, k1, k2, f, r2, idx)
   θ = norm(r)
   k = r / θ
   P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
-  P2 = -P1[1:2] / P1[3]
+  if P1[3] == 0
+    P2 = -P1[1:2]
+  else
+    P2 = -P1[1:2] / P1[3]
+  end
   r2 .= f * scaling_factor(P2, k1, k2) * P2
   return r2
 end
 
 
-projection!(x, c, r2) = projection!(x, c[1:3], c[4:6], c[7], c[8], c[9], r2)
+projection!(x, c, r2, k) = projection!(x, c[1:3], c[4:6], c[7], c[8], c[9], r2, k)
 
 
 function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
@@ -37,7 +41,7 @@ function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
       pnt_index = pnt_indices[k]
       @views x = xs[(pnt_index - 1) * 3 + 1 : (pnt_index - 1) * 3 + 3]
       @views c = xs[3*npts + (cam_index - 1) * 9 + 1 : 3*npts + (cam_index - 1) * 9 + 9]
-      @views projection!(x, c, r[2 * k - 1 : 2 * k])
+      @views projection!(x, c, r[2 * k - 1 : 2 * k], k)
     end
   end
   return r
