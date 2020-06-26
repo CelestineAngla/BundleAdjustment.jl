@@ -2,6 +2,7 @@ using NLPModels
 using LinearAlgebra
 using .Threads
 import NLPModels: increment!
+using BFloat16s
 include("ReadFiles.jl")
 include("JacobianByHand.jl")
 
@@ -13,15 +14,20 @@ end
 
 
 function projection!(p3, r, t, k1, k2, f, r2, idx)
+  T = (eltype(p3) == BFloat16) ? Float32 : eltype(p3)
   θ = norm(r)
-  k = r / θ
-  P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
+  if θ < eps(T)
+    P1 = p3 + cross(k, p3)
+  else
+    k = r / θ
+    P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
+  end
   if P1[3] == 0
-    P2 = -P1[1:2]
+    r2 .= NaN
   else
     P2 = -P1[1:2] / P1[3]
+    r2 .= f * scaling_factor(P2, k1, k2) * P2
   end
-  r2 .= f * scaling_factor(P2, k1, k2) * P2
   return r2
 end
 
@@ -106,6 +112,8 @@ function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: Abstract
   increment!(nlp, :neval_cons)
   residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx, nlp.nobs, nlp.npnts)
   cx .-= nlp.pt2d
+  # If a value is NaN, we put it to 0 not to take it into account
+  @views map!(x -> isnan(x) ? 0 : x, cx, cx)
   return cx
 end
 
@@ -185,7 +193,8 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
       mul!(denseJ, JP3_mat*JP2_mat, JP1_mat)
 
       # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
-      vals[(k-1)*24 + 1 : (k-1)*24 + 24] .= denseJ'[:]
+      # If a value is NaN, we put it to 0 not to take it into account
+      vals[(k-1)*24 + 1 : (k-1)*24 + 24] .= map(x -> isnan(x) ? 0 : x, denseJ'[:])
 
     end
   end

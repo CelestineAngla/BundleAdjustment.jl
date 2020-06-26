@@ -16,7 +16,11 @@ function P2(X)
     """
     Second step in camera projection
     """
-    return - X[1:2] / X[3]
+    if X[3] == 0
+      return NaN * X[1:2]
+    else
+      return - X[1:2] / X[3]
+    end
 end
 
 
@@ -60,11 +64,15 @@ function JP2!(JP2, X)
     Jacobian of the second step of the projection
     """
     x, y, z = X
-    JP2[1, 1] = - 1 / z
-    JP2[1, 3] = x / z^2
+    if z == 0
+      JP2 .= NaN
+    else
+      JP2[1, 1] = - 1 / z
+      JP2[1, 3] = x / z^2
 
-    JP2[2, 2] = JP2[1, 1]
-    JP2[2, 3] = y / z^2
+      JP2[2, 2] = JP2[1, 1]
+      JP2[2, 3] = y / z^2
+    end
     return JP2
 end
 

@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [deps]
 AMD = "14f7f29c-3bd6-536c-9a0b-7339e30b5a3e"
+BFloat16s = "ab4f0b2a-ad5b-11e8-123f-65d77653426b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CUTEst = "1b53aba6-35b6-5f92-a507-53c67d53f819"
 CodecBzip2 = "523fee87-0ab8-5b00-afb7-3ecf72e48cfd"
