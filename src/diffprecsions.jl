@@ -21,10 +21,9 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
 # x0_double = convert(Array{Float64,1}, stats.solution)
 # stats2 = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None, false; x=x0_double)
 
-BA = BALNLPModel(prob_names[1], Float32)
+BA = BALNLPModel(prob_names[1], BFloat16)
 fr_BA = FeasibilityResidual(BA)
-x0_half = convert(Array{BFloat16,1}, fr_BA.meta.x0)
-stats1 = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None, false; x=x0_half, oatol=1e-2, ortol=1e-2, atol=1e-2, rtol=1e-1, satol=1e-4, srtol=1e-5, restol=1e-5)
+stats1 = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None, false; x=fr_BA.meta.x0, oatol=1e-2, ortol=1e-2, atol=1e-2, rtol=1e-1, satol=1e-5, srtol=1e-5, restol=1e-5)
 x0_simple = convert(Array{Float32,1}, stats1.solution)
 stats2 = Levenberg_Marquardt(fr_BA, :LDL, :AMD, :None, false; x=x0_simple, oatol=1e-4, ortol=1e-4, atol=1e-4, rtol=1e-3, satol=1e-6, srtol=1e-7)
 x0_double = convert(Array{Float64,1}, stats2.solution)

@@ -2,6 +2,24 @@ using LinearAlgebra
 using SparseArrays
 
 
+# Add cos, sin, eps, parse and ini_dec functions for BFloat16
+import Base: cos, sin, eps, parse
+import Printf: ini_dec
+
+for F in (:cos, :sin)
+  @eval begin
+    $F(x::BFloat16) = BFloat16($F(Float32(x)))
+  end
+end
+
+parse(::Type{BFloat16}, x::AbstractString) = BFloat16(parse(Float32, x::AbstractString))
+
+eps(::Type{BFloat16}) = Base.bitcast(BFloat16, 0x3c00)
+
+@eval begin
+  $:ini_dec(x::BFloat16, n::Int, digits) = $:ini_dec(Float32(x), n, digits)
+end
+
 
 """
 Normalize (in place) the n columns of a sparse matrix A

@@ -14,15 +14,15 @@ end
 
 
 function projection!(p3, r, t, k1, k2, f, r2, idx)
-  T = (eltype(p3) == BFloat16) ? Float32 : eltype(p3)
   θ = norm(r)
-  if θ < eps(T)
-    P1 = p3 + cross(k, p3)
+  if θ < eps(eltype(p3))
+    P1 = p3 + cross(r, p3)
   else
     k = r / θ
     P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
   end
   if P1[3] == 0
+    print("\n", idx)
     r2 .= NaN
   else
     P2 = -P1[1:2] / P1[3]
@@ -194,6 +194,10 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
 
       # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
       # If a value is NaN, we put it to 0 not to take it into account
+      if any(isnan, denseJ)
+        print("\n", k)
+        print("\n", residual(FeasibilityResidual(nlp), x)[2*k-1 : 2*k])
+      end
       vals[(k-1)*24 + 1 : (k-1)*24 + 24] .= map(x -> isnan(x) ? 0 : x, denseJ'[:])
 
     end

@@ -35,8 +35,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   T = eltype(x)
 
   # Initialize residuals
-  r = zeros(T, model.nls_meta.nequ)
-  residual!(model, x, r)
+  r = residual(model, x)
   norm_r = norm(r)
   obj = norm_r^2 / 2
   r_suiv = copy(r)
@@ -51,8 +50,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   rows = Vector{Int}(undef, model.nls_meta.nnzj)
   cols = Vector{Int}(undef, model.nls_meta.nnzj)
   jac_structure_residual!(model, rows, cols)
-  vals = zeros(T, model.nls_meta.nnzj)
-  jac_coord_residual!(model, x, vals)
+  vals = jac_coord_residual(model, x)
   if normalize != :None
     col_norms = Vector{T}(undef, model.meta.nvar)
   end
