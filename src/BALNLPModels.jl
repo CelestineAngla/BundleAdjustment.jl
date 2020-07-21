@@ -3,31 +3,32 @@ using LinearAlgebra
 using .Threads
 import NLPModels: increment!
 using BFloat16s
+using SparseDiffTools
 include("ReadFiles.jl")
 include("JacobianByHand.jl")
 
 
-function scaling_factor(point, k1, k2)
+function scaling_factor(point :: AbstractVector, k1 :: AbstractFloat, k2 :: AbstractFloat)
     sq_norm_point = dot(point, point)
     return 1.0 + k1*sq_norm_point + k2*sq_norm_point^2
 end
 
 
-function projection!(p3, r, t, k1, k2, f, r2, idx)
-  θ = norm(r)
-  if θ < eps(eltype(p3))
-    P1 = p3 + cross(r, p3)
-  else
-    k = r / θ
-    P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
-  end
-  if P1[3] == 0
-    print("\n", idx)
-    r2 .= NaN
-  else
+function projection!(p3  :: AbstractVector, r  :: AbstractVector, t  :: AbstractVector, k1 :: AbstractFloat, k2 :: AbstractFloat, f :: AbstractFloat, r2 ::  AbstractVector, idx :: Int)
+  # θ = norm(r)
+  θ = sqrt(r[1]^2 + r[2]^2 + r[3]^2)
+  # if θ < eps(eltype(p3))
+  #   P1 = p3 + cross(r, p3)
+  # else
+  k = r / θ
+  P1 = cos(θ) * p3 + sin(θ) * cross(k, p3) + (1 - cos(θ)) * dot(k, p3) * k + t
+  # end
+  # if P1[3] == 0
+  #   r2 .= NaN
+  # else
     P2 = -P1[1:2] / P1[3]
     r2 .= f * scaling_factor(P2, k1, k2) * P2
-  end
+  # end
   return r2
 end
 
@@ -35,7 +36,7 @@ end
 projection!(x, c, r2, k) = projection!(x, c[1:3], c[4:6], c[7], c[8], c[9], r2, k)
 
 
-function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
+function residuals!(cam_indices :: Vector{Int}, pnt_indices :: Vector{Int}, xs :: AbstractVector, r :: AbstractVector, nobs :: Int, npts :: Int)
   q, re = divrem(nobs, nthreads())
   if re != 0
     q += 1
@@ -54,7 +55,7 @@ function residuals!(cam_indices, pnt_indices, xs, r, nobs, npts)
 end
 
 
-function name(filename::AbstractString)
+function name(filename :: AbstractString)
   k = 1
   while filename[k] != '/'
     k += 1
@@ -78,12 +79,12 @@ where `F(x)` is the vector of residuals.
 mutable struct BALNLPModel <: AbstractNLPModel
   meta :: NLPModelMeta
   counters :: Counters
-  cams_indices
-  pnts_indices
-  pt2d
-  nobs
-  npnts
-  ncams
+  cams_indices :: Vector{Int}
+  pnts_indices :: Vector{Int}
+  pt2d :: AbstractVector
+  nobs :: Int
+  npnts :: Int
+  ncams :: Int
 end
 
 
@@ -94,6 +95,9 @@ function BALNLPModel(filename::AbstractString, T::Type=Float64)
   nvar = 9 * ncams + 3 * npnts
   # number of residuals: two residuals per 2d point
   ncon = 2 * nobs
+
+  # Vector containing the indices of the ignored residuals (ie: residuals that produce NaN)
+  ignored_res = Int[]
 
   meta = NLPModelMeta(nvar, ncon=ncon, x0=x0, lcon=fill(0.0,ncon), ucon=fill(0.0,ncon), nnzj=2*nobs*12, name=name(filename))
 
@@ -113,7 +117,7 @@ function NLPModels.cons!(nlp :: BALNLPModel, x :: AbstractVector, cx :: Abstract
   residuals!(nlp.cams_indices, nlp.pnts_indices, x, cx, nlp.nobs, nlp.npnts)
   cx .-= nlp.pt2d
   # If a value is NaN, we put it to 0 not to take it into account
-  @views map!(x -> isnan(x) ? 0 : x, cx, cx)
+  # @views map!(x -> isnan(x) ? 0 : x, cx, cx)
   return cx
 end
 
@@ -167,8 +171,8 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
   if re != 0
     q += 1
   end
-  @threads for t = 1 : nthreads_used
 
+  @threads for t = 1 : nthreads_used
     denseJ = Matrix{T}(undef, 2, 12)
     JP1_mat = zeros(6, 12)
     JP1_mat[1, 7], JP1_mat[2, 8], JP1_mat[3, 9], JP1_mat[4, 10], JP1_mat[5, 11], JP1_mat[6, 12] = 1, 1, 1, 1, 1, 1
@@ -190,16 +194,11 @@ function NLPModels.jac_coord!(nlp :: BALNLPModel, x :: AbstractVector, vals :: A
       JP1!(JP1_mat, r, X)
       JP2!(JP2_mat, p1)
       JP3!(JP3_mat, P2(p1), f, k1, k2)
-      mul!(denseJ, JP3_mat*JP2_mat, JP1_mat)
+      mul!(denseJ, JP3_mat * JP2_mat, JP1_mat)
 
       # Feel vals with the values of denseJ = [[∂P.x/∂X ∂P.x/∂C], [∂P.y/∂X ∂P.y/∂C]]
       # If a value is NaN, we put it to 0 not to take it into account
-      if any(isnan, denseJ)
-        print("\n", k)
-        print("\n", residual(FeasibilityResidual(nlp), x)[2*k-1 : 2*k])
-      end
       vals[(k-1)*24 + 1 : (k-1)*24 + 24] .= map(x -> isnan(x) ? 0 : x, denseJ'[:])
-
     end
   end
 

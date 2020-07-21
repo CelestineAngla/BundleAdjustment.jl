@@ -42,6 +42,11 @@ function ldl_solve!(n, b, Lp, Li, Lx, D, P)
 end
 
 
+mutable struct SQDException <: Exception
+  msg::String
+end
+
+
 function col_symb!(n, Ap, Ai, Cp, w, Pinv)
   fill!(w, 0)
   @inbounds for j = 1:n
@@ -226,7 +231,7 @@ mutable struct LDLSymbolic{T<:Real,Ti<:Integer} <: AbstractLDLSymbolic
 end
 
 
-function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::Int=size(A,1)) where {T<:Real,Ti<:Integer, Ti2<:Integer}
+function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::Int=size(A,1), type :: DataType=T) where {T<:Real,Ti<:Integer, Ti2<:Integer}
 	# allocate space for symbolic analysis
   parent = Vector{Ti}(undef, n)
   Lnz = Vector{Ti}(undef, n)
@@ -252,9 +257,9 @@ function ldl_analyse(A::SparseMatrixCSC{T,Ti}, P::Vector{Ti2}; upper=false, n::I
 
   # allocate space for numerical factorization
 	Li = Vector{Ti}(undef, Lp[n] - 1)
-	Lx = Vector{T}(undef, Lp[n] - 1)
-	Y = Vector{T}(undef, n)
-	D = Vector{T}(undef, n)
+	Lx = Vector{type}(undef, Lp[n] - 1)
+	Y = Vector{type}(undef, n)
+	D = Vector{type}(undef, n)
 	pattern = Vector{Ti}(undef, n)
 
   if upper

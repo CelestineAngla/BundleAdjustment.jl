@@ -1,9 +1,10 @@
 using LinearAlgebra
 using SparseArrays
+using BFloat16s
 
 
 # Add cos, sin, eps, parse and ini_dec functions for BFloat16
-import Base: cos, sin, eps, parse
+import Base: cos, sin, eps, parse, iszero, sign_mask
 import Printf: ini_dec
 
 for F in (:cos, :sin)
@@ -18,6 +19,44 @@ eps(::Type{BFloat16}) = Base.bitcast(BFloat16, 0x3c00)
 
 @eval begin
   $:ini_dec(x::BFloat16, n::Int, digits) = $:ini_dec(Float32(x), n, digits)
+end
+
+iszero(x::BFloat16) = reinterpret(UInt16, x) & ~sign_mask(BFloat16) == 0x0000
+
+
+"""
+Normalize the matrix A in the LDL version with BFloat16
+"""
+function normalize_F16!(A_bis, D, A_norm, n, T)
+  D .= T(1)
+  one = ones(T, n)
+  tol = 1e-4
+  first = true
+
+  while first || maximum(abs.(D - one)) <= tol
+    for j  = 1 : n
+      @views colj = A_bis.nzval[A_bis.colptr[j] : A_bis.colptr[j + 1] - 1]
+      D[j] = norm(colj)
+      @inbounds A_bis.nzval[A_bis.colptr[j] : A_bis.colptr[j + 1] - 1] /= D[j]
+    end
+    first = false
+  end
+
+  θ = 0.1
+  # max_nb = 3.29e38
+  max_nb = 6.55e4
+  cst = θ * max_nb
+  μ = cst
+  D /= μ
+  # print("\n", maximum(A_bis))
+  @views A_norm.nzval .= Float16.(μ * A_bis.nzval)
+end
+
+function normalize_vect!(xr, b, D, n, m)
+  for j = 1 : n
+    xr[j] = b[j] / D[j]
+  end
+  xr[n + 1 : n + m] .= 0
 end
 
 

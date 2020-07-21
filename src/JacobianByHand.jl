@@ -8,7 +8,7 @@ function P1(r, t, X)
     """
     θ = norm(r)
     k = r / θ
-    return cos(θ)*X + sin(θ)*cross(k,X) + (1 - cos(θ))*dot(k,X)*k + t
+    return cos(θ) * X + sin(θ) * cross(k, X) + (1 - cos(θ)) * dot(k, X) * k + t
 end
 
 
@@ -65,7 +65,7 @@ function JP2!(JP2, X)
     """
     x, y, z = X
     if z == 0
-      JP2 .= NaN
+      JP2[1, 1] = NaN
     else
       JP2[1, 1] = - 1 / z
       JP2[1, 3] = x / z^2

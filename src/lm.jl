@@ -3,6 +3,7 @@ using SolverTools
 using NLPModels
 using AMD
 using Metis
+using MatrixMarket
 include("lma_aux.jl")
 include("ldl_aux.jl")
 include("qr_aux.jl")
@@ -16,7 +17,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
                              perm :: Symbol,
                              normalize :: Symbol,
                              linesearch :: Bool;
-                             x :: AbstractVector=copy(model.meta.x0),
+                             x :: AbstractVector=copy(model.meta.x0), facto_type :: DataType=eltype(x),
                              restol=eltype(x)(eps(eltype(x))^(1/3)),
                              satol=sqrt(eps(eltype(x))), srtol=sqrt(eps(eltype(x))),
                              oatol=sqrt(eps(eltype(x))), ortol=eltype(x)(eps(eltype(x))^(1/3)),
@@ -51,14 +52,9 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   cols = Vector{Int}(undef, model.nls_meta.nnzj)
   jac_structure_residual!(model, rows, cols)
   vals = jac_coord_residual(model, x)
-  if normalize != :None
-    col_norms = Vector{T}(undef, model.meta.nvar)
-  end
 
   # Compute Jᵀr and λ
-  # print("\n", norm(vals), " ", norm(r))
   Jtr = mul_sparse(cols, rows, vals, r, model.nls_meta.nnzj, model.meta.nvar)
-  # print("\n", norm(Jtr))
   norm_Jtr = norm(Jtr)
   λ = T(max(λ, 1e10 / norm_Jtr))
 
@@ -80,7 +76,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
       b[1 : model.nls_meta.nequ] *= sqrt(λ)
       vals_A = vcat(fill(sqrt(λ), model.nls_meta.nequ), vals, fill(-sqrt(λ), model.meta.nvar))
     else
-      vals_A = vcat(fill(1.0, model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar))
+      vals_A = vcat(fill(T(1.0), model.nls_meta.nequ), vals, fill(-λ, model.meta.nvar))
     end
     A = sparse(rows_A, cols_A, vals_A)
 
@@ -90,7 +86,21 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     elseif perm == :Metis
       P , _ = Metis.permutation(A' + A)
     end
-    ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ)
+    if facto_type == Float16
+      P = collect(1 : model.meta.nvar + model.nls_meta.nequ)
+      D = similar(b)
+      ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ, type=Float16)
+      col_norms = Vector{Float32}(undef, model.meta.nvar + model.nls_meta.nequ)
+      A_norm = sparse(rows_A, cols_A, Float16(1.0))
+      A_bis = similar(A)
+    else
+      # P = collect(1 : model.meta.nvar + model.nls_meta.nequ)
+      ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ)
+    end
+  end
+
+  if normalize != :None && facto_type != Float16
+    col_norms = Vector{T}(undef, model.meta.nvar)
   end
 
   local norm_δ, δr2
@@ -139,25 +149,40 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
     elseif facto == :LDL
       # We normalize J in the matrix A
-      if normalize != :None
+      if normalize != :None && facto_type != Float16
         normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)
       end
 
       # Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
-      LDLT = ldl_factorize(A, ldl_symbolic, true)
-      xr .= b
+      if facto_type == Float16
+		# MatrixMarket.mmwrite("A.mtx", A)
+        A_bis .= A
+		# print("\n", maximum(A))
+        normalize_F16!(A_bis, D, A_norm, model.meta.nvar + model.nls_meta.nequ, Float16)
+		# MatrixMarket.mmwrite("A_norm.mtx", A_norm)
+        # print("\n", maximum(A_norm), "\n", norm(A_norm), " ", typeof(A_norm))
+        LDLT = ldl_factorize(A_norm, ldl_symbolic, true)
+        # print("\n", maximum(LDLT.L), " ", norm(LDLT.L), " ", maximum(LDLT.D), " ", norm(LDLT.D))
+		# print("\n", typeof(LDLT.L), " ", typeof(LDLT.D), "\n")
+  	    normalize_vect!(xr, b, D, model.nls_meta.nequ, model.meta.nvar)
+      else
+        LDLT = ldl_factorize(A, ldl_symbolic, true)
+		xr .= b
+      end
+
       ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
       δr = xr[1 : model.nls_meta.nequ]
       δ = xr[model.nls_meta.nequ + 1 : end]
       δr2 = norm(δr)^2 / 2
+	  δ = convert(Array{Float64,1}, δ)
 
       # We denormalize δ
-      if normalize != :None
+	  if normalize != :None && facto_type != Float16
         denormalize_vect!(δ, col_norms, model.meta.nvar)
-        if normalize == :A
-          δ /= sqrt(λ)
-        end
       end
+	  if normalize == :A
+		δ /= sqrt(λ)
+	  end
     end
 
     # Check model decrease

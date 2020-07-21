@@ -21,6 +21,7 @@ BA = BALNLPModel("LadyBug/problem-49-7776-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-427-310384-pre.txt.bz2")
 # BA = BALNLPModel("Venice/problem-1350-894716-pre.txt.bz2")
 
+# BA.AD = true
 
 # Wrap it into a NLS model
 fr_BA = FeasibilityResidual(BA)
