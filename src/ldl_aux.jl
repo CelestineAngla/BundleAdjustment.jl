@@ -127,8 +127,14 @@ function ldl_numeric_upper!(n, Ap, Ai, Ax, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y
     flag[k] = k
     Lnz[k] = 0
     pk = P[k]
+    # if k == 170435
+    #   print("\n", Ap[pk] : (Ap[pk+1] - 1))
+    # end
     @inbounds for p = Ap[pk] : (Ap[pk+1] - 1)
       i = Pinv[Ai[p]]
+      # if k == 170435
+      #   print("\n", i, " ", Y[i], " ", Ax[p])
+      # end
       i > k && continue
       Y[i] += Ax[p]
       len = 1
@@ -169,6 +175,9 @@ function ldl_numeric_upper!(n, Ap, Ai, Ax, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y
     end
     D[k] = Y[k]
     Y[k] = 0
+    # if k == 170435
+    #   print("\n", top, " ", n)
+    # end
     @inbounds while top ≤ n
       i = pattern[top]
       yi = Y[i]
@@ -177,6 +186,9 @@ function ldl_numeric_upper!(n, Ap, Ai, Ax, Cp, Ci, Lp, parent, Lnz, Li, Lx, D, Y
         Y[Li[p]] -= Lx[p] * yi
       end
       p = Lp[i] + Lnz[i]
+      # if k == 170435
+      #   print("\n", yi, " ", D[i], " ", D[k])
+      # end
       l_ki = yi / D[i]
       D[k] -= l_ki * yi
       Li[p] = k

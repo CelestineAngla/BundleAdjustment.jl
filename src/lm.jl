@@ -26,7 +26,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
                              ite_max :: Int=200, max_time :: Int=3600)
 
   @info model
-  @info "Parameters of the solver:\n" facto perm normalize linesearch νd νm λ ite_max
+  @info "Parameters of the solver:\n" facto perm normalize linesearch νd νm λ ite_max facto_type
   @info "Tolerances:\n" restol satol srtol oatol ortol atol rtol
 
   start_time = time()
@@ -45,7 +45,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   b = Vector{T}(undef, model.nls_meta.nequ + model.meta.nvar)
   b[1 : model.nls_meta.nequ] .= -r
   b[model.nls_meta.nequ + 1 : end] .= 0
-  xr = similar(b)
+  xr = similar(b, facto_type)
 
   # Initialize J in the format J[rows[k], cols[k]] = vals[k]
   rows = Vector{Int}(undef, model.nls_meta.nnzj)
@@ -80,23 +80,23 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     end
     A = sparse(rows_A, cols_A, vals_A)
 
-    # Compute permutation and perform symbolic analysis of A
+    # Compute permutation
     if perm == :AMD
       P = amd(A)
     elseif perm == :Metis
       P , _ = Metis.permutation(A' + A)
     end
+	# P = collect(1 : model.meta.nvar + model.nls_meta.nequ)
+
+	# Perform symbolic analysis of A in facto_type and create matrix in facto_type for the conversion
     if facto_type == Float16
-      P = collect(1 : model.meta.nvar + model.nls_meta.nequ)
       D = similar(b)
-      ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ, type=Float16)
-      col_norms = Vector{Float32}(undef, model.meta.nvar + model.nls_meta.nequ)
       A_norm = sparse(rows_A, cols_A, Float16(1.0))
-      A_bis = similar(A)
-    else
-      # P = collect(1 : model.meta.nvar + model.nls_meta.nequ)
-      ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ)
+      A_bis = copy(A)
+    elseif facto_type == Float32
+	  A_F32 = sparse(rows_A, cols_A, Float32(1.0))
     end
+    ldl_symbolic = ldl_analyse(A, P, upper=true, n=model.meta.nvar + model.nls_meta.nequ, type=facto_type)
   end
 
   if normalize != :None && facto_type != Float16
@@ -153,28 +153,37 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)
       end
 
-      # Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
+      # Factorize A and if needed normalize and convert A in facto_type
       if facto_type == Float16
 		# MatrixMarket.mmwrite("A.mtx", A)
-        A_bis .= A
-		# print("\n", maximum(A))
-        normalize_F16!(A_bis, D, A_norm, model.meta.nvar + model.nls_meta.nequ, Float16)
+        A_bis.nzval .= A.nzval
+		normalize_F162!(A_bis, D, A_norm, model.nls_meta.nequ + model.meta.nvar, Float16)
+        # normalize_F16!(A_bis, D, A_norm, model.nls_meta.nequ, model.meta.nvar, model.nls_meta.nnzj, rows, cols, vals)
 		# MatrixMarket.mmwrite("A_norm.mtx", A_norm)
         # print("\n", maximum(A_norm), "\n", norm(A_norm), " ", typeof(A_norm))
         LDLT = ldl_factorize(A_norm, ldl_symbolic, true)
         # print("\n", maximum(LDLT.L), " ", norm(LDLT.L), " ", maximum(LDLT.D), " ", norm(LDLT.D))
 		# print("\n", typeof(LDLT.L), " ", typeof(LDLT.D), "\n")
   	    normalize_vect!(xr, b, D, model.nls_meta.nequ, model.meta.nvar)
+	  elseif facto_type == Float32
+		@views A_F32.nzval .= Float32.(A.nzval)
+		LDLT = ldl_factorize(A_F32, ldl_symbolic, true)
+		xr .= b
       else
         LDLT = ldl_factorize(A, ldl_symbolic, true)
 		xr .= b
       end
 
+	  # Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
       ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
       δr = xr[1 : model.nls_meta.nequ]
       δ = xr[model.nls_meta.nequ + 1 : end]
       δr2 = norm(δr)^2 / 2
-	  δ = convert(Array{Float64,1}, δ)
+
+	  # Convert δ if needed
+	  if T != facto_type
+	    δ = convert(Array{facto_type, 1}, δ)
+	  end
 
       # We denormalize δ
 	  if normalize != :None && facto_type != Float16
