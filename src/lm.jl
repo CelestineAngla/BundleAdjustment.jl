@@ -114,12 +114,16 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
   small_obj_change =  false
   tired = iter > ite_max || elapsed_time > max_time
   fail = false
+  fail2 = false
   status = :unknown
 
   @info log_header([:iter, :f, :Δf, :dFeas, :λ, :δ, :ρ, :status], [Int, T, T, T, T, T, T, String],
                    hdr_override = Dict(:f => "f(x)", :dFeas => "‖Jᵀr‖", :δ => "‖δ‖"))
 
-  while !(small_step || first_order || small_residual || small_obj_change || tired || fail)
+  while !(small_step || first_order || small_residual || small_obj_change || tired || fail || fail2)
+	if facto_type == Float64
+	  t0_iter = time()
+    end
     iter += 1
 
     if facto == :QR
@@ -153,17 +157,15 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
         normalize_ldl!(A, col_norms, model.meta.nvar, model.nls_meta.nequ)
       end
 
+	  if facto_type == Float64
+  	    t0_facto = time()
+      end
+
       # Factorize A and if needed normalize and convert A in facto_type
       if facto_type == Float16
-		# MatrixMarket.mmwrite("A.mtx", A)
         A_bis.nzval .= A.nzval
-		normalize_F162!(A_bis, D, A_norm, model.nls_meta.nequ + model.meta.nvar, Float16)
-        # normalize_F16!(A_bis, D, A_norm, model.nls_meta.nequ, model.meta.nvar, model.nls_meta.nnzj, rows, cols, vals)
-		# MatrixMarket.mmwrite("A_norm.mtx", A_norm)
-        # print("\n", maximum(A_norm), "\n", norm(A_norm), " ", typeof(A_norm))
+		normalize_F16!(A_bis, D, A_norm, model.nls_meta.nequ + model.meta.nvar, Float16)
         LDLT = ldl_factorize(A_norm, ldl_symbolic, true)
-        # print("\n", maximum(LDLT.L), " ", norm(LDLT.L), " ", maximum(LDLT.D), " ", norm(LDLT.D))
-		# print("\n", typeof(LDLT.L), " ", typeof(LDLT.D), "\n")
   	    normalize_vect!(xr, b, D, model.nls_meta.nequ, model.meta.nvar)
 	  elseif facto_type == Float32
 		@views A_F32.nzval .= Float32.(A.nzval)
@@ -176,14 +178,55 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 
 	  # Solve [[I J]; [Jᵀ - λI]] X = [-r; 0] with LDL factorization
       ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
-      δr = xr[1 : model.nls_meta.nequ]
-      δ = xr[model.nls_meta.nequ + 1 : end]
-      δr2 = norm(δr)^2 / 2
+
+	  if facto_type == Float64
+  	    t_facto = time() - t0_facto
+		@info "\nTime facto: " t_facto
+      end
 
 	  # Convert δ if needed
-	  if T != facto_type
-	    δ = convert(Array{facto_type, 1}, δ)
-	  end
+	  # if T != facto_type
+	  #   xr = convert(Array{T, 1}, xr)
+	  # end
+
+	  # # Perform iterative refinement
+	  # if iterative_refinement
+		# step_accepted = true
+		# nb_ir = 0
+		# norm_res = norm(b - A * xr)
+		# tol = eps(T)^(1/25) * norm(b)
+		# while norm_res > tol && nb_ir < 5
+		#   nb_ir += 1
+	  #     xr2_F32 = facto_type.(b - A * xr)
+		#   ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr2_F32, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
+		#   xr2 = convert(Array{T, 1}, xr2_F32)
+		#   xr += xr2
+		#   norm_res = norm(b - A * xr)
+	  #   end
+		# if norm_res > tol
+		#   step_accepted = false
+	  #   end
+	  # end
+
+	  # if iterative_refinement
+		# nb_ir = 0
+		# while norm(b - A * xr) > 1600 && nb_ir < 5
+		#   nb_ir += 1
+		#   rd = facto_type.(b - A * xr)
+		#   xr2_F16 = similar(b)
+		#   normalize_vect!(xr2_F16, rd, D, model.nls_meta.nequ, model.meta.nvar)
+		#   # print("\n", norm(xr2_F16))
+		#   ldl_solve!(model.nls_meta.nequ + model.meta.nvar, xr2_F16, LDLT.L.colptr, LDLT.L.rowval, LDLT.L.nzval, LDLT.D, P)
+		#   # print("\n", norm(xr2_F16))
+		#   xr2 = convert(Array{T, 1}, xr2_F16)
+		#   xr += xr2
+	  #   end
+	  # end
+
+
+	  δr = xr[1 : model.nls_meta.nequ]
+      δ = xr[model.nls_meta.nequ + 1 : end]
+      δr2 = norm(δr)^2 / 2
 
       # We denormalize δ
 	  if normalize != :None && facto_type != Float16
@@ -193,6 +236,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
 		δ /= sqrt(λ)
 	  end
     end
+
+	if T != facto_type
+	  δ = convert(Array{T, 1}, δ)
+	end
 
     # Check model decrease
     # if δr2 > obj
@@ -209,7 +256,7 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     # Step not accepted : d(||r||²) < 1e-4 (||Jδ + r||² - ||r||²)
     pred = obj - δr2       # predicted reduction
     ared = obj - obj_suiv  # actual reduction
-    step_accepted = ared ≥ 1e-4 * pred
+	step_accepted = ared ≥ 1e-4 * pred
     step_accepted_str = (step_accepted && δr2 <= obj) ? "acc" : "rej"
 
     ntimes = 0
@@ -248,6 +295,12 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     end
 
     norm_δ = norm(δ)
+	if isnan(norm_δ)
+	  @error "‖δ‖ = NaN"
+	  fail2 = true
+	  continue
+	end
+
     @info log_row((iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, ared / pred, step_accepted_str))
 
     if !step_accepted
@@ -327,6 +380,10 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     end
 
     tired = iter > ite_max || elapsed_time > max_time
+	if facto_type == Float64
+	  t_iter = time() - t0_iter
+	  @info "\nTime iter: " t_iter
+	end
   end
 
   # fail || (@info log_row((iter, obj, old_obj - obj, norm_Jtr, λ, norm_δ, δr2, δr2 - obj, "")))
@@ -341,6 +398,8 @@ function Levenberg_Marquardt(model :: AbstractNLSModel,
     status = :acceptable
   elseif fail
     status = :neg_pred
+  elseif fail2
+	status = :exception
   elseif tired
     status = :max_iter
   end

@@ -27,7 +27,7 @@ iszero(x::BFloat16) = reinterpret(UInt16, x) & ~sign_mask(BFloat16) == 0x0000
 """
 Normalize the matrix A in the LDL version with BFloat16
 """
-function normalize_F162!(A_bis, D, A_norm, n, T)
+function normalize_F16!(A_bis, D, A_norm, n, T)
   D .= T(1)
   one = ones(T, n)
   tol = 1e-4
@@ -52,39 +52,39 @@ function normalize_F162!(A_bis, D, A_norm, n, T)
 end
 
 
-function normalize_F16!(A_bis, D, A_norm, m, n, nz, rows, cols, vals)
-  # The m first columns contain A[1,1] and the rows of the jacobian
-  # the n next columns contain A[m + 1, m + 1] and the columns of the jacobian
-  D[1 : m] .= A_bis[1, 1]^2
-  D[m + 1 : m + n] .= A_bis[m + 1, m + 1]^2
-
-  for k = 1 : nz
-    i = rows[k]
-    j = cols[k]
-    D[i] += vals[k]^2
-    D[j] += vals[k]^2
-  end
-
-  D .= D.^0.25
-
-  for j = 1 : n + m
-    for k = A_bis.colptr[j] : A_bis.colptr[j + 1] - 1
-      A_bis.nzval[k] /= D[A_bis.rowval[k]] * D[j]
-    end
-  end
-
-  θ = 0.1
-  # max_nb = 3.29e38
-  max_nb = 6.55e4
-  cst = θ * max_nb
-  μ = cst
-  D /= μ
-  print("\n", maximum(A_bis))
-  print("\nok\n", norm(A_bis))
-  @views A_norm.nzval .= Float16.(μ * A_bis.nzval)
-  print("\nok\n", norm(A_norm))
-  print("\n", maximum(A_norm))
-end
+# function normalize_F16!(A_bis, D, A_norm, m, n, nz, rows, cols, vals)
+#   # The m first columns contain A[1,1] and the rows of the jacobian
+#   # the n next columns contain A[m + 1, m + 1] and the columns of the jacobian
+#   D[1 : m] .= A_bis[1, 1]^2
+#   D[m + 1 : m + n] .= A_bis[m + 1, m + 1]^2
+#
+#   for k = 1 : nz
+#     i = rows[k]
+#     j = cols[k]
+#     D[i] += vals[k]^2
+#     D[j] += vals[k]^2
+#   end
+#
+#   D .= D.^0.25
+#
+#   for j = 1 : n + m
+#     for k = A_bis.colptr[j] : A_bis.colptr[j + 1] - 1
+#       A_bis.nzval[k] /= D[A_bis.rowval[k]] * D[j]
+#     end
+#   end
+#
+#   θ = 0.1
+#   # max_nb = 3.29e38
+#   max_nb = 6.55e4
+#   cst = θ * max_nb
+#   μ = cst
+#   D /= μ
+#   print("\n", maximum(A_bis))
+#   print("\nok\n", norm(A_bis))
+#   @views A_norm.nzval .= Float16.(μ * A_bis.nzval)
+#   print("\nok\n", norm(A_norm))
+#   print("\n", maximum(A_norm))
+# end
 
 
 function normalize_vect!(xr, b, D, n, m)
