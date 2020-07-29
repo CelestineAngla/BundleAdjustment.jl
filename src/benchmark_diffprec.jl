@@ -10,7 +10,7 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
               "LadyBug/problem-460-56811-pre.txt.bz2",
               # "LadyBug/problem-646-73584-pre.txt.bz2",
               "LadyBug/problem-810-88814-pre.txt.bz2",
-              "LadyBug/problem-1031-110968-pre.txt.bz2",
+              # "LadyBug/problem-1031-110968-pre.txt.bz2",
               "LadyBug/problem-1235-129634-pre.txt.bz2",
               "Dubrovnik/problem-202-132796-pre.txt.bz2",
               # "LadyBug/problem-1723-156502-pre.txt.bz2",
@@ -36,9 +36,9 @@ prob_names = ("LadyBug/problem-49-7776-pre.txt.bz2",
 # close(f)
 
 # Float16/32 then Float64
-f = open("lm_diffprec_F1632_64.log", "w")
+f = open("lm_diffprec_F1632_64_2.log", "w")
 
-for name in prob_names
+for name in prob_names[7 : end]
   problem = FeasibilityResidual(BALNLPModel(name, Float32))
   logger = Logging.ConsoleLogger(f)
   x0_double = similar(problem.meta.x0, Float64)
