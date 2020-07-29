@@ -1,0 +1,2313 @@
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-49-7776-feasres
+│   Total variables………23769   Total constraints…0     
+│     free………………………………23769     linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………282494565    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………63686 
+│     linear…………………………0     
+│     nonlinear…………………63686 
+│     nnzj………………………………764232
+│     nnzh………………………………282494565
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   8.5e+05   0.0e+00   2.4e+07   4.2e+02   1.6e-01   4.8e-01              acc
+[ Info:      2   4.4e+05   4.1e+05   2.7e+07   1.4e+02   2.2e-01  -1.5e+01              rej
+[ Info:      3   4.4e+05   4.1e+05   2.7e+07   4.2e+02   1.4e-01  -1.6e+03              rej
+[ Info:      4   4.4e+05   4.1e+05   2.7e+07   1.3e+03   1.2e-01  -7.7e+01              rej
+[ Info:      5   4.4e+05   4.1e+05   2.7e+07   3.8e+03   1.0e-01  -3.2e+01              rej
+[ Info:      6   4.4e+05   4.1e+05   2.7e+07   1.1e+04   8.5e-02  -1.2e+01              rej
+[ Info:      7   4.4e+05   4.1e+05   2.7e+07   3.4e+04   6.9e-02  -3.6e+00              rej
+[ Info:      8   4.4e+05   4.1e+05   2.7e+07   1.0e+05   3.7e-02   3.0e-01              acc
+[ Info:      9   3.1e+05   1.3e+05   2.5e+07   3.4e+04   5.6e-02  -2.6e+00              rej
+[ Info:     10   3.1e+05   1.3e+05   2.5e+07   1.0e+05   3.4e-02   8.2e-02              acc
+[ Info:     11   2.8e+05   2.5e+04   2.2e+07   3.4e+04   5.4e-02  -2.8e+00              rej
+[ Info:     12   2.8e+05   2.5e+04   2.2e+07   1.0e+05   3.1e-02   2.1e-01              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 224462.23
+│   primal feasibility: 0.0
+│   dual feasibility: 1.8646782e7
+│   solution: [-0.61200786f0  0.57180464f0  -1.8470645f0  1.7074777f0 ⋯ 403.85565]
+│   iterations: 12
+└   elapsed time: 63.862290143966675
+
+
+LadyBug/problem-49-7776-pre.txt.bz2 & 23769 & 63686 & 224462.23 & 12 & 63.862290143966675 & small_step & 1.8646782e7 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-49-7776-feasres
+│   Total variables………23769   Total constraints…0     
+│     free………………………………23769     linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………282494565    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………63686 
+│     linear…………………………0     
+│     nonlinear…………………63686 
+│     nnzj………………………………764232
+│     nnzh………………………………282494565
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………13    
+│     jac_residual……………5         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+│   ite_max = 200
+└   facto_type = Float64
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7939910888671875
+[ Info:      1   2.2e+05   0.0e+00   1.9e+07   5.4e+02   1.8e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.41782808303833
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.43578100204467773
+[ Info:      2   2.0e+04   2.0e+05   4.5e+05   6.0e+01   4.6e+00   8.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8875789642333984
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5940890312194824
+[ Info:      3   1.8e+04   2.6e+03   1.5e+06   2.0e+01   6.0e+00   9.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9283900260925293
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.4397430419921875
+[ Info:      4   1.6e+04   1.4e+03   1.3e+06   2.2e+00   1.8e+01   3.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9517979621887207
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5979628562927246
+[ Info:      5   1.6e+04   4.3e+02   6.4e+06   7.4e-01   2.7e+01   7.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9263598918914795
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7531709671020508
+[ Info:      6   1.5e+04   1.1e+03   2.6e+06   2.5e-01   4.0e+01   2.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.2395830154418945
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7115879058837891
+[ Info:      7   1.5e+04   2.3e+02   5.4e+06   8.2e-02   5.5e+01  -6.3e-02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7922849655151367
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6931519508361816
+[ Info:      8   1.5e+04   2.3e+02   5.4e+06   2.5e-01   2.6e+01   5.2e-03              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.0730688571929932
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6835200786590576
+[ Info:      9   1.5e+04   4.0e+00   3.5e+06   8.2e-02   4.5e+01   8.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9987390041351318
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6185119152069092
+[ Info:     10   1.4e+04   8.3e+02   7.4e+05   2.7e-02   5.9e+01  -1.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.6991980075836182
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6142759323120117
+[ Info:     11   1.4e+04   8.3e+02   7.4e+05   8.2e-02   2.8e+01   1.1e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.089123010635376
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6908559799194336
+[ Info:     12   1.4e+04   2.3e+01   3.9e+06   2.7e-02   4.6e+01  -2.4e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7751579284667969
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6844439506530762
+[ Info:     13   1.4e+04   2.3e+01   3.9e+06   8.2e-02   2.0e+01  -1.0e+02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7723469734191895
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7340459823608398
+[ Info:     14   1.4e+04   2.3e+01   3.9e+06   2.5e-01   8.0e+00  -1.4e+04              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8077888488769531
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6753268241882324
+[ Info:     15   1.4e+04   2.3e+01   3.9e+06   7.4e-01   2.9e+00  -2.8e+02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7422409057617188
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.67576003074646
+[ Info:     16   1.4e+04   2.3e+01   3.9e+06   2.2e+00   1.1e+00  -4.3e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8433828353881836
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6719260215759277
+[ Info:     17   1.4e+04   2.3e+01   3.9e+06   6.6e+00   4.1e-01  -1.2e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7463700771331787
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6774039268493652
+[ Info:     18   1.4e+04   2.3e+01   3.9e+06   2.0e+01   1.7e-01  -5.2e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7435839176177979
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6790149211883545
+[ Info:     19   1.4e+04   2.3e+01   3.9e+06   6.0e+01   7.2e-02  -2.9e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7374899387359619
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6107690334320068
+[ Info:     20   1.4e+04   2.3e+01   3.9e+06   1.8e+02   3.5e-02  -1.8e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7761189937591553
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.44460201263427734
+[ Info:     21   1.4e+04   2.3e+01   3.9e+06   5.4e+02   2.1e-02  -1.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.5279049873352051
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.4533839225769043
+[ Info:     22   1.4e+04   2.3e+01   3.9e+06   1.6e+03   1.4e-02  -5.4e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.5425457954406738
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.4488840103149414
+[ Info:     23   1.4e+04   2.3e+01   3.9e+06   4.8e+03   9.1e-03   4.9e-03              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7570140361785889
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.44504690170288086
+[ Info:     24   1.4e+04   9.1e-01   8.5e+06   1.6e+03   1.3e-02   5.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8276309967041016
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5867218971252441
+[ Info:     25   1.4e+04   1.0e+02   1.9e+06   5.4e+02   8.1e-03   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8985099792480469
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5930161476135254
+[ Info:     26   1.4e+04   7.8e+01   2.3e+05   6.0e+01   4.8e-02   6.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.0741510391235352
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5881822109222412
+[ Info:     27   1.4e+04   1.1e+00   2.9e+05   2.0e+01   1.2e-01   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8973321914672852
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5865068435668945
+[ Info:     28   1.4e+04   8.2e-01   1.3e+04   2.2e+00   9.9e-01   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.0749897956848145
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5940067768096924
+[ Info:     29   1.4e+04   2.2e+00   4.0e+03   2.5e-01   7.8e+00   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9070730209350586
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5885999202728271
+[ Info:     30   1.4e+04   1.6e+01   6.5e+04   2.7e-02   4.2e+01  -3.2e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.6697609424591064
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.44018983840942383
+[ Info:     31   1.4e+04   1.6e+01   6.5e+04   8.2e-02   1.8e+01   8.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.908174991607666
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.4511549472808838
+[ Info:     32   1.4e+04   2.7e+01   4.8e+05   2.7e-02   3.5e+01   3.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7617940902709961
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5848188400268555
+[ Info:     33   1.4e+04   1.4e+01   1.6e+06   9.1e-03   5.5e+01   2.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.1144969463348389
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5378479957580566
+[ Info:     34   1.4e+04   1.6e+01   2.1e+06   3.0e-03   8.0e+01   5.1e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8632979393005371
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.529911994934082
+[ Info:     35   1.3e+04   3.4e+01   1.3e+06   1.0e-03   1.2e+02   8.1e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.0304880142211914
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.5295531749725342
+[ Info:     36   1.3e+04   3.9e+01   1.2e+06   3.4e-04   2.3e+02   6.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.8383350372314453
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.47017693519592285
+[ Info:     37   1.3e+04   1.8e+01   4.2e+06   1.1e-04   4.2e+02  -1.0e+02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.539470911026001
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.4379119873046875
+[ Info:     38   1.3e+04   1.8e+01   4.2e+06   7.2e-03   1.5e+01   9.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.0773029327392578
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7836658954620361
+[ Info:     39   1.3e+04   2.1e+01   4.7e+05   8.0e-04   8.1e+01   1.2e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.1263320446014404
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7877600193023682
+[ Info:     40   1.3e+04   8.0e+00   5.0e+04   8.9e-05   4.9e+02  -1.4e+02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9911508560180664
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7805361747741699
+[ Info:     41   1.3e+04   8.0e+00   5.0e+04   6.1e-03   1.5e+01   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.1266601085662842
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.787559986114502
+[ Info:     42   1.3e+04   1.6e+00   2.9e+05   6.8e-04   1.1e+02   1.5e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.2354941368103027
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6099960803985596
+[ Info:     43   1.3e+04   1.3e+01   4.6e+05   7.6e-05   4.5e+02  -4.2e+04              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.6806719303131104
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6194980144500732
+[ Info:     44   1.3e+04   1.3e+01   4.6e+05   6.7e-03   2.1e+01   1.1e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9673340320587158
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6142690181732178
+[ Info:     45   1.3e+04   4.6e+00   6.9e+05   7.4e-04   6.3e+01   6.7e-02              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.029599905014038
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6119329929351807
+[ Info:     46   1.3e+04   3.9e-01   1.9e+06   2.5e-04   1.4e+02  -1.4e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.7052700519561768
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7843949794769287
+[ Info:     47   1.3e+04   3.9e-01   1.9e+06   2.1e-02   4.1e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.1545498371124268
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.60611891746521
+[ Info:     48   1.3e+04   5.4e+00   8.5e+04   2.4e-03   1.6e+01   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.0057029724121094
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6147668361663818
+[ Info:     49   1.3e+04   7.3e-01   6.2e+04   2.6e-04   1.3e+02  -3.1e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.6698908805847168
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.4366910457611084
+[ Info:     50   1.3e+04   7.3e-01   6.2e+04   2.3e-02   1.7e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.740380048751831
+┌ Info: Generic Execution stats
+│   status: solved to within acceptable tolerances
+│   objective value: 13364.039251809658
+│   primal feasibility: 0.0
+│   dual feasibility: 303.1764936707942
+│   solution: [-0.29637682373535523  0.23195172687662596  -3.0215020890802022  0.054769853734753265 ⋯ 404.13677333102845]
+│   iterations: 50
+└   elapsed time: 50.088475942611694
+
+
+LadyBug/problem-49-7776-pre.txt.bz2 & 23769 & 63686 & 13364.039251809658 & 50 & 50.088475942611694 & acceptable & 303.1764936707942 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-73-11032-feasres
+│   Total variables………33753   Total constraints…0     
+│     free………………………………33753     linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………569649381    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………92244 
+│     linear…………………………0     
+│     nonlinear…………………92244 
+│     nnzj………………………………1106928
+│     nnzh………………………………569649381
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   9.6e+05   0.0e+00   3.4e+07   2.9e+02   1.6e-01  -4.1e-02              rej
+[ Info:      2   9.6e+05   0.0e+00   3.4e+07   8.8e+02   1.4e-01   2.7e-03              acc
+┌ Info: Generic Execution stats
+│   status: solved to within acceptable tolerances
+│   objective value: 961155.44
+│   primal feasibility: 0.0
+│   dual feasibility: 3.7000996e7
+│   solution: [1.7555858f0  1.0074645f0  -7.1781826f0  -0.375129f0 ⋯ 381.22998]
+│   iterations: 2
+└   elapsed time: 16.46305513381958
+
+
+LadyBug/problem-73-11032-pre.txt.bz2 & 33753 & 92244 & 961155.44 & 2 & 16.46305513381958 & acceptable & 3.7000996e7 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-73-11032-feasres
+│   Total variables………33753   Total constraints…0     
+│     free………………………………33753     linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………569649381    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………92244 
+│     linear…………………………0     
+│     nonlinear…………………92244 
+│     nnzj………………………………1106928
+│     nnzh………………………………569649381
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………3     
+│     jac_residual……………2         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+│   ite_max = 200
+└   facto_type = Float64
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.686614990234375
+[ Info:      1   9.6e+05   0.0e+00   3.7e+07   2.7e+02   2.0e+00   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.1645920276641846
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6679620742797852
+[ Info:      2   3.4e+04   9.3e+05   6.9e+06   3.0e+01   3.2e+00   5.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.1050090789794922
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6691479682922363
+[ Info:      3   2.5e+04   9.4e+03   1.9e+06   1.0e+01   2.4e+00   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.144468069076538
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.6709189414978027
+[ Info:      4   1.7e+04   7.5e+03   1.0e+05   1.1e+00   6.4e+00   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.7671620845794678
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8227269649505615
+[ Info:      5   1.7e+04   2.2e+02   1.5e+05   1.2e-01   1.9e+01   6.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.356543779373169
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8712790012359619
+[ Info:      6   1.7e+04   5.6e+01   8.9e+04   4.1e-02   2.2e+01  -2.3e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.955772876739502
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.868980884552002
+[ Info:      7   1.7e+04   5.6e+01   8.9e+04   1.3e-01   1.1e+01   6.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.4304540157318115
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8692350387573242
+[ Info:      8   1.7e+04   3.0e+01   4.2e+04   4.5e-02   1.6e+01  -1.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 0.9487919807434082
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8674681186676025
+[ Info:      9   1.7e+04   3.0e+01   4.2e+04   1.9e-01   5.8e+00   7.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.4280650615692139
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8728470802307129
+[ Info:     10   1.7e+04   1.8e+01   2.3e+04   6.4e-02   1.0e+01   4.0e-02              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.5566871166229248
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8728418350219727
+[ Info:     11   1.7e+04   5.3e-01   4.6e+04   2.1e-02   1.4e+01   5.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.6214451789855957
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8705730438232422
+[ Info:     12   1.7e+04   1.1e+01   6.2e+04   7.1e-03   1.7e+01   2.5e-02              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.3852949142456055
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8719151020050049
+[ Info:     13   1.7e+04   2.7e-01   8.4e+04   2.4e-03   1.4e+01   7.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.3057751655578613
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.865541934967041
+[ Info:     14   1.7e+04   8.3e+00   4.9e+04   7.9e-04   8.6e+00   9.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.4875249862670898
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.8663029670715332
+[ Info:     15   1.7e+04   2.7e+00   1.2e+04   8.8e-05   1.7e+01   7.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.436647891998291
+┌ Info: 
+│ Time facto: 
+└   t_facto = 0.7446181774139404
+[ Info:     16   1.7e+04   1.3e-01   7.4e+03   2.9e-05   1.1e+01   8.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 1.2834022045135498
+┌ Info: Generic Execution stats
+│   status: solved to within acceptable tolerances
+│   objective value: 17099.627417921292
+│   primal feasibility: 0.0
+│   dual feasibility: 2442.0150035565357
+│   solution: [1.512649017315291  0.9062799532041684  -6.608355811846936  -0.30592258054925864 ⋯ 388.90334303274017]
+│   iterations: 16
+└   elapsed time: 24.371124982833862
+
+
+LadyBug/problem-73-11032-pre.txt.bz2 & 33753 & 92244 & 17099.627417921292 & 16 & 24.371124982833862 & acceptable & 2442.0150035565357 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-138-19878-feasres
+│   Total variables………60876   Total constraints…0     
+│     free………………………………60876     linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………1852974126    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………170434
+│     linear…………………………0     
+│     nonlinear…………………170434
+│     nnzj………………………………2045208
+│     nnzh………………………………1852974126
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+[ Info:      1   2.2e+06   0.0e+00   5.6e+07   1.8e+02   2.9e-01  -1.5e+00              rej
+[ Info:      2   2.2e+06   0.0e+00   5.6e+07   5.4e+02   2.3e-01  -3.2e-01              rej
+[ Info:      3   2.2e+06   0.0e+00   5.6e+07   1.6e+03   2.0e-01  -2.6e-01              rej
+[ Info:      4   2.2e+06   0.0e+00   5.6e+07   4.9e+03   1.8e-01  -3.0e-01              rej
+[ Info:      5   2.2e+06   0.0e+00   5.6e+07   1.5e+04   1.6e-01  -6.6e-01              rej
+[ Info:      6   2.2e+06   0.0e+00   5.6e+07   4.4e+04   1.2e-01  -5.3e-01              rej
+[ Info:      7   2.2e+06   0.0e+00   5.6e+07   1.3e+05   5.9e-02   2.6e-01              acc
+[ Info:      8   1.6e+06   5.7e+05   5.7e+07   4.4e+04   1.0e-01  -2.3e+00              rej
+[ Info:      9   1.6e+06   5.7e+05   5.7e+07   1.3e+05   5.0e-02   3.9e-02              acc
+┌ Info: Generic Execution stats
+│   status: step too small
+│   objective value: 1.5498116e6
+│   primal feasibility: 0.0
+│   dual feasibility: 6.9401224e7
+│   solution: [1.6174123f0  0.9661494f0  -6.90168f0  -0.38564146f0 ⋯ 397.7903]
+│   iterations: 9
+└   elapsed time: 229.00887298583984
+
+
+LadyBug/problem-138-19878-pre.txt.bz2 & 60876 & 170434 & 1.5498116e6 & 9 & 229.00887298583984 & small_step & 6.9401224e7 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-138-19878-feasres
+│   Total variables………60876   Total constraints…0     
+│     free………………………………60876     linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………1852974126    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………170434
+│     linear…………………………0     
+│     nonlinear…………………170434
+│     nnzj………………………………2045208
+│     nnzh………………………………1852974126
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………10    
+│     jac_residual……………3         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+│   ite_max = 200
+└   facto_type = Float64
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.8186609745025635
+[ Info:      1   1.5e+06   0.0e+00   6.9e+07   1.4e+02   5.2e+00   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6624298095703125
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7893269062042236
+[ Info:      2   8.4e+04   1.5e+06   6.9e+06   1.6e+01   1.1e+01  -5.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9693150520324707
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.8122100830078125
+[ Info:      3   8.4e+04   1.5e+06   6.9e+06   4.8e+01   5.5e+00  -1.9e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.994403123855591
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7640998363494873
+[ Info:      4   8.4e+04   1.5e+06   6.9e+06   1.4e+02   2.8e+00  -4.5e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.37613582611084
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.722874879837036
+[ Info:      5   8.4e+04   1.5e+06   6.9e+06   4.3e+02   1.3e+00  -6.2e+03              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.889694929122925
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.671649932861328
+[ Info:      6   8.4e+04   1.5e+06   6.9e+06   1.3e+03   6.2e-01  -2.2e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8365180492401123
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.66925311088562
+[ Info:      7   8.4e+04   1.5e+06   6.9e+06   3.9e+03   3.1e-01  -1.6e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.033583164215088
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.8731420040130615
+[ Info:      8   8.4e+04   1.5e+06   6.9e+06   1.2e+04   1.7e-01   7.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.730214834213257
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.920907974243164
+[ Info:      9   7.4e+04   9.4e+03   1.9e+07   3.9e+03   2.4e-01   5.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.049280881881714
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.5107929706573486
+[ Info:     10   7.2e+04   2.1e+03   3.8e+06   1.3e+03   5.1e-01   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.628602981567383
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.7425689697265625
+[ Info:     11   7.0e+04   2.1e+03   5.8e+05   1.4e+02   2.5e+00   8.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.776288986206055
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7153921127319336
+[ Info:     12   6.9e+04   1.0e+03   5.3e+06   4.8e+01   4.4e+00   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.707486152648926
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.65842604637146
+[ Info:     13   6.8e+04   1.5e+03   1.3e+06   5.3e+00   1.8e+01   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.714562177658081
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.804344892501831
+[ Info:     14   6.5e+04   2.6e+03   1.2e+05   5.9e-01   5.4e+01  -5.7e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9677610397338867
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7927567958831787
+[ Info:     15   6.5e+04   2.6e+03   1.2e+05   1.8e+00   2.8e+01   9.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.8649559020996094
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.2815001010894775
+[ Info:     16   6.3e+04   1.9e+03   1.7e+05   2.0e-01   7.8e+01  -7.3e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.5191099643707275
+┌ Info: 
+│ Time facto: 
+└   t_facto = 4.659354209899902
+[ Info:     17   6.3e+04   1.9e+03   1.7e+05   5.9e-01   4.1e+01  -5.4e+11              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 5.2239990234375
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7753589153289795
+[ Info:     18   6.3e+04   1.9e+03   1.7e+05   1.8e+00   1.9e+01   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.8075640201568604
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.351691961288452
+[ Info:     19   6.2e+04   8.8e+02   7.1e+04   2.0e-01   6.7e+01  -3.0e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.547886848449707
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.715420961380005
+[ Info:     20   6.2e+04   8.8e+02   7.1e+04   5.9e-01   3.3e+01  -1.4e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9987759590148926
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7377572059631348
+[ Info:     21   6.2e+04   8.8e+02   7.1e+04   1.8e+00   1.4e+01   6.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.585498094558716
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.473314046859741
+[ Info:     22   6.2e+04   3.2e+02   6.7e+04   5.9e-01   2.8e+01   9.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.466379165649414
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6699299812316895
+[ Info:     23   6.2e+04   6.4e+02   2.2e+05   6.6e-02   1.1e+02  -3.9e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.0715339183807373
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.634460926055908
+[ Info:     24   6.2e+04   6.4e+02   2.2e+05   2.0e-01   5.3e+01  -1.4e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.792846918106079
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.629051923751831
+[ Info:     25   6.2e+04   6.4e+02   2.2e+05   5.9e-01   2.2e+01   1.1e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6709699630737305
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.643224000930786
+[ Info:     26   6.1e+04   3.7e+02   1.1e+05   6.6e-02   9.3e+01  -2.3e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8082141876220703
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.637269973754883
+[ Info:     27   6.1e+04   3.7e+02   1.1e+05   2.0e-01   4.8e+01  -4.6e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9195477962493896
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6753859519958496
+[ Info:     28   6.1e+04   3.7e+02   1.1e+05   5.9e-01   2.3e+01  -3.3e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8481879234313965
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7933859825134277
+[ Info:     29   6.1e+04   3.7e+02   1.1e+05   1.8e+00   9.5e+00   1.6e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.778998851776123
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7866640090942383
+[ Info:     30   6.1e+04   3.0e+02   2.7e+04   2.0e-01   4.0e+01  -3.4e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.038015127182007
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.781791925430298
+[ Info:     31   6.1e+04   3.0e+02   2.7e+04   5.9e-01   1.6e+01  -2.0e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9342739582061768
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.772608995437622
+[ Info:     32   6.1e+04   3.0e+02   2.7e+04   1.8e+00   6.1e+00   5.5e-02              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.7993509769439697
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7547709941864014
+[ Info:     33   6.1e+04   6.7e+00   3.0e+04   5.9e-01   1.5e+01   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6998350620269775
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.742495059967041
+[ Info:     34   6.1e+04   2.5e+02   6.6e+04   6.6e-02   8.2e+01  -1.2e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.899585008621216
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6977100372314453
+[ Info:     35   6.1e+04   2.5e+02   6.6e+04   2.0e-01   3.9e+01  -1.2e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9697210788726807
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.666808843612671
+[ Info:     36   6.1e+04   2.5e+02   6.6e+04   5.9e-01   1.6e+01   2.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.460310935974121
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.805150032043457
+[ Info:     37   6.0e+04   3.2e+02   5.0e+04   6.6e-02   6.4e+01  -1.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.1188929080963135
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7965590953826904
+[ Info:     38   6.0e+04   3.2e+02   5.0e+04   2.0e-01   2.8e+01   7.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.694667100906372
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.792819023132324
+[ Info:     39   6.0e+04   1.6e+02   2.8e+05   6.6e-02   5.1e+01  -3.6e-02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.956284999847412
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.765866994857788
+[ Info:     40   6.0e+04   1.6e+02   2.8e+05   2.0e-01   2.1e+01   9.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.734118938446045
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6682019233703613
+[ Info:     41   6.0e+04   1.3e+02   1.4e+05   2.2e-02   9.6e+01  -9.3e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8658359050750732
+┌ Info: 
+│ Time facto: 
+└   t_facto = 4.116957902908325
+[ Info:     42   6.0e+04   1.3e+02   1.4e+05   6.6e-02   4.3e+01   1.4e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 5.101351022720337
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6601309776306152
+[ Info:     43   6.0e+04   2.1e+01   6.9e+05   2.2e-02   7.4e+01  -1.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8180291652679443
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6348838806152344
+[ Info:     44   6.0e+04   2.1e+01   6.9e+05   6.6e-02   3.1e+01   8.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.5746588706970215
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6460561752319336
+[ Info:     45   6.0e+04   1.7e+02   2.6e+05   2.2e-02   6.1e+01  -1.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.95929217338562
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.649434804916382
+[ Info:     46   6.0e+04   1.7e+02   2.6e+05   6.6e-02   2.4e+01   8.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6448469161987305
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.237373113632202
+[ Info:     47   6.0e+04   5.0e+01   1.8e+05   2.2e-02   5.1e+01  -7.5e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.4011011123657227
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6375160217285156
+[ Info:     48   6.0e+04   5.0e+01   1.8e+05   6.6e-02   2.0e+01   8.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6185901165008545
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6434361934661865
+[ Info:     49   6.0e+04   3.1e+01   1.2e+05   2.2e-02   4.4e+01  -2.5e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8462460041046143
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.421945095062256
+[ Info:     50   6.0e+04   3.1e+01   1.2e+05   6.8e-02   1.6e+01   9.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.796910047531128
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6460440158843994
+[ Info:     51   6.0e+04   2.1e+01   8.3e+04   7.5e-03   9.4e+01  -7.6e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.026970148086548
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.3168721199035645
+[ Info:     52   6.0e+04   2.1e+01   8.3e+04   3.2e-02   2.8e+01   6.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.436558961868286
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.161310911178589
+[ Info:     53   6.0e+04   1.8e+01   2.3e+05   1.1e-02   5.9e+01  -5.7e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.3491599559783936
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6418988704681396
+[ Info:     54   6.0e+04   1.8e+01   2.3e+05   5.1e-02   1.5e+01   9.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6578879356384277
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.645789861679077
+[ Info:     55   6.0e+04   2.0e+01   4.7e+04   5.6e-03   9.2e+01  -4.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.841850996017456
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.66900897026062
+[ Info:     56   6.0e+04   2.0e+01   4.7e+04   3.3e-02   2.0e+01   8.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.800032138824463
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.653592109680176
+[ Info:     57   6.0e+04   1.2e+01   8.5e+04   1.1e-02   4.7e+01   3.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.7110400199890137
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.019179105758667
+[ Info:     58   6.0e+04   9.6e+00   3.3e+05   3.6e-03   9.7e+01  -1.0e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.349987030029297
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.071042060852051
+[ Info:     59   6.0e+04   9.6e+00   3.3e+05   3.1e-02   1.4e+01   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.9585258960723877
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.790818929672241
+[ Info:     60   6.0e+04   2.2e+01   1.2e+04   3.4e-03   1.0e+02  -1.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9603750705718994
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7929670810699463
+[ Info:     61   6.0e+04   2.2e+01   1.2e+04   2.9e-02   1.4e+01   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.7539141178131104
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.741147041320801
+[ Info:     62   6.0e+04   6.2e+00   1.6e+04   3.3e-03   1.2e+02  -5.9e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8931338787078857
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7115478515625
+[ Info:     63   6.0e+04   6.2e+00   1.6e+04   2.6e-02   1.7e+01   1.3e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.612031936645508
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7863781452178955
+[ Info:     64   6.0e+04   1.0e+01   1.7e+04   2.9e-03   1.8e+02  -4.1e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.952263116836548
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.8004539012908936
+[ Info:     65   6.0e+04   1.0e+01   1.7e+04   1.7e-02   5.1e+01  -2.3e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.0652620792388916
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7852799892425537
+[ Info:     66   6.0e+04   1.0e+01   1.7e+04   5.9e-02   1.6e+01  -3.9e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9334990978240967
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.770761013031006
+[ Info:     67   6.0e+04   1.0e+01   1.7e+04   1.8e-01   5.5e+00   1.6e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.7153570652008057
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7138659954071045
+[ Info:     68   6.0e+04   9.2e+00   2.4e+03   2.0e-02   5.6e+01  -1.9e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.936304807662964
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6508610248565674
+[ Info:     69   6.0e+04   9.2e+00   2.4e+03   6.1e-02   3.1e+01  -3.7e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8280789852142334
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7054967880249023
+[ Info:     70   6.0e+04   9.2e+00   2.4e+03   1.8e-01   1.3e+01  -1.4e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.8745148181915283
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.637962818145752
+[ Info:     71   6.0e+04   9.2e+00   2.4e+03   5.5e-01   4.9e+00   2.9e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.9707109928131104
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.631840944290161
+[ Info:     72   6.0e+04   3.8e+01   1.1e+04   6.1e-02   9.4e+00  -1.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.878065824508667
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6318578720092773
+[ Info:     73   6.0e+04   3.8e+01   1.1e+04   3.2e-01   7.0e+00  -1.2e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.787442922592163
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.629664182662964
+[ Info:     74   6.0e+04   3.8e+01   1.1e+04   9.6e-01   5.7e+00  -1.4e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.918081045150757
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.752858877182007
+[ Info:     75   6.0e+04   3.8e+01   1.1e+04   2.9e+00   3.8e+00  -2.9e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9066178798675537
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6338632106781006
+[ Info:     76   6.0e+04   3.8e+01   1.1e+04   8.6e+00   1.9e+00   1.4e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.5475800037384033
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.636713981628418
+[ Info:     77   5.9e+04   5.3e+01   8.4e+04   9.6e-01   1.1e+00   8.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.4259798526763916
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6306350231170654
+[ Info:     78   5.9e+04   3.2e+01   2.5e+04   3.2e-01   1.4e+00   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.687363862991333
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6502158641815186
+[ Info:     79   5.9e+04   2.3e+00   3.1e+03   3.5e-02   9.9e+00   9.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6725330352783203
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6480841636657715
+[ Info:     80   5.9e+04   3.6e+00   2.6e+04   3.9e-03   6.9e+01  -5.8e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.9274470806121826
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6348178386688232
+[ Info:     81   5.9e+04   3.6e+00   2.6e+04   4.4e-02   7.5e+00   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.5308589935302734
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.635686159133911
+[ Info:     82   5.9e+04   2.6e+00   8.8e+03   4.9e-03   5.5e+01   1.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.4679601192474365
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.775820016860962
+[ Info:     83   5.9e+04   2.8e+00   3.7e+05   1.6e-03   1.1e+02  -5.4e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.2064130306243896
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.9888458251953125
+[ Info:     84   5.9e+04   2.8e+00   3.7e+05   2.7e-02   8.3e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.9595959186553955
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7933361530303955
+[ Info:     85   5.9e+04   1.4e+01   6.8e+03   3.0e-03   6.3e+01   4.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.62050199508667
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.787113904953003
+[ Info:     86   5.9e+04   5.3e+00   3.2e+05   1.0e-03   1.3e+02  -1.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.209233045578003
+┌ Info: 
+│ Time facto: 
+└   t_facto = 4.552849054336548
+[ Info:     87   5.9e+04   5.3e+00   3.2e+05   2.4e-02   7.1e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 5.520811080932617
+┌ Info: 
+│ Time facto: 
+└   t_facto = 4.018063068389893
+[ Info:     88   5.9e+04   8.1e+00   3.5e+03   2.7e-03   5.2e+01   6.4e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.970570087432861
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.8388311862945557
+[ Info:     89   5.9e+04   5.0e+00   2.0e+05   8.9e-04   1.1e+02  -8.4e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.244931221008301
+┌ Info: 
+│ Time facto: 
+└   t_facto = 3.413426160812378
+[ Info:     90   5.9e+04   5.0e+00   2.0e+05   2.6e-02   4.7e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 4.349761962890625
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7351410388946533
+[ Info:     91   5.9e+04   3.2e+00   1.7e+03   2.9e-03   3.8e+01   9.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.553260087966919
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.710603952407837
+[ Info:     92   5.9e+04   4.1e+00   8.6e+04   3.2e-04   2.4e+02  -3.4e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.052966833114624
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7974469661712646
+[ Info:     93   5.9e+04   4.1e+00   8.6e+04   1.2e-02   8.9e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.7088029384613037
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.789531946182251
+[ Info:     94   5.9e+04   1.4e+00   3.8e+03   1.4e-03   6.5e+01   5.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.577075958251953
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7908859252929688
+[ Info:     95   5.9e+04   3.7e+00   2.7e+05   4.6e-04   1.4e+02  -2.7e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.1559250354766846
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7923669815063477
+[ Info:     96   5.9e+04   3.7e+00   2.7e+05   2.1e-02   3.6e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.8829939365386963
+┌ Info: 
+│ Time facto: 
+└   t_facto = 4.669402122497559
+[ Info:     97   5.9e+04   2.9e+00   2.2e+03   2.3e-03   3.1e+01   9.5e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 5.463218927383423
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.719446897506714
+[ Info:     98   5.9e+04   2.1e+00   5.6e+04   2.6e-04   2.2e+02  -2.9e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.0648980140686035
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.661051034927368
+[ Info:     99   5.9e+04   2.1e+00   5.6e+04   1.4e-02   5.1e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.5745890140533447
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7062928676605225
+[ Info:    100   5.9e+04   4.4e-01   2.2e+03   1.5e-03   4.4e+01   9.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.447023868560791
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.661545991897583
+[ Info:    101   5.9e+04   2.7e+00   1.1e+05   1.7e-04   2.9e+02  -2.7e+02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 2.999307155609131
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.6426618099212646
+[ Info:    102   5.9e+04   2.7e+00   1.1e+05   1.0e-02   6.6e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.542746067047119
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.8016679286956787
+[ Info:    103   5.9e+04   7.2e-01   3.6e+03   1.2e-03   5.3e+01   8.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.609255790710449
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.8104681968688965
+[ Info:    104   5.9e+04   2.8e+00   1.8e+05   3.8e-04   1.2e+02  -9.0e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.167840003967285
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.782158851623535
+[ Info:    105   5.9e+04   2.8e+00   1.8e+05   2.5e-02   2.8e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6897478103637695
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.751270055770874
+[ Info:    106   5.9e+04   1.0e+00   9.6e+02   2.8e-03   2.1e+01   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.506295919418335
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.7050349712371826
+[ Info:    107   5.9e+04   1.3e+00   3.8e+04   3.1e-04   1.4e+02  -2.5e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.04551100730896
+┌ Info: 
+│ Time facto: 
+└   t_facto = 2.691162109375
+[ Info:    108   5.9e+04   1.3e+00   3.8e+04   2.1e-02   2.7e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 3.6096930503845215
+┌ Info: Generic Execution stats
+│   status: solved to within acceptable tolerances
+│   objective value: 59391.103457144374
+│   primal feasibility: 0.0
+│   dual feasibility: 1377.6513446601432
+│   solution: [0.3660840934089182  0.31472192471662563  -4.099081532778899  0.0013017749399010254 ⋯ 404.36188907393426]
+│   iterations: 108
+└   elapsed time: 382.3505311012268
+
+
+LadyBug/problem-138-19878-pre.txt.bz2 & 60876 & 170434 & 59391.103457144374 & 108 & 382.3505311012268 & acceptable & 1377.6513446601432 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-318-41628-feasres
+│   Total variables………127746  Total constraints…0     
+│     free………………………………127746    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………8159584131    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………359838
+│     linear…………………………0     
+│     nonlinear…………………359838
+│     nnzj………………………………4318056
+│     nnzh………………………………8159584131
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Error: ‖δ‖ = NaN
+└ @ Main ~/BundleAdjustment.jl/src/lm.jl:299
+┌ Info: Generic Execution stats
+│   status: unhandled exception
+│   objective value: 2.4690065e6
+│   primal feasibility: 0.0
+│   dual feasibility: 3.9731162e9
+│   solution: [1.6208183f0  0.9271076f0  -6.7979097f0  -0.35507262f0 ⋯ 405.94626]
+│   iterations: 1
+└   elapsed time: 202.6899290084839
+
+
+LadyBug/problem-318-41628-pre.txt.bz2 & 127746 & 359838 & 2.4690065e6 & 1 & 202.6899290084839 & exception & 3.9731162e9 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-318-41628-feasres
+│   Total variables………127746  Total constraints…0     
+│     free………………………………127746    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………8159584131    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………359838
+│     linear…………………………0     
+│     nonlinear…………………359838
+│     nnzj………………………………4318056
+│     nnzh………………………………8159584131
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………2     
+│     jac_residual……………1         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+│   ite_max = 200
+└   facto_type = Float64
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.970104932785034
+[ Info:      1   2.5e+06   0.0e+00   1.8e+09   3.0e+01   1.9e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 16.127518892288208
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.860911846160889
+[ Info:      2   8.7e+04   2.4e+06   1.4e+07   3.3e+00   3.5e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.796653985977173
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.665580034255981
+[ Info:      3   8.6e+04   2.0e+02   1.5e+05   3.7e-01   1.0e+01   8.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.43569302558899
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.5794198513031
+[ Info:      4   8.6e+04   5.8e+01   7.5e+04   1.2e-01   1.0e+01   9.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.382428884506226
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.665317058563232
+[ Info:      5   8.6e+04   3.1e+01   1.0e+05   1.4e-02   2.3e+01  -1.5e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 13.990931034088135
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.895523071289062
+[ Info:      6   8.6e+04   3.1e+01   1.0e+05   1.3e-01   6.2e+00   9.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.94169807434082
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.889692068099976
+[ Info:      7   8.6e+04   6.6e+00   1.5e+05   1.4e-02   2.0e+01  -5.9e-02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 14.216400861740112
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.869515895843506
+[ Info:      8   8.6e+04   6.6e+00   1.5e+05   1.5e-01   4.1e+00   9.9e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 16.19638991355896
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.87185788154602
+[ Info:      9   8.6e+04   3.3e+00   3.4e+04   1.7e-02   1.6e+01   4.0e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 16.162982940673828
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.903119087219238
+[ Info:     10   8.6e+04   2.7e+00   9.3e+05   5.6e-03   1.8e+01  -2.4e+02              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 14.450330018997192
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.814208030700684
+[ Info:     11   8.6e+04   2.7e+00   9.3e+05   1.6e-01   1.7e+00   8.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.734620809555054
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.916656970977783
+[ Info:     12   8.6e+04   3.7e+00   6.5e+04   5.4e-02   3.7e+00   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.539531946182251
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.925826072692871
+[ Info:     13   8.6e+04   1.5e+00   4.6e+04   6.1e-03   1.5e+01  -3.3e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 14.531400918960571
+┌ Info: 
+│ Time facto: 
+└   t_facto = 13.916469097137451
+[ Info:     14   8.6e+04   1.5e+00   4.6e+04   2.0e-01   9.5e-01   8.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 15.800302982330322
+┌ Info: Generic Execution stats
+│   status: first-order stationary
+│   objective value: 86309.23483634286
+│   primal feasibility: 0.0
+│   dual feasibility: 4394.356624703526
+│   solution: [1.6228346814638799  0.9278623191054206  -6.791257711432866  -0.3539772726735759 ⋯ 409.5736591027392]
+│   iterations: 14
+└   elapsed time: 227.1760401725769
+
+
+LadyBug/problem-318-41628-pre.txt.bz2 & 127746 & 359838 & 86309.23483634286 & 14 & 227.1760401725769 & first_order & 4394.356624703526 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-460-56811-feasres
+│   Total variables………174573  Total constraints…0     
+│     free………………………………174573    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………15237953451    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………483754
+│     linear…………………………0     
+│     nonlinear…………………483754
+│     nnzj………………………………5805048
+│     nnzh………………………………15237953451
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Error: ‖δ‖ = NaN
+└ @ Main ~/BundleAdjustment.jl/src/lm.jl:299
+┌ Info: Generic Execution stats
+│   status: unhandled exception
+│   objective value: 4.6829335e6
+│   primal feasibility: 0.0
+│   dual feasibility: 1.0751036e8
+│   solution: [1.6748129f0  0.9274698f0  -6.7448826f0  -0.2937061f0 ⋯ 386.6919]
+│   iterations: 1
+└   elapsed time: 557.4014139175415
+
+
+LadyBug/problem-460-56811-pre.txt.bz2 & 174573 & 483754 & 4.6829335e6 & 1 & 557.4014139175415 & exception & 1.0751036e8 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-460-56811-feasres
+│   Total variables………174573  Total constraints…0     
+│     free………………………………174573    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………15237953451    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………483754
+│     linear…………………………0     
+│     nonlinear…………………483754
+│     nnzj………………………………5805048
+│     nnzh………………………………15237953451
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………2     
+│     jac_residual……………1         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+│   ite_max = 200
+└   facto_type = Float64
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.172521829605103
+[ Info:      1   4.7e+06   0.0e+00   1.1e+08   9.3e+01   3.8e+00   1.0e+00              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.073468923568726
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.11608099937439
+[ Info:      2   1.4e+05   4.5e+06   7.4e+06   1.0e+01   6.8e+00   9.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 31.839303970336914
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.837106943130493
+[ Info:      3   1.3e+05   1.3e+04   8.2e+07   1.1e+00   1.9e+01   8.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.3868191242218
+┌ Info: 
+│ Time facto: 
+└   t_facto = 31.874517917633057
+[ Info:      4   1.3e+05   8.5e+02   1.2e+07   3.8e-01   2.6e+01   1.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 34.17807197570801
+┌ Info: 
+│ Time facto: 
+└   t_facto = 30.142061948776245
+[ Info:      5   1.3e+05   7.8e+01   1.4e+07   1.3e-01   3.6e+01   1.0e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 33.3718957901001
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.963525772094727
+[ Info:      6   1.3e+05   8.2e+01   3.0e+07   4.3e-02   4.9e+01   8.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.50907778739929
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.94146704673767
+[ Info:      7   1.3e+05   7.4e+02   2.1e+07   1.4e-02   6.9e+01  -3.6e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 30.501929998397827
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.481457948684692
+[ Info:      8   1.3e+05   7.4e+02   2.1e+07   4.4e-02   3.1e+01  -2.6e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 30.147740125656128
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.074339866638184
+[ Info:      9   1.3e+05   7.4e+02   2.1e+07   1.3e-01   1.3e+01  -2.9e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.55159091949463
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.04388999938965
+[ Info:     10   1.3e+05   7.4e+02   2.1e+07   3.9e-01   4.8e+00  -2.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.725209951400757
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.065515995025635
+[ Info:     11   1.3e+05   7.4e+02   2.1e+07   1.2e+00   1.8e+00  -9.3e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.504080057144165
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.762467861175537
+[ Info:     12   1.3e+05   7.4e+02   2.1e+07   3.5e+00   7.1e-01  -1.8e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 30.29078483581543
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.83526301383972
+[ Info:     13   1.3e+05   7.4e+02   2.1e+07   1.1e+01   2.8e-01   1.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.83123207092285
+┌ Info: 
+│ Time facto: 
+└   t_facto = 31.60490393638611
+[ Info:     14   1.3e+05   2.5e+01   7.3e+07   3.5e+00   6.9e-01   9.0e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 34.77333307266235
+┌ Info: 
+│ Time facto: 
+└   t_facto = 30.20001983642578
+[ Info:     15   1.3e+05   1.2e+02   2.8e+07   3.9e-01   4.7e+00  -3.4e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 30.716938018798828
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.92843008041382
+[ Info:     16   1.3e+05   1.2e+02   2.8e+07   1.2e+00   1.7e+00   2.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.63332200050354
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.987311124801636
+[ Info:     17   1.3e+05   4.5e+00   5.7e+07   3.9e-01   4.6e+00   7.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.98392701148987
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.51469397544861
+[ Info:     18   1.3e+05   1.6e+01   5.3e+07   1.3e-01   1.2e+01  -1.4e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 30.24955105781555
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.13983178138733
+[ Info:     19   1.3e+05   1.6e+01   5.3e+07   3.9e-01   4.2e+00  -3.9e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.734280109405518
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.05059790611267
+[ Info:     20   1.3e+05   1.6e+01   5.3e+07   1.2e+00   1.5e+00  -6.6e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.89743685722351
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.115607976913452
+[ Info:     21   1.3e+05   1.6e+01   5.3e+07   3.5e+00   5.0e-01  -7.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.59417700767517
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.133711099624634
+[ Info:     22   1.3e+05   1.6e+01   5.3e+07   1.1e+01   1.7e-01  -5.5e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.589508056640625
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.076842069625854
+[ Info:     23   1.3e+05   1.6e+01   5.3e+07   3.2e+01   6.9e-02  -1.7e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 29.887510061264038
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.88537287712097
+[ Info:     24   1.3e+05   1.6e+01   5.3e+07   9.6e+01   3.2e-02   4.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.47817802429199
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.91302800178528
+[ Info:     25   1.3e+05   2.2e+00   2.5e+07   3.2e+01   6.1e-02   7.0e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.2863450050354
+┌ Info: 
+│ Time facto: 
+└   t_facto = 29.901285886764526
+[ Info:     26   1.3e+05   1.8e+00   9.7e+05   1.1e+01   1.7e-01   7.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 32.99765682220459
+┌ Info: 
+│ Time facto: 
+└   t_facto = 30.901270866394043
+[ Info:     27   1.3e+05   7.9e-01   8.5e+04   3.5e+00   5.0e-01   4.6e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 33.80546593666077
+┌ Info: Generic Execution stats
+│   status: solved to within acceptable tolerances
+│   objective value: 128785.79170670813
+│   primal feasibility: 0.0
+│   dual feasibility: 178690.67203291928
+│   solution: [1.6706890307447035  0.9181732056755029  -6.683978342580615  -0.2748480798961449 ⋯ 384.1717535379188]
+│   iterations: 27
+└   elapsed time: 867.7694549560547
+
+
+LadyBug/problem-460-56811-pre.txt.bz2 & 174573 & 483754 & 128785.79170670813 & 27 & 867.7694549560547 & acceptable & 178690.67203291928 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-810-88814-feasres
+│   Total variables………273732  Total constraints…0     
+│     free………………………………273732    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………37464740778    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………787550
+│     linear…………………………0     
+│     nonlinear…………………787550
+│     nnzj………………………………9450600
+│     nnzh………………………………37464740778
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Error: ‖δ‖ = NaN
+└ @ Main ~/BundleAdjustment.jl/src/lm.jl:299
+┌ Info: Generic Execution stats
+│   status: unhandled exception
+│   objective value: 1.3513739e7
+│   primal feasibility: 0.0
+│   dual feasibility: 5.7455493e9
+│   solution: [1.4106845f0  0.8797806f0  -7.8011327f0  -0.65172404f0 ⋯ 420.53867]
+│   iterations: 1
+└   elapsed time: 968.3866021633148
+
+
+LadyBug/problem-810-88814-pre.txt.bz2 & 273732 & 787550 & 1.3513739e7 & 1 & 968.3866021633148 & exception & 5.7455493e9 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-810-88814-feasres
+│   Total variables………273732  Total constraints…0     
+│     free………………………………273732    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………37464740778    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………787550
+│     linear…………………………0     
+│     nonlinear…………………787550
+│     nnzj………………………………9450600
+│     nnzh………………………………37464740778
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………2     
+│     jac_residual……………1         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0
+│   νm = 3.0
+│   λ = 30.0
+│   ite_max = 200
+└   facto_type = Float64
+┌ Info: Tolerances:
+│   restol = 6.055454452393343e-6
+│   satol = 1.4901161193847656e-8
+│   srtol = 1.4901161193847656e-8
+│   oatol = 1.4901161193847656e-8
+│   ortol = 6.055454452393343e-6
+│   atol = 1.4901161193847656e-8
+└   rtol = 6.055454452393343e-6
+[ Info:   iter      f(x)        Δf     ‖Jᵀr‖         λ       ‖δ‖         ρ           status  
+┌ Info: 
+│ Time facto: 
+└   t_facto = 97.44552993774414
+[ Info:      1   1.4e+07   0.0e+00   4.8e+09   3.0e+01   2.9e+00   9.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 101.6510488986969
+┌ Info: 
+│ Time facto: 
+└   t_facto = 92.94931602478027
+[ Info:      2   1.2e+06   1.2e+07   9.6e+09   3.3e+00   6.7e+00   9.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 96.89553904533386
+┌ Info: 
+│ Time facto: 
+└   t_facto = 91.98855686187744
+[ Info:      3   2.3e+05   9.3e+05   7.4e+09   3.7e-01   1.7e+01   9.7e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 95.48154282569885
+┌ Info: 
+│ Time facto: 
+└   t_facto = 92.10930585861206
+[ Info:      4   2.0e+05   2.5e+04   2.2e+09   4.1e-02   2.1e+01  -1.8e+01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 96.08474898338318
+┌ Info: 
+│ Time facto: 
+└   t_facto = 94.84081792831421
+[ Info:      5   2.0e+05   2.5e+04   2.2e+09   1.4e-01   1.3e+01  -1.1e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 95.60218501091003
+┌ Info: 
+│ Time facto: 
+└   t_facto = 92.13176798820496
+[ Info:      6   2.0e+05   2.5e+04   2.2e+09   4.3e-01   7.5e+00   8.2e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 96.76019406318665
+┌ Info: 
+│ Time facto: 
+└   t_facto = 92.0652129650116
+[ Info:      7   2.0e+05   6.2e+02   2.3e+09   1.4e-01   8.9e+00  -1.0e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 93.0759630203247
+┌ Info: 
+│ Time facto: 
+└   t_facto = 96.12807989120483
+[ Info:      8   2.0e+05   6.2e+02   2.3e+09   4.3e-01   4.6e+00   8.3e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 100.1014997959137
+┌ Info: 
+│ Time facto: 
+└   t_facto = 94.82821893692017
+[ Info:      9   2.0e+05   1.2e+02   1.1e+09   1.4e-01   7.0e+00  -1.7e+00              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 95.53555202484131
+┌ Info: 
+│ Time facto: 
+└   t_facto = 92.1576738357544
+[ Info:     10   2.0e+05   1.2e+02   1.1e+09   4.3e-01   3.2e+00   5.0e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 96.34501791000366
+┌ Info: 
+│ Time facto: 
+└   t_facto = 94.1391909122467
+[ Info:     11   2.0e+05   1.5e+01   4.7e+08   1.4e-01   6.0e+00  -1.3e-01              rej
+┌ Info: 
+│ Time iter: 
+└   t_iter = 94.83538889884949
+┌ Info: 
+│ Time facto: 
+└   t_facto = 95.94542694091797
+[ Info:     12   2.0e+05   1.5e+01   4.7e+08   5.0e-01   2.3e+00   8.8e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 100.19224810600281
+┌ Info: 
+│ Time facto: 
+└   t_facto = 93.05834603309631
+[ Info:     13   2.0e+05   1.6e+01   2.1e+08   1.7e-01   4.8e+00   1.4e-01              acc
+┌ Info: 
+│ Time iter: 
+└   t_iter = 97.07019901275635
+┌ Info: Generic Execution stats
+│   status: solved to within acceptable tolerances
+│   objective value: 203473.09713226638
+│   primal feasibility: 0.0
+│   dual feasibility: 4.7897279866994375e8
+│   solution: [1.4064898309671956  0.8757805751727188  -7.801327639853358  -0.6523756301879166 ⋯ 418.927627115571]
+│   iterations: 13
+└   elapsed time: 1289.9989471435547
+
+
+LadyBug/problem-810-88814-pre.txt.bz2 & 273732 & 787550 & 203473.09713226638 & 13 & 1289.9989471435547 & acceptable & 4.7897279866994375e8 \\
+
+
+┌ Info: FeasibilityResidual - Nonlinear least-squares defined from constraints of another problem
+│   Problem name: LadyBug-1031-110968-feasres
+│   Total variables………342183  Total constraints…0     
+│     free………………………………342183    linear…………………………0     
+│     lower……………………………0         nonlinear…………………0     
+│     upper……………………………0         equality……………………0     
+│     low/upp………………………0         lower……………………………0     
+│     fixed……………………………0         upper……………………………0     
+│     nnzh………………………………58544773836    low/upp………………………0     
+│                               nnzj………………………………0     
+│   Total residuals………1000530
+│     linear…………………………0     
+│     nonlinear…………………1000530
+│     nnzj………………………………12006360
+│     nnzh………………………………58544773836
+│ 
+│   Counters:
+│     obj……………………………………0         grad…………………………………0         cons…………………………………0         jcon…………………………………0     
+│     jgrad………………………………0         jac……………………………………0         jprod………………………………0         jtprod……………………………0     
+│     hess…………………………………0         hprod………………………………0         jhprod……………………………0         residual………………………0     
+│     jac_residual……………0         jprod_residual………0         jtprod_residual……0         hess_residual…………0     
+└     jhess_residual………0         hprod_residual………0     
+┌ Info: Parameters of the solver:
+│   facto = :LDL
+│   perm = :Metis
+│   normalize = :None
+│   linesearch = false
+│   νd = 3.0f0
+│   νm = 3.0f0
+│   λ = 30.0f0
+│   ite_max = 200
+└   facto_type = Float16
+┌ Info: Tolerances:
+│   restol = 1.0e-5
+│   satol = 1.0e-5
+│   srtol = 1.0e-5
+│   oatol = 0.01
+│   ortol = 0.01
+│   atol = 0.01
+└   rtol = 0.1
